@@ -43,11 +43,12 @@ export type OrderMinAggregateOutputType = {
   clientName: string | null
   clientPhone: string | null
   clientAddress: string | null
+  createdById: string | null
+  updatedById: string | null
   subtotal: number | null
   total: number | null
   whatsappMessage: string | null
   whatsappSentAt: Date | null
-  updatedById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -59,11 +60,12 @@ export type OrderMaxAggregateOutputType = {
   clientName: string | null
   clientPhone: string | null
   clientAddress: string | null
+  createdById: string | null
+  updatedById: string | null
   subtotal: number | null
   total: number | null
   whatsappMessage: string | null
   whatsappSentAt: Date | null
-  updatedById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -75,11 +77,12 @@ export type OrderCountAggregateOutputType = {
   clientName: number
   clientPhone: number
   clientAddress: number
+  createdById: number
+  updatedById: number
   subtotal: number
   total: number
   whatsappMessage: number
   whatsappSentAt: number
-  updatedById: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -103,11 +106,12 @@ export type OrderMinAggregateInputType = {
   clientName?: true
   clientPhone?: true
   clientAddress?: true
+  createdById?: true
+  updatedById?: true
   subtotal?: true
   total?: true
   whatsappMessage?: true
   whatsappSentAt?: true
-  updatedById?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -119,11 +123,12 @@ export type OrderMaxAggregateInputType = {
   clientName?: true
   clientPhone?: true
   clientAddress?: true
+  createdById?: true
+  updatedById?: true
   subtotal?: true
   total?: true
   whatsappMessage?: true
   whatsappSentAt?: true
-  updatedById?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -135,11 +140,12 @@ export type OrderCountAggregateInputType = {
   clientName?: true
   clientPhone?: true
   clientAddress?: true
+  createdById?: true
+  updatedById?: true
   subtotal?: true
   total?: true
   whatsappMessage?: true
   whatsappSentAt?: true
-  updatedById?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -238,11 +244,12 @@ export type OrderGroupByOutputType = {
   clientName: string
   clientPhone: string
   clientAddress: string | null
+  createdById: string | null
+  updatedById: string | null
   subtotal: number
   total: number
   whatsappMessage: string | null
   whatsappSentAt: Date | null
-  updatedById: string | null
   createdAt: Date
   updatedAt: Date
   _count: OrderCountAggregateOutputType | null
@@ -277,15 +284,17 @@ export type OrderWhereInput = {
   clientName?: Prisma.StringFilter<"Order"> | string
   clientPhone?: Prisma.StringFilter<"Order"> | string
   clientAddress?: Prisma.StringNullableFilter<"Order"> | string | null
+  createdById?: Prisma.StringNullableFilter<"Order"> | string | null
+  updatedById?: Prisma.StringNullableFilter<"Order"> | string | null
   subtotal?: Prisma.FloatFilter<"Order"> | number
   total?: Prisma.FloatFilter<"Order"> | number
   whatsappMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   whatsappSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
-  updatedById?: Prisma.StringNullableFilter<"Order"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
-  items?: Prisma.OrderItemListRelationFilter
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   updatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  items?: Prisma.OrderItemListRelationFilter
 }
 
 export type OrderOrderByWithRelationInput = {
@@ -295,15 +304,17 @@ export type OrderOrderByWithRelationInput = {
   clientName?: Prisma.SortOrder
   clientPhone?: Prisma.SortOrder
   clientAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   total?: Prisma.SortOrder
   whatsappMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  items?: Prisma.OrderItemOrderByRelationAggregateInput
+  createdBy?: Prisma.UserOrderByWithRelationInput
   updatedBy?: Prisma.UserOrderByWithRelationInput
+  items?: Prisma.OrderItemOrderByRelationAggregateInput
 }
 
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
@@ -316,15 +327,17 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   clientName?: Prisma.StringFilter<"Order"> | string
   clientPhone?: Prisma.StringFilter<"Order"> | string
   clientAddress?: Prisma.StringNullableFilter<"Order"> | string | null
+  createdById?: Prisma.StringNullableFilter<"Order"> | string | null
+  updatedById?: Prisma.StringNullableFilter<"Order"> | string | null
   subtotal?: Prisma.FloatFilter<"Order"> | number
   total?: Prisma.FloatFilter<"Order"> | number
   whatsappMessage?: Prisma.StringNullableFilter<"Order"> | string | null
   whatsappSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
-  updatedById?: Prisma.StringNullableFilter<"Order"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
-  items?: Prisma.OrderItemListRelationFilter
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   updatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  items?: Prisma.OrderItemListRelationFilter
 }, "id" | "orderNumber">
 
 export type OrderOrderByWithAggregationInput = {
@@ -334,11 +347,12 @@ export type OrderOrderByWithAggregationInput = {
   clientName?: Prisma.SortOrder
   clientPhone?: Prisma.SortOrder
   clientAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   total?: Prisma.SortOrder
   whatsappMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OrderCountOrderByAggregateInput
@@ -358,11 +372,12 @@ export type OrderScalarWhereWithAggregatesInput = {
   clientName?: Prisma.StringWithAggregatesFilter<"Order"> | string
   clientPhone?: Prisma.StringWithAggregatesFilter<"Order"> | string
   clientAddress?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  updatedById?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   subtotal?: Prisma.FloatWithAggregatesFilter<"Order"> | number
   total?: Prisma.FloatWithAggregatesFilter<"Order"> | number
   whatsappMessage?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   whatsappSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
-  updatedById?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
 }
@@ -380,8 +395,9 @@ export type OrderCreateInput = {
   whatsappSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutUpdatedOrdersInput
+  items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateInput = {
@@ -391,11 +407,12 @@ export type OrderUncheckedCreateInput = {
   clientName: string
   clientPhone: string
   clientAddress?: string | null
+  createdById?: string | null
+  updatedById?: string | null
   subtotal: number
   total: number
   whatsappMessage?: string | null
   whatsappSentAt?: Date | string | null
-  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
@@ -414,8 +431,9 @@ export type OrderUpdateInput = {
   whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutUpdatedOrdersNestedInput
+  items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateInput = {
@@ -425,11 +443,12 @@ export type OrderUncheckedUpdateInput = {
   clientName?: Prisma.StringFieldUpdateOperationsInput | string
   clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
   clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   total?: Prisma.FloatFieldUpdateOperationsInput | number
   whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
@@ -442,11 +461,12 @@ export type OrderCreateManyInput = {
   clientName: string
   clientPhone: string
   clientAddress?: string | null
+  createdById?: string | null
+  updatedById?: string | null
   subtotal: number
   total: number
   whatsappMessage?: string | null
   whatsappSentAt?: Date | string | null
-  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -473,11 +493,12 @@ export type OrderUncheckedUpdateManyInput = {
   clientName?: Prisma.StringFieldUpdateOperationsInput | string
   clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
   clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   total?: Prisma.FloatFieldUpdateOperationsInput | number
   whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -489,11 +510,12 @@ export type OrderCountOrderByAggregateInput = {
   clientName?: Prisma.SortOrder
   clientPhone?: Prisma.SortOrder
   clientAddress?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   total?: Prisma.SortOrder
   whatsappMessage?: Prisma.SortOrder
   whatsappSentAt?: Prisma.SortOrder
-  updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -510,11 +532,12 @@ export type OrderMaxOrderByAggregateInput = {
   clientName?: Prisma.SortOrder
   clientPhone?: Prisma.SortOrder
   clientAddress?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   total?: Prisma.SortOrder
   whatsappMessage?: Prisma.SortOrder
   whatsappSentAt?: Prisma.SortOrder
-  updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -526,11 +549,12 @@ export type OrderMinOrderByAggregateInput = {
   clientName?: Prisma.SortOrder
   clientPhone?: Prisma.SortOrder
   clientAddress?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   total?: Prisma.SortOrder
   whatsappMessage?: Prisma.SortOrder
   whatsappSentAt?: Prisma.SortOrder
-  updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -577,10 +601,24 @@ export type OrderUpdateOneRequiredWithoutItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutItemsInput, Prisma.OrderUpdateWithoutItemsInput>, Prisma.OrderUncheckedUpdateWithoutItemsInput>
 }
 
+export type OrderCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutCreatedByInput, Prisma.OrderUncheckedCreateWithoutCreatedByInput> | Prisma.OrderCreateWithoutCreatedByInput[] | Prisma.OrderUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutCreatedByInput | Prisma.OrderCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.OrderCreateManyCreatedByInputEnvelope
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+}
+
 export type OrderCreateNestedManyWithoutUpdatedByInput = {
   create?: Prisma.XOR<Prisma.OrderCreateWithoutUpdatedByInput, Prisma.OrderUncheckedCreateWithoutUpdatedByInput> | Prisma.OrderCreateWithoutUpdatedByInput[] | Prisma.OrderUncheckedCreateWithoutUpdatedByInput[]
   connectOrCreate?: Prisma.OrderCreateOrConnectWithoutUpdatedByInput | Prisma.OrderCreateOrConnectWithoutUpdatedByInput[]
   createMany?: Prisma.OrderCreateManyUpdatedByInputEnvelope
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+}
+
+export type OrderUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutCreatedByInput, Prisma.OrderUncheckedCreateWithoutCreatedByInput> | Prisma.OrderCreateWithoutCreatedByInput[] | Prisma.OrderUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutCreatedByInput | Prisma.OrderCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.OrderCreateManyCreatedByInputEnvelope
   connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
 }
 
@@ -589,6 +627,20 @@ export type OrderUncheckedCreateNestedManyWithoutUpdatedByInput = {
   connectOrCreate?: Prisma.OrderCreateOrConnectWithoutUpdatedByInput | Prisma.OrderCreateOrConnectWithoutUpdatedByInput[]
   createMany?: Prisma.OrderCreateManyUpdatedByInputEnvelope
   connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+}
+
+export type OrderUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutCreatedByInput, Prisma.OrderUncheckedCreateWithoutCreatedByInput> | Prisma.OrderCreateWithoutCreatedByInput[] | Prisma.OrderUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutCreatedByInput | Prisma.OrderCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.OrderUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.OrderUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.OrderCreateManyCreatedByInputEnvelope
+  set?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  disconnect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  delete?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  update?: Prisma.OrderUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.OrderUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.OrderUpdateManyWithWhereWithoutCreatedByInput | Prisma.OrderUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
 }
 
 export type OrderUpdateManyWithoutUpdatedByNestedInput = {
@@ -602,6 +654,20 @@ export type OrderUpdateManyWithoutUpdatedByNestedInput = {
   connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
   update?: Prisma.OrderUpdateWithWhereUniqueWithoutUpdatedByInput | Prisma.OrderUpdateWithWhereUniqueWithoutUpdatedByInput[]
   updateMany?: Prisma.OrderUpdateManyWithWhereWithoutUpdatedByInput | Prisma.OrderUpdateManyWithWhereWithoutUpdatedByInput[]
+  deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
+}
+
+export type OrderUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutCreatedByInput, Prisma.OrderUncheckedCreateWithoutCreatedByInput> | Prisma.OrderCreateWithoutCreatedByInput[] | Prisma.OrderUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutCreatedByInput | Prisma.OrderCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.OrderUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.OrderUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.OrderCreateManyCreatedByInputEnvelope
+  set?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  disconnect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  delete?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  connect?: Prisma.OrderWhereUniqueInput | Prisma.OrderWhereUniqueInput[]
+  update?: Prisma.OrderUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.OrderUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.OrderUpdateManyWithWhereWithoutCreatedByInput | Prisma.OrderUpdateManyWithWhereWithoutCreatedByInput[]
   deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
 }
 
@@ -632,6 +698,7 @@ export type OrderCreateWithoutItemsInput = {
   whatsappSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutUpdatedOrdersInput
 }
 
@@ -642,11 +709,12 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   clientName: string
   clientPhone: string
   clientAddress?: string | null
+  createdById?: string | null
+  updatedById?: string | null
   subtotal: number
   total: number
   whatsappMessage?: string | null
   whatsappSentAt?: Date | string | null
-  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -680,6 +748,7 @@ export type OrderUpdateWithoutItemsInput = {
   whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutUpdatedOrdersNestedInput
 }
 
@@ -690,13 +759,58 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   clientName?: Prisma.StringFieldUpdateOperationsInput | string
   clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
   clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   total?: Prisma.FloatFieldUpdateOperationsInput | number
   whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OrderCreateWithoutCreatedByInput = {
+  id?: string
+  orderNumber: string
+  status?: $Enums.OrderStatus
+  clientName: string
+  clientPhone: string
+  clientAddress?: string | null
+  subtotal: number
+  total: number
+  whatsappMessage?: string | null
+  whatsappSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  updatedBy?: Prisma.UserCreateNestedOneWithoutUpdatedOrdersInput
+  items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
+}
+
+export type OrderUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  orderNumber: string
+  status?: $Enums.OrderStatus
+  clientName: string
+  clientPhone: string
+  clientAddress?: string | null
+  updatedById?: string | null
+  subtotal: number
+  total: number
+  whatsappMessage?: string | null
+  whatsappSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
+}
+
+export type OrderCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.OrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderCreateWithoutCreatedByInput, Prisma.OrderUncheckedCreateWithoutCreatedByInput>
+}
+
+export type OrderCreateManyCreatedByInputEnvelope = {
+  data: Prisma.OrderCreateManyCreatedByInput | Prisma.OrderCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
 }
 
 export type OrderCreateWithoutUpdatedByInput = {
@@ -712,6 +826,7 @@ export type OrderCreateWithoutUpdatedByInput = {
   whatsappSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedOrdersInput
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
 }
 
@@ -722,6 +837,7 @@ export type OrderUncheckedCreateWithoutUpdatedByInput = {
   clientName: string
   clientPhone: string
   clientAddress?: string | null
+  createdById?: string | null
   subtotal: number
   total: number
   whatsappMessage?: string | null
@@ -741,6 +857,42 @@ export type OrderCreateManyUpdatedByInputEnvelope = {
   skipDuplicates?: boolean
 }
 
+export type OrderUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.OrderWhereUniqueInput
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutCreatedByInput, Prisma.OrderUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutCreatedByInput, Prisma.OrderUncheckedCreateWithoutCreatedByInput>
+}
+
+export type OrderUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.OrderWhereUniqueInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutCreatedByInput, Prisma.OrderUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type OrderUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.OrderScalarWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateManyMutationInput, Prisma.OrderUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type OrderScalarWhereInput = {
+  AND?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
+  OR?: Prisma.OrderScalarWhereInput[]
+  NOT?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
+  id?: Prisma.StringFilter<"Order"> | string
+  orderNumber?: Prisma.StringFilter<"Order"> | string
+  status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+  clientName?: Prisma.StringFilter<"Order"> | string
+  clientPhone?: Prisma.StringFilter<"Order"> | string
+  clientAddress?: Prisma.StringNullableFilter<"Order"> | string | null
+  createdById?: Prisma.StringNullableFilter<"Order"> | string | null
+  updatedById?: Prisma.StringNullableFilter<"Order"> | string | null
+  subtotal?: Prisma.FloatFilter<"Order"> | number
+  total?: Prisma.FloatFilter<"Order"> | number
+  whatsappMessage?: Prisma.StringNullableFilter<"Order"> | string | null
+  whatsappSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+}
+
 export type OrderUpsertWithWhereUniqueWithoutUpdatedByInput = {
   where: Prisma.OrderWhereUniqueInput
   update: Prisma.XOR<Prisma.OrderUpdateWithoutUpdatedByInput, Prisma.OrderUncheckedUpdateWithoutUpdatedByInput>
@@ -757,23 +909,20 @@ export type OrderUpdateManyWithWhereWithoutUpdatedByInput = {
   data: Prisma.XOR<Prisma.OrderUpdateManyMutationInput, Prisma.OrderUncheckedUpdateManyWithoutUpdatedByInput>
 }
 
-export type OrderScalarWhereInput = {
-  AND?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
-  OR?: Prisma.OrderScalarWhereInput[]
-  NOT?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
-  id?: Prisma.StringFilter<"Order"> | string
-  orderNumber?: Prisma.StringFilter<"Order"> | string
-  status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
-  clientName?: Prisma.StringFilter<"Order"> | string
-  clientPhone?: Prisma.StringFilter<"Order"> | string
-  clientAddress?: Prisma.StringNullableFilter<"Order"> | string | null
-  subtotal?: Prisma.FloatFilter<"Order"> | number
-  total?: Prisma.FloatFilter<"Order"> | number
-  whatsappMessage?: Prisma.StringNullableFilter<"Order"> | string | null
-  whatsappSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
-  updatedById?: Prisma.StringNullableFilter<"Order"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+export type OrderCreateManyCreatedByInput = {
+  id?: string
+  orderNumber: string
+  status?: $Enums.OrderStatus
+  clientName: string
+  clientPhone: string
+  clientAddress?: string | null
+  updatedById?: string | null
+  subtotal: number
+  total: number
+  whatsappMessage?: string | null
+  whatsappSentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type OrderCreateManyUpdatedByInput = {
@@ -783,12 +932,63 @@ export type OrderCreateManyUpdatedByInput = {
   clientName: string
   clientPhone: string
   clientAddress?: string | null
+  createdById?: string | null
   subtotal: number
   total: number
   whatsappMessage?: string | null
   whatsappSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+}
+
+export type OrderUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  clientName?: Prisma.StringFieldUpdateOperationsInput | string
+  clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedBy?: Prisma.UserUpdateOneWithoutUpdatedOrdersNestedInput
+  items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  clientName?: Prisma.StringFieldUpdateOperationsInput | string
+  clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  clientName?: Prisma.StringFieldUpdateOperationsInput | string
+  clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type OrderUpdateWithoutUpdatedByInput = {
@@ -804,6 +1004,7 @@ export type OrderUpdateWithoutUpdatedByInput = {
   whatsappSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedOrdersNestedInput
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
 }
 
@@ -814,6 +1015,7 @@ export type OrderUncheckedUpdateWithoutUpdatedByInput = {
   clientName?: Prisma.StringFieldUpdateOperationsInput | string
   clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
   clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   total?: Prisma.FloatFieldUpdateOperationsInput | number
   whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -830,6 +1032,7 @@ export type OrderUncheckedUpdateManyWithoutUpdatedByInput = {
   clientName?: Prisma.StringFieldUpdateOperationsInput | string
   clientPhone?: Prisma.StringFieldUpdateOperationsInput | string
   clientAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   total?: Prisma.FloatFieldUpdateOperationsInput | number
   whatsappMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -876,15 +1079,17 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   clientName?: boolean
   clientPhone?: boolean
   clientAddress?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   subtotal?: boolean
   total?: boolean
   whatsappMessage?: boolean
   whatsappSentAt?: boolean
-  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Order$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Order$updatedByArgs<ExtArgs>
+  items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
@@ -895,13 +1100,15 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   clientName?: boolean
   clientPhone?: boolean
   clientAddress?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   subtotal?: boolean
   total?: boolean
   whatsappMessage?: boolean
   whatsappSentAt?: boolean
-  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean | Prisma.Order$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Order$updatedByArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
@@ -912,13 +1119,15 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   clientName?: boolean
   clientPhone?: boolean
   clientAddress?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   subtotal?: boolean
   total?: boolean
   whatsappMessage?: boolean
   whatsappSentAt?: boolean
-  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  createdBy?: boolean | Prisma.Order$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Order$updatedByArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
@@ -929,33 +1138,38 @@ export type OrderSelectScalar = {
   clientName?: boolean
   clientPhone?: boolean
   clientAddress?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   subtotal?: boolean
   total?: boolean
   whatsappMessage?: boolean
   whatsappSentAt?: boolean
-  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNumber" | "status" | "clientName" | "clientPhone" | "clientAddress" | "subtotal" | "total" | "whatsappMessage" | "whatsappSentAt" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderNumber" | "status" | "clientName" | "clientPhone" | "clientAddress" | "createdById" | "updatedById" | "subtotal" | "total" | "whatsappMessage" | "whatsappSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Order$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Order$updatedByArgs<ExtArgs>
+  items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.Order$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Order$updatedByArgs<ExtArgs>
 }
 export type OrderIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdBy?: boolean | Prisma.Order$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Order$updatedByArgs<ExtArgs>
 }
 
 export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Order"
   objects: {
-    items: Prisma.$OrderItemPayload<ExtArgs>[]
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
     updatedBy: Prisma.$UserPayload<ExtArgs> | null
+    items: Prisma.$OrderItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -964,11 +1178,12 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     clientName: string
     clientPhone: string
     clientAddress: string | null
+    createdById: string | null
+    updatedById: string | null
     subtotal: number
     total: number
     whatsappMessage: string | null
     whatsappSentAt: Date | null
-    updatedById: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["order"]>
@@ -1365,8 +1580,9 @@ readonly fields: OrderFieldRefs;
  */
 export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  items<T extends Prisma.Order$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdBy<T extends Prisma.Order$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   updatedBy<T extends Prisma.Order$updatedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$updatedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  items<T extends Prisma.Order$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1402,11 +1618,12 @@ export interface OrderFieldRefs {
   readonly clientName: Prisma.FieldRef<"Order", 'String'>
   readonly clientPhone: Prisma.FieldRef<"Order", 'String'>
   readonly clientAddress: Prisma.FieldRef<"Order", 'String'>
+  readonly createdById: Prisma.FieldRef<"Order", 'String'>
+  readonly updatedById: Prisma.FieldRef<"Order", 'String'>
   readonly subtotal: Prisma.FieldRef<"Order", 'Float'>
   readonly total: Prisma.FieldRef<"Order", 'Float'>
   readonly whatsappMessage: Prisma.FieldRef<"Order", 'String'>
   readonly whatsappSentAt: Prisma.FieldRef<"Order", 'DateTime'>
-  readonly updatedById: Prisma.FieldRef<"Order", 'String'>
   readonly createdAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Order", 'DateTime'>
 }
@@ -1810,6 +2027,44 @@ export type OrderDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 /**
+ * Order.createdBy
+ */
+export type Order$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Order.updatedBy
+ */
+export type Order$updatedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
  * Order.items
  */
 export type Order$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1831,25 +2086,6 @@ export type Order$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.OrderItemScalarFieldEnum | Prisma.OrderItemScalarFieldEnum[]
-}
-
-/**
- * Order.updatedBy
- */
-export type Order$updatedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
 }
 
 /**

@@ -1197,11 +1197,12 @@ export const OrderScalarFieldEnum = {
   clientName: 'clientName',
   clientPhone: 'clientPhone',
   clientAddress: 'clientAddress',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
   subtotal: 'subtotal',
   total: 'total',
   whatsappMessage: 'whatsappMessage',
   whatsappSentAt: 'whatsappSentAt',
-  updatedById: 'updatedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

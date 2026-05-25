@@ -1,4 +1,4 @@
-/* import { PrismaClient } from '../src/infrastructure/generated/prisma/client';
+import { PrismaClient } from '../src/infrastructure/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
@@ -122,4 +122,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-  }); */
+  });
