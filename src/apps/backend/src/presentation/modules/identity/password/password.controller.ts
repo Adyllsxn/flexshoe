@@ -8,13 +8,11 @@ import {
 import { PasswordService } from './password.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-
-// TODO: Adicionar Guards depois
-// import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
-// import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
-// import { AdminOrEmployee } from 'src/presentation/common/decorators/admin-or-employee.decorator';
-// import { CurrentUser } from 'src/presentation/common/decorators/current-user.decorator';
-// import type { AuthenticatedUser } from 'src/core/types/authenticated-user.type';
+import { AdminOrEmployee } from 'src/presentation/common/decorators/admin-or-employee.decorator';
+import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
+import { CurrentUser } from 'src/presentation/common/decorators/current-user.decorator';
+import type { AuthenticatedUser } from 'src/domain/abstractions/types/auth.type';
 
 @ApiTags('password')
 @ApiBearerAuth()
@@ -23,8 +21,8 @@ export class PasswordController {
   constructor(private readonly passwordService: PasswordService) {}
 
   @Post('change')
-  // @AdminOrEmployee() // TODO: Descomentar depois
-  // @UseGuards(JwtAuthGuard, RolesGuard) // TODO: Descomentar depois
+  @AdminOrEmployee()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Alterar senha do utilizador autenticado' })
   @ApiResponse({ status: 200, description: 'Senha alterada com sucesso' })
   @ApiResponse({ status: 401, description: 'Senha atual inválida' })
@@ -32,11 +30,9 @@ export class PasswordController {
   @ApiResponse({ status: 404, description: 'Utilizador não encontrado' })
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
-    // @CurrentUser() user: AuthenticatedUser, // TODO: Descomentar depois
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    // TODO: Pegar userId do usuário logado depois
-    const userId = 'temp-user-id'; // Temporário
-    return this.passwordService.changePassword(changePasswordDto, userId);
+    return this.passwordService.changePassword(changePasswordDto, user.id);
   }
 
   @Post('forgot')

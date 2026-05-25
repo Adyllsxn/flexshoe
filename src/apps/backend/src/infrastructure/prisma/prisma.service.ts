@@ -9,7 +9,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   constructor() {
     const adapter = new PrismaPg({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL!,
     });
     super({ adapter });
   }
@@ -19,7 +19,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       await this.$queryRaw`SELECT 1`;
       this.dbConnected = true;
       Logger.log('✅ Database connection established');
-    } catch (error) {
+    } catch {
       this.dbConnected = false;
       Logger.warn(
         '⚠️ Database connection failed - API running without database',

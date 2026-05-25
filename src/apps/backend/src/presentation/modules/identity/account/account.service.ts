@@ -79,7 +79,7 @@ export class AccountService implements IAccountService {
       throw new NotFoundException(`Utilizador com ID "${id}" não encontrado`);
     }
 
-    return user as IAccount;
+    return user;
   }
 
   async findByName(
@@ -164,7 +164,7 @@ export class AccountService implements IAccountService {
       },
     });
 
-    return user as IAccount;
+    return user;
   }
 
   async update(
@@ -219,7 +219,7 @@ export class AccountService implements IAccountService {
       },
     });
 
-    return user as IAccount;
+    return user;
   }
 
   async remove(id: string): Promise<{ message: string; account: IAccount }> {
@@ -257,7 +257,7 @@ export class AccountService implements IAccountService {
 
     return {
       message: `Utilizador "${user.name}" foi deletado com sucesso`,
-      account: deletedUser as IAccount,
+      account: deletedUser,
     };
   }
 
@@ -296,7 +296,7 @@ export class AccountService implements IAccountService {
 
     return {
       message: `Utilizador "${user.name}" foi restaurado com sucesso`,
-      account: restoredUser as IAccount,
+      account: restoredUser,
     };
   }
 }

@@ -8,21 +8,19 @@ import {
 } from '@nestjs/swagger';
 import { PermissionService } from './permission.service';
 import { UpdateRoleDto } from './dto/update-role.dto';
-
-// TODO: Adicionar Guards depois
-// import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
-// import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
-// import { AdminOnly } from 'src/presentation/common/decorators/admin-only.decorator';
+import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
+import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
+import { AdminOnly } from 'src/presentation/common/decorators/admin-only.decorator';
 
 @ApiTags('permission')
 @ApiBearerAuth()
 @Controller('permission')
-// @UseGuards(JwtAuthGuard, RolesGuard) // TODO: Descomentar depois
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
   @Get('roles')
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Listar todas as roles disponíveis' })
   @ApiResponse({
     status: 200,
@@ -33,7 +31,7 @@ export class PermissionController {
   }
 
   @Get('users/:id')
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Buscar role de um utilizador específico' })
   @ApiParam({ name: 'id', description: 'UUID do utilizador' })
   @ApiResponse({ status: 200, description: 'Role encontrada' })
@@ -43,7 +41,7 @@ export class PermissionController {
   }
 
   @Patch('users/role')
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Alterar role de um utilizador' })
   @ApiResponse({ status: 200, description: 'Role alterada com sucesso' })
   @ApiResponse({ status: 400, description: 'Dados inválidos' })

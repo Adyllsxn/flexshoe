@@ -21,16 +21,16 @@ async function bootstrap() {
   // Global validation pipe com configurações
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,           // Remove campos não declarados no DTO
+      whitelist: true, // Remove campos não declarados no DTO
       forbidNonWhitelisted: true, // Retorna erro se enviar campos não declarados
-      transform: true,           // Transforma os dados para os tipos do DTO
+      transform: true, // Transforma os dados para os tipos do DTO
     }),
   );
 
   // Configuração de CORS (para o frontend Next.js)
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true, 
+    credentials: true,
   });
 
   // ============================================

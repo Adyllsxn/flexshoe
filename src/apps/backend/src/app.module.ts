@@ -7,6 +7,13 @@ import { AuthModule } from './presentation/modules/identity/auth/auth.module';
 import { AccountModule } from './presentation/modules/identity/account/account.module';
 
 @Module({
-  imports: [SystemModule, PrismaModule, PermissionModule, PasswordModule, AuthModule, AccountModule],
+  imports: [
+    SystemModule,
+    PrismaModule,
+    PermissionModule,
+    PasswordModule,
+    AuthModule,
+    AccountModule,
+  ],
 })
 export class AppModule {}

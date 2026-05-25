@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   ForbiddenException,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -23,24 +24,21 @@ import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { PaginationDto } from 'src/domain/shared/pagination/pagination.dto';
-
-// TODO: Adicionar Guards depois
-// import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
-// import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
-// import { AdminOnly } from 'src/presentation/common/decorators/admin-only.decorator';
-// import { AdminOrEmployee } from 'src/presentation/common/decorators/admin-or-employee.decorator';
-// import { CurrentUser } from 'src/presentation/common/decorators/current-user.decorator';
-// import type { AuthenticatedUser } from 'src/core/types/authenticated-user.type';
+import { AdminOrEmployee } from 'src/presentation/common/decorators/admin-or-employee.decorator';
+import { AdminOnly } from 'src/presentation/common/decorators/admin-only.decorator';
+import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
+import { CurrentUser } from 'src/presentation/common/decorators/current-user.decorator';
 
 @ApiTags('account')
 @ApiBearerAuth()
 @Controller('account')
-// @UseGuards(JwtAuthGuard, RolesGuard) // TODO: Descomentar depois
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post()
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Criar novo utilizador (admin)' })
   @ApiResponse({ status: 201, description: 'Utilizador criado com sucesso' })
   @ApiResponse({ status: 409, description: 'Email já existe' })
@@ -50,7 +48,7 @@ export class AccountController {
   }
 
   @Get()
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Listar todos os utilizadores (admin)' })
   @ApiResponse({ status: 200, description: 'Lista retornada com sucesso' })
   findAll(@Query() paginationDto: PaginationDto) {
@@ -58,7 +56,7 @@ export class AccountController {
   }
 
   @Get('search')
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Buscar utilizador por nome' })
   @ApiQuery({ name: 'name', required: true, example: 'João' })
   @ApiResponse({ status: 200, description: 'Lista retornada com sucesso' })
@@ -70,16 +68,18 @@ export class AccountController {
   }
 
   @Get('me')
-  // @AdminOrEmployee() // TODO: Descomentar depois
+  @AdminOrEmployee()
   @ApiOperation({ summary: 'Dados do próprio utilizador logado' })
   @ApiResponse({ status: 200, description: 'Dados retornados com sucesso' })
-  findMe(@Query('userId') userId: string) {
-    // TODO: Pegar do CurrentUser depois
-    return this.accountService.findMe(userId);
+  findMe(@CurrentUser() user: { id: string; role: string }) {
+    if (!user) {
+      throw new ForbiddenException('Usuário não encontrado');
+    }
+    return this.accountService.findMe(user.id);
   }
 
   @Get(':id')
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Buscar utilizador por ID (admin)' })
   @ApiParam({ name: 'id', description: 'UUID do utilizador' })
   @ApiResponse({ status: 200, description: 'Utilizador encontrado' })
@@ -89,7 +89,7 @@ export class AccountController {
   }
 
   @Patch(':id')
-  // @AdminOrEmployee() // TODO: Descomentar depois
+  @AdminOrEmployee()
   @ApiOperation({ summary: 'Atualizar utilizador' })
   @ApiParam({ name: 'id', description: 'UUID do utilizador' })
   @ApiResponse({ status: 200, description: 'Utilizador atualizado' })
@@ -102,22 +102,27 @@ export class AccountController {
   async update(
     @Param('id') id: string,
     @Body() updateAccountDto: UpdateAccountDto,
-    // @CurrentUser() user: AuthenticatedUser, // TODO: Descomentar depois
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    // TODO: Implementar lógica de permissão depois
-    // if (user.role !== UserRole.admin && user.id !== id) {
-    //   throw new ForbiddenException('Não tem permissão para editar este utilizador');
-    // }
-    
-    // if (user.role !== UserRole.admin) {
-    //   delete (updateAccountDto as any).role;
-    // }
-    
+    if (!user) {
+      throw new ForbiddenException('Usuário não encontrado');
+    }
+
+    if (user.role !== 'admin' && user.id !== id) {
+      throw new ForbiddenException(
+        'Não tem permissão para editar este utilizador',
+      );
+    }
+
+    if (user.role !== 'admin') {
+      delete (updateAccountDto as Record<string, unknown>).role;
+    }
+
     return this.accountService.update(id, updateAccountDto);
   }
 
   @Delete(':id')
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Soft delete utilizador (admin)' })
   @ApiParam({ name: 'id', description: 'UUID do utilizador' })
   @ApiResponse({ status: 200, description: 'Utilizador deletado' })
@@ -128,7 +133,7 @@ export class AccountController {
   }
 
   @Patch(':id/restore')
-  // @AdminOnly() // TODO: Descomentar depois
+  @AdminOnly()
   @ApiOperation({ summary: 'Restaurar utilizador deletado (admin)' })
   @ApiParam({ name: 'id', description: 'UUID do utilizador' })
   @ApiResponse({ status: 200, description: 'Utilizador restaurado' })

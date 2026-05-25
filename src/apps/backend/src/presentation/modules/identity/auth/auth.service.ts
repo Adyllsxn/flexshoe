@@ -46,7 +46,7 @@ export class AuthService implements IAuthService {
     const payload: IJwtPayload = {
       sub: user.id,
       email: user.email,
-      role: user.role as 'admin' | 'employee',
+      role: user.role,
     };
 
     const token = this.jwtService.sign(payload as object);
@@ -55,7 +55,7 @@ export class AuthService implements IAuthService {
       id: user.id,
       email: user.email,
       name: user.name,
-      role: user.role as 'admin' | 'employee',
+      role: user.role,
       token,
       tokenExpires,
     };
@@ -90,7 +90,7 @@ export class AuthService implements IAuthService {
         id: user.id,
         email: user.email,
         name: user.name,
-        role: user.role as 'admin' | 'employee',
+        role: user.role,
       },
     };
   }

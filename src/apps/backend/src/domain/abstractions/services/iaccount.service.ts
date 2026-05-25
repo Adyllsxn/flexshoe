@@ -14,7 +14,10 @@ export interface IAccountService {
 
   findOne(id: string): Promise<IAccount>;
 
-  findByName(name: string, paginationDto: PaginationDto): Promise<{
+  findByName(
+    name: string,
+    paginationDto: PaginationDto,
+  ): Promise<{
     data: IAccount[];
     total: number;
     page: number;

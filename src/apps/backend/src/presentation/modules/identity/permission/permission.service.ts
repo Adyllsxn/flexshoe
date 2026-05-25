@@ -5,8 +5,13 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { IPermissionService } from 'src/domain/abstractions/services/ipermission.service';
-import { IUserRole, IRoleListResponse, UserRole } from 'src/domain/abstractions/types/permission.type';
+import {
+  IUserRole,
+  IRoleListResponse,
+} from 'src/domain/abstractions/types/permission.type';
 import { UpdateRoleDto } from './dto/update-role.dto';
+
+type UserRole = 'admin' | 'employee';
 
 @Injectable()
 export class PermissionService implements IPermissionService {
@@ -46,7 +51,7 @@ export class PermissionService implements IPermissionService {
       id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role as UserRole,
+      role: user.role,
     };
   }
 
@@ -78,7 +83,7 @@ export class PermissionService implements IPermissionService {
     const updatedUser = await this.prismaService.user.update({
       where: { id: userId },
       data: {
-        role: role,
+        role,
       },
       select: {
         id: true,
@@ -94,7 +99,7 @@ export class PermissionService implements IPermissionService {
         id: updatedUser.id,
         name: updatedUser.name,
         email: updatedUser.email,
-        role: updatedUser.role as UserRole,
+        role: updatedUser.role,
       },
     };
   }
