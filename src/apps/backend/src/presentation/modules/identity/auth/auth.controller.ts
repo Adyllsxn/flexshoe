@@ -1,34 +1,86 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Req,
+  Get,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiCookieAuth,
+} from '@nestjs/swagger';
+import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { LoginAuthDto } from './dto/login-auth.dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('login')
+  @ApiOperation({ summary: 'Login do utilizador' })
+  @ApiBody({ type: LoginAuthDto })
+  @ApiResponse({ status: 200, description: 'Login realizado com sucesso' })
+  @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+  async login(
+    @Body() loginDto: LoginAuthDto,
+    @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
+  ) {
+    const ipAddress = request.ip || request.socket?.remoteAddress;
+    const loginResponse = await this.authService.login(loginDto, ipAddress);
+
+    response.cookie('jwt', loginResponse.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: loginResponse.tokenExpires,
+    });
+
+    return {
+      message: 'Login realizado com sucesso ✅',
+      data: {
+        id: loginResponse.id,
+        email: loginResponse.email,
+        name: loginResponse.name,
+        role: loginResponse.role,
+        tokenExpires: loginResponse.tokenExpires,
+      },
+    };
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('logout')
+  @ApiOperation({ summary: 'Logout do utilizador' })
+  @ApiCookieAuth('jwt')
+  @ApiResponse({ status: 200, description: 'Logout realizado com sucesso' })
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('jwt');
+    return this.authService.logout();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
+  @Get('check')
+  @ApiOperation({ summary: 'Verificar autenticação' })
+  @ApiResponse({ status: 200, description: 'Retorna status da autenticação' })
+  checkAuth(@Req() request: Request) {
+    const cookies = request.cookies as Record<string, string | undefined>;
+    const token = cookies?.jwt;
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
+    if (!token || typeof token !== 'string') {
+      return { authenticated: false, user: null };
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return {
+      authenticated: true,
+      user: null,
+    };
   }
 }
