@@ -45,12 +45,13 @@ async function bootstrap() {
     .addTag('account', '👤 Gestão de utilizadores (admin)')
     .addTag('password', '🔑 Alteração e recuperação de senha')
     .addTag('permission', '🎫 Gestão de permissões (roles)')
+    .addTag('store', '🏪 Configurações da loja')
+    .addTag('system', '📊 Monitoramento e health check')
     .addTag('brand', '🏷️ Gestão de marcas (Nike, Adidas, etc)')
     .addTag('product', '👟 Gestão de produtos/tênis')
     .addTag('inventory', '📦 Gestão de estoque (tamanhos/cores)')
     .addTag('cart', '🛒 Carrinho de compras')
     .addTag('order', '📋 Pedidos e finalização via WhatsApp')
-    .addTag('store', '🏪 Configurações da loja')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

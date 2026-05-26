@@ -5,6 +5,10 @@ import { PermissionModule } from './presentation/modules/identity/permission/per
 import { PasswordModule } from './presentation/modules/identity/password/password.module';
 import { AuthModule } from './presentation/modules/identity/auth/auth.module';
 import { AccountModule } from './presentation/modules/identity/account/account.module';
+import { StoreModule } from './presentation/modules/business/store/store.module';
+import { BrandModule } from './presentation/modules/business/brand/brand.module';
+import { ProductModule } from './presentation/modules/business/product/product.module';
+import { InventoryModule } from './presentation/modules/business/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -14,6 +18,10 @@ import { AccountModule } from './presentation/modules/identity/account/account.m
     PasswordModule,
     AuthModule,
     AccountModule,
+    StoreModule,
+    BrandModule,
+    ProductModule,
+    InventoryModule,
   ],
 })
 export class AppModule {}

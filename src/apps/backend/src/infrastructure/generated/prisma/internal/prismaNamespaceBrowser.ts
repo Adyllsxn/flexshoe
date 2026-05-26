@@ -83,6 +83,8 @@ export const BrandScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   active: 'active',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -99,9 +101,12 @@ export const ProductScalarFieldEnum = {
   gender: 'gender',
   mainImage: 'mainImage',
   images: 'images',
+  price: 'price',
+  stock: 'stock',
   active: 'active',
   featured: 'featured',
   views: 'views',
+  deletedAt: 'deletedAt',
   createdById: 'createdById',
   updatedById: 'updatedById',
   createdAt: 'createdAt',

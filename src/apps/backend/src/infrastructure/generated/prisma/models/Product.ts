@@ -27,10 +27,14 @@ export type AggregateProduct = {
 }
 
 export type ProductAvgAggregateOutputType = {
+  price: number | null
+  stock: number | null
   views: number | null
 }
 
 export type ProductSumAggregateOutputType = {
+  price: number | null
+  stock: number | null
   views: number | null
 }
 
@@ -42,9 +46,12 @@ export type ProductMinAggregateOutputType = {
   brandId: string | null
   gender: $Enums.Gender | null
   mainImage: string | null
+  price: number | null
+  stock: number | null
   active: boolean | null
   featured: boolean | null
   views: number | null
+  deletedAt: Date | null
   createdById: string | null
   updatedById: string | null
   createdAt: Date | null
@@ -59,9 +66,12 @@ export type ProductMaxAggregateOutputType = {
   brandId: string | null
   gender: $Enums.Gender | null
   mainImage: string | null
+  price: number | null
+  stock: number | null
   active: boolean | null
   featured: boolean | null
   views: number | null
+  deletedAt: Date | null
   createdById: string | null
   updatedById: string | null
   createdAt: Date | null
@@ -77,9 +87,12 @@ export type ProductCountAggregateOutputType = {
   gender: number
   mainImage: number
   images: number
+  price: number
+  stock: number
   active: number
   featured: number
   views: number
+  deletedAt: number
   createdById: number
   updatedById: number
   createdAt: number
@@ -89,10 +102,14 @@ export type ProductCountAggregateOutputType = {
 
 
 export type ProductAvgAggregateInputType = {
+  price?: true
+  stock?: true
   views?: true
 }
 
 export type ProductSumAggregateInputType = {
+  price?: true
+  stock?: true
   views?: true
 }
 
@@ -104,9 +121,12 @@ export type ProductMinAggregateInputType = {
   brandId?: true
   gender?: true
   mainImage?: true
+  price?: true
+  stock?: true
   active?: true
   featured?: true
   views?: true
+  deletedAt?: true
   createdById?: true
   updatedById?: true
   createdAt?: true
@@ -121,9 +141,12 @@ export type ProductMaxAggregateInputType = {
   brandId?: true
   gender?: true
   mainImage?: true
+  price?: true
+  stock?: true
   active?: true
   featured?: true
   views?: true
+  deletedAt?: true
   createdById?: true
   updatedById?: true
   createdAt?: true
@@ -139,9 +162,12 @@ export type ProductCountAggregateInputType = {
   gender?: true
   mainImage?: true
   images?: true
+  price?: true
+  stock?: true
   active?: true
   featured?: true
   views?: true
+  deletedAt?: true
   createdById?: true
   updatedById?: true
   createdAt?: true
@@ -244,9 +270,12 @@ export type ProductGroupByOutputType = {
   gender: $Enums.Gender
   mainImage: string | null
   images: string[]
+  price: number
+  stock: number
   active: boolean
   featured: boolean
   views: number
+  deletedAt: Date | null
   createdById: string | null
   updatedById: string | null
   createdAt: Date
@@ -285,9 +314,12 @@ export type ProductWhereInput = {
   gender?: Prisma.EnumGenderFilter<"Product"> | $Enums.Gender
   mainImage?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  price?: Prisma.FloatFilter<"Product"> | number
+  stock?: Prisma.IntFilter<"Product"> | number
   active?: Prisma.BoolFilter<"Product"> | boolean
   featured?: Prisma.BoolFilter<"Product"> | boolean
   views?: Prisma.IntFilter<"Product"> | number
+  deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"Product"> | string | null
   updatedById?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -308,9 +340,12 @@ export type ProductOrderByWithRelationInput = {
   gender?: Prisma.SortOrder
   mainImage?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  stock?: Prisma.SortOrder
   active?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   views?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -334,9 +369,12 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   gender?: Prisma.EnumGenderFilter<"Product"> | $Enums.Gender
   mainImage?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  price?: Prisma.FloatFilter<"Product"> | number
+  stock?: Prisma.IntFilter<"Product"> | number
   active?: Prisma.BoolFilter<"Product"> | boolean
   featured?: Prisma.BoolFilter<"Product"> | boolean
   views?: Prisma.IntFilter<"Product"> | number
+  deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"Product"> | string | null
   updatedById?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -357,9 +395,12 @@ export type ProductOrderByWithAggregationInput = {
   gender?: Prisma.SortOrder
   mainImage?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  stock?: Prisma.SortOrder
   active?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   views?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -383,9 +424,12 @@ export type ProductScalarWhereWithAggregatesInput = {
   gender?: Prisma.EnumGenderWithAggregatesFilter<"Product"> | $Enums.Gender
   mainImage?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  price?: Prisma.FloatWithAggregatesFilter<"Product"> | number
+  stock?: Prisma.IntWithAggregatesFilter<"Product"> | number
   active?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   featured?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   views?: Prisma.IntWithAggregatesFilter<"Product"> | number
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
   createdById?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   updatedById?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -400,9 +444,12 @@ export type ProductCreateInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   brand: Prisma.BrandCreateNestedOneWithoutProductsInput
@@ -421,9 +468,12 @@ export type ProductUncheckedCreateInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
   createdAt?: Date | string
@@ -440,9 +490,12 @@ export type ProductUpdateInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   brand?: Prisma.BrandUpdateOneRequiredWithoutProductsNestedInput
@@ -461,9 +514,12 @@ export type ProductUncheckedUpdateInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -481,9 +537,12 @@ export type ProductCreateManyInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
   createdAt?: Date | string
@@ -498,9 +557,12 @@ export type ProductUpdateManyMutationInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -514,9 +576,12 @@ export type ProductUncheckedUpdateManyInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -550,9 +615,12 @@ export type ProductCountOrderByAggregateInput = {
   gender?: Prisma.SortOrder
   mainImage?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  stock?: Prisma.SortOrder
   active?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   views?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -560,6 +628,8 @@ export type ProductCountOrderByAggregateInput = {
 }
 
 export type ProductAvgOrderByAggregateInput = {
+  price?: Prisma.SortOrder
+  stock?: Prisma.SortOrder
   views?: Prisma.SortOrder
 }
 
@@ -571,9 +641,12 @@ export type ProductMaxOrderByAggregateInput = {
   brandId?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   mainImage?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  stock?: Prisma.SortOrder
   active?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   views?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -588,9 +661,12 @@ export type ProductMinOrderByAggregateInput = {
   brandId?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   mainImage?: Prisma.SortOrder
+  price?: Prisma.SortOrder
+  stock?: Prisma.SortOrder
   active?: Prisma.SortOrder
   featured?: Prisma.SortOrder
   views?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -598,6 +674,8 @@ export type ProductMinOrderByAggregateInput = {
 }
 
 export type ProductSumOrderByAggregateInput = {
+  price?: Prisma.SortOrder
+  stock?: Prisma.SortOrder
   views?: Prisma.SortOrder
 }
 
@@ -652,10 +730,6 @@ export type ProductCreateimagesInput = {
   set: string[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type EnumGenderFieldUpdateOperationsInput = {
   set?: $Enums.Gender
 }
@@ -665,12 +739,24 @@ export type ProductUpdateimagesInput = {
   push?: string | string[]
 }
 
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type ProductCreateNestedOneWithoutInventoryInput = {
@@ -793,9 +879,12 @@ export type ProductCreateWithoutBrandInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   inventory?: Prisma.InventoryItemCreateNestedManyWithoutProductInput
@@ -812,9 +901,12 @@ export type ProductUncheckedCreateWithoutBrandInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
   createdAt?: Date | string
@@ -861,9 +953,12 @@ export type ProductScalarWhereInput = {
   gender?: Prisma.EnumGenderFilter<"Product"> | $Enums.Gender
   mainImage?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  price?: Prisma.FloatFilter<"Product"> | number
+  stock?: Prisma.IntFilter<"Product"> | number
   active?: Prisma.BoolFilter<"Product"> | boolean
   featured?: Prisma.BoolFilter<"Product"> | boolean
   views?: Prisma.IntFilter<"Product"> | number
+  deletedAt?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"Product"> | string | null
   updatedById?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -878,9 +973,12 @@ export type ProductCreateWithoutInventoryInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   brand: Prisma.BrandCreateNestedOneWithoutProductsInput
@@ -898,9 +996,12 @@ export type ProductUncheckedCreateWithoutInventoryInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
   createdAt?: Date | string
@@ -932,9 +1033,12 @@ export type ProductUpdateWithoutInventoryInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   brand?: Prisma.BrandUpdateOneRequiredWithoutProductsNestedInput
@@ -952,9 +1056,12 @@ export type ProductUncheckedUpdateWithoutInventoryInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -970,9 +1077,12 @@ export type ProductCreateWithoutOrderItemsInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   brand: Prisma.BrandCreateNestedOneWithoutProductsInput
@@ -990,9 +1100,12 @@ export type ProductUncheckedCreateWithoutOrderItemsInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
   createdAt?: Date | string
@@ -1024,9 +1137,12 @@ export type ProductUpdateWithoutOrderItemsInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   brand?: Prisma.BrandUpdateOneRequiredWithoutProductsNestedInput
@@ -1044,9 +1160,12 @@ export type ProductUncheckedUpdateWithoutOrderItemsInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1062,9 +1181,12 @@ export type ProductCreateWithoutCreatedByInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   brand: Prisma.BrandCreateNestedOneWithoutProductsInput
@@ -1082,9 +1204,12 @@ export type ProductUncheckedCreateWithoutCreatedByInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1110,9 +1235,12 @@ export type ProductCreateWithoutUpdatedByInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   brand: Prisma.BrandCreateNestedOneWithoutProductsInput
@@ -1130,9 +1258,12 @@ export type ProductUncheckedCreateWithoutUpdatedByInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1190,9 +1321,12 @@ export type ProductCreateManyBrandInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
   createdAt?: Date | string
@@ -1207,9 +1341,12 @@ export type ProductUpdateWithoutBrandInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   inventory?: Prisma.InventoryItemUpdateManyWithoutProductNestedInput
@@ -1226,9 +1363,12 @@ export type ProductUncheckedUpdateWithoutBrandInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1245,9 +1385,12 @@ export type ProductUncheckedUpdateManyWithoutBrandInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1263,9 +1406,12 @@ export type ProductCreateManyCreatedByInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1280,9 +1426,12 @@ export type ProductCreateManyUpdatedByInput = {
   gender?: $Enums.Gender
   mainImage?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  price?: number
+  stock?: number
   active?: boolean
   featured?: boolean
   views?: number
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1296,9 +1445,12 @@ export type ProductUpdateWithoutCreatedByInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   brand?: Prisma.BrandUpdateOneRequiredWithoutProductsNestedInput
@@ -1316,9 +1468,12 @@ export type ProductUncheckedUpdateWithoutCreatedByInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1335,9 +1490,12 @@ export type ProductUncheckedUpdateManyWithoutCreatedByInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1351,9 +1509,12 @@ export type ProductUpdateWithoutUpdatedByInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   brand?: Prisma.BrandUpdateOneRequiredWithoutProductsNestedInput
@@ -1371,9 +1532,12 @@ export type ProductUncheckedUpdateWithoutUpdatedByInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1390,9 +1554,12 @@ export type ProductUncheckedUpdateManyWithoutUpdatedByInput = {
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
   mainImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   views?: Prisma.IntFieldUpdateOperationsInput | number
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1447,9 +1614,12 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   gender?: boolean
   mainImage?: boolean
   images?: boolean
+  price?: boolean
+  stock?: boolean
   active?: boolean
   featured?: boolean
   views?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
   createdAt?: boolean
@@ -1471,9 +1641,12 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   gender?: boolean
   mainImage?: boolean
   images?: boolean
+  price?: boolean
+  stock?: boolean
   active?: boolean
   featured?: boolean
   views?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
   createdAt?: boolean
@@ -1492,9 +1665,12 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   gender?: boolean
   mainImage?: boolean
   images?: boolean
+  price?: boolean
+  stock?: boolean
   active?: boolean
   featured?: boolean
   views?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
   createdAt?: boolean
@@ -1513,16 +1689,19 @@ export type ProductSelectScalar = {
   gender?: boolean
   mainImage?: boolean
   images?: boolean
+  price?: boolean
+  stock?: boolean
   active?: boolean
   featured?: boolean
   views?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "brandId" | "gender" | "mainImage" | "images" | "active" | "featured" | "views" | "createdById" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "brandId" | "gender" | "mainImage" | "images" | "price" | "stock" | "active" | "featured" | "views" | "deletedAt" | "createdById" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   brand?: boolean | Prisma.BrandDefaultArgs<ExtArgs>
   inventory?: boolean | Prisma.Product$inventoryArgs<ExtArgs>
@@ -1560,9 +1739,12 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     gender: $Enums.Gender
     mainImage: string | null
     images: string[]
+    price: number
+    stock: number
     active: boolean
     featured: boolean
     views: number
+    deletedAt: Date | null
     createdById: string | null
     updatedById: string | null
     createdAt: Date
@@ -2003,9 +2185,12 @@ export interface ProductFieldRefs {
   readonly gender: Prisma.FieldRef<"Product", 'Gender'>
   readonly mainImage: Prisma.FieldRef<"Product", 'String'>
   readonly images: Prisma.FieldRef<"Product", 'String[]'>
+  readonly price: Prisma.FieldRef<"Product", 'Float'>
+  readonly stock: Prisma.FieldRef<"Product", 'Int'>
   readonly active: Prisma.FieldRef<"Product", 'Boolean'>
   readonly featured: Prisma.FieldRef<"Product", 'Boolean'>
   readonly views: Prisma.FieldRef<"Product", 'Int'>
+  readonly deletedAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Product", 'String'>
   readonly updatedById: Prisma.FieldRef<"Product", 'String'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>

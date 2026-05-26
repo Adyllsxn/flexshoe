@@ -226,6 +226,8 @@ export type UserWhereInput = {
   updatedProducts?: Prisma.ProductListRelationFilter
   createdOrders?: Prisma.OrderListRelationFilter
   updatedOrders?: Prisma.OrderListRelationFilter
+  createdBrands?: Prisma.BrandListRelationFilter
+  updatedBrands?: Prisma.BrandListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -243,6 +245,8 @@ export type UserOrderByWithRelationInput = {
   updatedProducts?: Prisma.ProductOrderByRelationAggregateInput
   createdOrders?: Prisma.OrderOrderByRelationAggregateInput
   updatedOrders?: Prisma.OrderOrderByRelationAggregateInput
+  createdBrands?: Prisma.BrandOrderByRelationAggregateInput
+  updatedBrands?: Prisma.BrandOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -263,6 +267,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedProducts?: Prisma.ProductListRelationFilter
   createdOrders?: Prisma.OrderListRelationFilter
   updatedOrders?: Prisma.OrderListRelationFilter
+  createdBrands?: Prisma.BrandListRelationFilter
+  updatedBrands?: Prisma.BrandListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -312,6 +318,8 @@ export type UserCreateInput = {
   updatedProducts?: Prisma.ProductCreateNestedManyWithoutUpdatedByInput
   createdOrders?: Prisma.OrderCreateNestedManyWithoutCreatedByInput
   updatedOrders?: Prisma.OrderCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -329,6 +337,8 @@ export type UserUncheckedCreateInput = {
   updatedProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutUpdatedByInput
   createdOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutCreatedByInput
   updatedOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUpdateInput = {
@@ -346,6 +356,8 @@ export type UserUpdateInput = {
   updatedProducts?: Prisma.ProductUpdateManyWithoutUpdatedByNestedInput
   createdOrders?: Prisma.OrderUpdateManyWithoutCreatedByNestedInput
   updatedOrders?: Prisma.OrderUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -363,6 +375,8 @@ export type UserUncheckedUpdateInput = {
   updatedProducts?: Prisma.ProductUncheckedUpdateManyWithoutUpdatedByNestedInput
   createdOrders?: Prisma.OrderUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedOrders?: Prisma.OrderUncheckedUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -448,6 +462,38 @@ export type UserMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type UserCreateNestedOneWithoutCreatedBrandsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedBrandsInput, Prisma.UserUncheckedCreateWithoutCreatedBrandsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedBrandsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutUpdatedBrandsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedBrandsInput, Prisma.UserUncheckedCreateWithoutUpdatedBrandsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedBrandsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedBrandsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedBrandsInput, Prisma.UserUncheckedCreateWithoutCreatedBrandsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedBrandsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedBrandsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedBrandsInput, Prisma.UserUpdateWithoutCreatedBrandsInput>, Prisma.UserUncheckedUpdateWithoutCreatedBrandsInput>
+}
+
+export type UserUpdateOneWithoutUpdatedBrandsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedBrandsInput, Prisma.UserUncheckedCreateWithoutUpdatedBrandsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedBrandsInput
+  upsert?: Prisma.UserUpsertWithoutUpdatedBrandsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUpdatedBrandsInput, Prisma.UserUpdateWithoutUpdatedBrandsInput>, Prisma.UserUncheckedUpdateWithoutUpdatedBrandsInput>
+}
+
 export type UserCreateNestedOneWithoutCreatedProductsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedProductsInput, Prisma.UserUncheckedCreateWithoutCreatedProductsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedProductsInput
@@ -516,6 +562,182 @@ export type EnumUserRoleFieldUpdateOperationsInput = {
   set?: $Enums.UserRole
 }
 
+export type UserCreateWithoutCreatedBrandsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role?: $Enums.UserRole
+  active?: boolean
+  deletedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdProducts?: Prisma.ProductCreateNestedManyWithoutCreatedByInput
+  updatedProducts?: Prisma.ProductCreateNestedManyWithoutUpdatedByInput
+  createdOrders?: Prisma.OrderCreateNestedManyWithoutCreatedByInput
+  updatedOrders?: Prisma.OrderCreateNestedManyWithoutUpdatedByInput
+  updatedBrands?: Prisma.BrandCreateNestedManyWithoutUpdatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedBrandsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role?: $Enums.UserRole
+  active?: boolean
+  deletedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutUpdatedByInput
+  createdOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutUpdatedByInput
+  updatedBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutUpdatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedBrandsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedBrandsInput, Prisma.UserUncheckedCreateWithoutCreatedBrandsInput>
+}
+
+export type UserCreateWithoutUpdatedBrandsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role?: $Enums.UserRole
+  active?: boolean
+  deletedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdProducts?: Prisma.ProductCreateNestedManyWithoutCreatedByInput
+  updatedProducts?: Prisma.ProductCreateNestedManyWithoutUpdatedByInput
+  createdOrders?: Prisma.OrderCreateNestedManyWithoutCreatedByInput
+  updatedOrders?: Prisma.OrderCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutUpdatedBrandsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  role?: $Enums.UserRole
+  active?: boolean
+  deletedAt?: Date | string | null
+  lastLogin?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutUpdatedByInput
+  createdOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutUpdatedBrandsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedBrandsInput, Prisma.UserUncheckedCreateWithoutUpdatedBrandsInput>
+}
+
+export type UserUpsertWithoutCreatedBrandsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedBrandsInput, Prisma.UserUncheckedUpdateWithoutCreatedBrandsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedBrandsInput, Prisma.UserUncheckedCreateWithoutCreatedBrandsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedBrandsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedBrandsInput, Prisma.UserUncheckedUpdateWithoutCreatedBrandsInput>
+}
+
+export type UserUpdateWithoutCreatedBrandsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdProducts?: Prisma.ProductUpdateManyWithoutCreatedByNestedInput
+  updatedProducts?: Prisma.ProductUpdateManyWithoutUpdatedByNestedInput
+  createdOrders?: Prisma.OrderUpdateManyWithoutCreatedByNestedInput
+  updatedOrders?: Prisma.OrderUpdateManyWithoutUpdatedByNestedInput
+  updatedBrands?: Prisma.BrandUpdateManyWithoutUpdatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedBrandsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdProducts?: Prisma.ProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedProducts?: Prisma.ProductUncheckedUpdateManyWithoutUpdatedByNestedInput
+  createdOrders?: Prisma.OrderUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedOrders?: Prisma.OrderUncheckedUpdateManyWithoutUpdatedByNestedInput
+  updatedBrands?: Prisma.BrandUncheckedUpdateManyWithoutUpdatedByNestedInput
+}
+
+export type UserUpsertWithoutUpdatedBrandsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedBrandsInput, Prisma.UserUncheckedUpdateWithoutUpdatedBrandsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedBrandsInput, Prisma.UserUncheckedCreateWithoutUpdatedBrandsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUpdatedBrandsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedBrandsInput, Prisma.UserUncheckedUpdateWithoutUpdatedBrandsInput>
+}
+
+export type UserUpdateWithoutUpdatedBrandsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdProducts?: Prisma.ProductUpdateManyWithoutCreatedByNestedInput
+  updatedProducts?: Prisma.ProductUpdateManyWithoutUpdatedByNestedInput
+  createdOrders?: Prisma.OrderUpdateManyWithoutCreatedByNestedInput
+  updatedOrders?: Prisma.OrderUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUpdatedBrandsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLogin?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdProducts?: Prisma.ProductUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedProducts?: Prisma.ProductUncheckedUpdateManyWithoutUpdatedByNestedInput
+  createdOrders?: Prisma.OrderUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedOrders?: Prisma.OrderUncheckedUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
 export type UserCreateWithoutCreatedProductsInput = {
   id?: string
   name: string
@@ -530,6 +752,8 @@ export type UserCreateWithoutCreatedProductsInput = {
   updatedProducts?: Prisma.ProductCreateNestedManyWithoutUpdatedByInput
   createdOrders?: Prisma.OrderCreateNestedManyWithoutCreatedByInput
   updatedOrders?: Prisma.OrderCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedProductsInput = {
@@ -546,6 +770,8 @@ export type UserUncheckedCreateWithoutCreatedProductsInput = {
   updatedProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutUpdatedByInput
   createdOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutCreatedByInput
   updatedOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedProductsInput = {
@@ -567,6 +793,8 @@ export type UserCreateWithoutUpdatedProductsInput = {
   createdProducts?: Prisma.ProductCreateNestedManyWithoutCreatedByInput
   createdOrders?: Prisma.OrderCreateNestedManyWithoutCreatedByInput
   updatedOrders?: Prisma.OrderCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutUpdatedProductsInput = {
@@ -583,6 +811,8 @@ export type UserUncheckedCreateWithoutUpdatedProductsInput = {
   createdProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatedByInput
   createdOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutCreatedByInput
   updatedOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutUpdatedProductsInput = {
@@ -615,6 +845,8 @@ export type UserUpdateWithoutCreatedProductsInput = {
   updatedProducts?: Prisma.ProductUpdateManyWithoutUpdatedByNestedInput
   createdOrders?: Prisma.OrderUpdateManyWithoutCreatedByNestedInput
   updatedOrders?: Prisma.OrderUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedProductsInput = {
@@ -631,6 +863,8 @@ export type UserUncheckedUpdateWithoutCreatedProductsInput = {
   updatedProducts?: Prisma.ProductUncheckedUpdateManyWithoutUpdatedByNestedInput
   createdOrders?: Prisma.OrderUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedOrders?: Prisma.OrderUncheckedUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUpsertWithoutUpdatedProductsInput = {
@@ -658,6 +892,8 @@ export type UserUpdateWithoutUpdatedProductsInput = {
   createdProducts?: Prisma.ProductUpdateManyWithoutCreatedByNestedInput
   createdOrders?: Prisma.OrderUpdateManyWithoutCreatedByNestedInput
   updatedOrders?: Prisma.OrderUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdatedProductsInput = {
@@ -674,6 +910,8 @@ export type UserUncheckedUpdateWithoutUpdatedProductsInput = {
   createdProducts?: Prisma.ProductUncheckedUpdateManyWithoutCreatedByNestedInput
   createdOrders?: Prisma.OrderUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedOrders?: Prisma.OrderUncheckedUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserCreateWithoutCreatedOrdersInput = {
@@ -690,6 +928,8 @@ export type UserCreateWithoutCreatedOrdersInput = {
   createdProducts?: Prisma.ProductCreateNestedManyWithoutCreatedByInput
   updatedProducts?: Prisma.ProductCreateNestedManyWithoutUpdatedByInput
   updatedOrders?: Prisma.OrderCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedOrdersInput = {
@@ -706,6 +946,8 @@ export type UserUncheckedCreateWithoutCreatedOrdersInput = {
   createdProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatedByInput
   updatedProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutUpdatedByInput
   updatedOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutUpdatedByInput
+  createdBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedOrdersInput = {
@@ -727,6 +969,8 @@ export type UserCreateWithoutUpdatedOrdersInput = {
   createdProducts?: Prisma.ProductCreateNestedManyWithoutCreatedByInput
   updatedProducts?: Prisma.ProductCreateNestedManyWithoutUpdatedByInput
   createdOrders?: Prisma.OrderCreateNestedManyWithoutCreatedByInput
+  createdBrands?: Prisma.BrandCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserUncheckedCreateWithoutUpdatedOrdersInput = {
@@ -743,6 +987,8 @@ export type UserUncheckedCreateWithoutUpdatedOrdersInput = {
   createdProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutCreatedByInput
   updatedProducts?: Prisma.ProductUncheckedCreateNestedManyWithoutUpdatedByInput
   createdOrders?: Prisma.OrderUncheckedCreateNestedManyWithoutCreatedByInput
+  createdBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedBrands?: Prisma.BrandUncheckedCreateNestedManyWithoutUpdatedByInput
 }
 
 export type UserCreateOrConnectWithoutUpdatedOrdersInput = {
@@ -775,6 +1021,8 @@ export type UserUpdateWithoutCreatedOrdersInput = {
   createdProducts?: Prisma.ProductUpdateManyWithoutCreatedByNestedInput
   updatedProducts?: Prisma.ProductUpdateManyWithoutUpdatedByNestedInput
   updatedOrders?: Prisma.OrderUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedOrdersInput = {
@@ -791,6 +1039,8 @@ export type UserUncheckedUpdateWithoutCreatedOrdersInput = {
   createdProducts?: Prisma.ProductUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedProducts?: Prisma.ProductUncheckedUpdateManyWithoutUpdatedByNestedInput
   updatedOrders?: Prisma.OrderUncheckedUpdateManyWithoutUpdatedByNestedInput
+  createdBrands?: Prisma.BrandUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUpsertWithoutUpdatedOrdersInput = {
@@ -818,6 +1068,8 @@ export type UserUpdateWithoutUpdatedOrdersInput = {
   createdProducts?: Prisma.ProductUpdateManyWithoutCreatedByNestedInput
   updatedProducts?: Prisma.ProductUpdateManyWithoutUpdatedByNestedInput
   createdOrders?: Prisma.OrderUpdateManyWithoutCreatedByNestedInput
+  createdBrands?: Prisma.BrandUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUpdateManyWithoutUpdatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdatedOrdersInput = {
@@ -834,6 +1086,8 @@ export type UserUncheckedUpdateWithoutUpdatedOrdersInput = {
   createdProducts?: Prisma.ProductUncheckedUpdateManyWithoutCreatedByNestedInput
   updatedProducts?: Prisma.ProductUncheckedUpdateManyWithoutUpdatedByNestedInput
   createdOrders?: Prisma.OrderUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdBrands?: Prisma.BrandUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedBrands?: Prisma.BrandUncheckedUpdateManyWithoutUpdatedByNestedInput
 }
 
 
@@ -846,6 +1100,8 @@ export type UserCountOutputType = {
   updatedProducts: number
   createdOrders: number
   updatedOrders: number
+  createdBrands: number
+  updatedBrands: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -853,6 +1109,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   updatedProducts?: boolean | UserCountOutputTypeCountUpdatedProductsArgs
   createdOrders?: boolean | UserCountOutputTypeCountCreatedOrdersArgs
   updatedOrders?: boolean | UserCountOutputTypeCountUpdatedOrdersArgs
+  createdBrands?: boolean | UserCountOutputTypeCountCreatedBrandsArgs
+  updatedBrands?: boolean | UserCountOutputTypeCountUpdatedBrandsArgs
 }
 
 /**
@@ -893,6 +1151,20 @@ export type UserCountOutputTypeCountUpdatedOrdersArgs<ExtArgs extends runtime.Ty
   where?: Prisma.OrderWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedBrandsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BrandWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUpdatedBrandsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BrandWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -909,6 +1181,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedProducts?: boolean | Prisma.User$updatedProductsArgs<ExtArgs>
   createdOrders?: boolean | Prisma.User$createdOrdersArgs<ExtArgs>
   updatedOrders?: boolean | Prisma.User$updatedOrdersArgs<ExtArgs>
+  createdBrands?: boolean | Prisma.User$createdBrandsArgs<ExtArgs>
+  updatedBrands?: boolean | Prisma.User$updatedBrandsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -957,6 +1231,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   updatedProducts?: boolean | Prisma.User$updatedProductsArgs<ExtArgs>
   createdOrders?: boolean | Prisma.User$createdOrdersArgs<ExtArgs>
   updatedOrders?: boolean | Prisma.User$updatedOrdersArgs<ExtArgs>
+  createdBrands?: boolean | Prisma.User$createdBrandsArgs<ExtArgs>
+  updatedBrands?: boolean | Prisma.User$updatedBrandsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -969,6 +1245,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     updatedProducts: Prisma.$ProductPayload<ExtArgs>[]
     createdOrders: Prisma.$OrderPayload<ExtArgs>[]
     updatedOrders: Prisma.$OrderPayload<ExtArgs>[]
+    createdBrands: Prisma.$BrandPayload<ExtArgs>[]
+    updatedBrands: Prisma.$BrandPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1379,6 +1657,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   updatedProducts<T extends Prisma.User$updatedProductsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedProductsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdOrders<T extends Prisma.User$createdOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   updatedOrders<T extends Prisma.User$updatedOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdBrands<T extends Prisma.User$createdBrandsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdBrandsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  updatedBrands<T extends Prisma.User$updatedBrandsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedBrandsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BrandPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1904,6 +2184,54 @@ export type User$updatedOrdersArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
+}
+
+/**
+ * User.createdBrands
+ */
+export type User$createdBrandsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Brand
+   */
+  select?: Prisma.BrandSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Brand
+   */
+  omit?: Prisma.BrandOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BrandInclude<ExtArgs> | null
+  where?: Prisma.BrandWhereInput
+  orderBy?: Prisma.BrandOrderByWithRelationInput | Prisma.BrandOrderByWithRelationInput[]
+  cursor?: Prisma.BrandWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BrandScalarFieldEnum | Prisma.BrandScalarFieldEnum[]
+}
+
+/**
+ * User.updatedBrands
+ */
+export type User$updatedBrandsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Brand
+   */
+  select?: Prisma.BrandSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Brand
+   */
+  omit?: Prisma.BrandOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BrandInclude<ExtArgs> | null
+  where?: Prisma.BrandWhereInput
+  orderBy?: Prisma.BrandOrderByWithRelationInput | Prisma.BrandOrderByWithRelationInput[]
+  cursor?: Prisma.BrandWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BrandScalarFieldEnum | Prisma.BrandScalarFieldEnum[]
 }
 
 /**

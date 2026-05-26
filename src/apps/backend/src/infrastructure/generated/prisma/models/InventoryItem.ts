@@ -579,14 +579,6 @@ export type InventoryItemUncheckedUpdateManyWithoutProductNestedInput = {
   deleteMany?: Prisma.InventoryItemScalarWhereInput | Prisma.InventoryItemScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type InventoryItemCreateNestedOneWithoutCartItemsInput = {
   create?: Prisma.XOR<Prisma.InventoryItemCreateWithoutCartItemsInput, Prisma.InventoryItemUncheckedCreateWithoutCartItemsInput>
   connectOrCreate?: Prisma.InventoryItemCreateOrConnectWithoutCartItemsInput
