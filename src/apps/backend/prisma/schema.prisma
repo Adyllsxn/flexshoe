@@ -39,6 +39,12 @@ model Brand {
   slug      String   @unique
   active    Boolean  @default(true)
   
+  // Auditoria
+  createdById String?
+  updatedById String?
+  createdBy   User?   @relation("BrandCreator", fields: [createdById], references: [id])
+  updatedBy   User?   @relation("BrandUpdater", fields: [updatedById], references: [id])
+  
   products  Product[]
   
   createdAt DateTime @default(now())
@@ -48,7 +54,7 @@ model Brand {
 }
 
 // ============================================
-// PRODUTO (TÊNIS)
+// PRODUTO (TÊNIS) - CORRIGIDO
 // ============================================
 model Product {
   id          String   @id @default(uuid())
@@ -63,14 +69,22 @@ model Product {
   mainImage   String?
   images      String[]
   
+  // ✅ CAMPOS ADICIONADOS
+  price       Float    @default(0)
+  stock       Int      @default(0)
+  
   active      Boolean  @default(true)
   featured    Boolean  @default(false)
   views       Int      @default(0)
+  
+  // Soft delete
+  deletedAt   DateTime?
   
   // Relacionamentos
   inventory   InventoryItem[]
   orderItems  OrderItem[]
   
+  // Auditoria
   createdById String?
   updatedById String?
   createdBy   User?    @relation("ProductCreator", fields: [createdById], references: [id])
@@ -81,6 +95,7 @@ model Product {
   
   @@index([brandId])
   @@index([slug])
+  @@index([deletedAt])
   @@map("products")
 }
 
@@ -167,11 +182,11 @@ model Order {
   clientPhone     String
   clientAddress   String?
   
-  // Funcionário que registrou a venda (admin/employee)
+  // Auditoria - Funcionário que registrou a venda (admin/employee)
   createdById     String?
   createdBy       User?       @relation("OrderCreator", fields: [createdById], references: [id])
   
-  // Funcionário que atualizou o pedido
+  // Auditoria - Funcionário que atualizou o pedido
   updatedById     String?
   updatedBy       User?       @relation("OrderUpdater", fields: [updatedById], references: [id])
   
@@ -260,6 +275,10 @@ model User {
   // Relações - Pedidos
   createdOrders     Order[]     @relation("OrderCreator")
   updatedOrders     Order[]     @relation("OrderUpdater")
+  
+  // Relações - Marcas
+  createdBrands     Brand[]     @relation("BrandCreator")
+  updatedBrands     Brand[]     @relation("BrandUpdater")
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

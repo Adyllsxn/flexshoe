@@ -1122,6 +1122,8 @@ export const BrandScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   active: 'active',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1138,9 +1140,12 @@ export const ProductScalarFieldEnum = {
   gender: 'gender',
   mainImage: 'mainImage',
   images: 'images',
+  price: 'price',
+  stock: 'stock',
   active: 'active',
   featured: 'featured',
   views: 'views',
+  deletedAt: 'deletedAt',
   createdById: 'createdById',
   updatedById: 'updatedById',
   createdAt: 'createdAt',
@@ -1339,20 +1344,6 @@ export type ListEnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
 
 
 /**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1363,6 +1354,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
