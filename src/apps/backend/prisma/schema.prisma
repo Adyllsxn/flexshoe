@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/infrastructure/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS
+// ============================================
+enum OrderStatus {
+  pending
+  approved
+  delivered
+  cancelled
+}
+
+enum UserRole {
+  admin
+  employee
+}
+
+enum Gender {
+  male
+  female
+  unisex
+  kids
+}
+
+// ============================================
+// MARCA
+// ============================================
+model Brand {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String   @unique
+  active    Boolean  @default(true)
+  
+  products  Product[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("brands")
+}
+
+// ============================================
+// PRODUTO (TÊNIS)
+// ============================================
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  
+  gender      Gender   @default(unisex)
+  mainImage   String?
+  images      String[]
+  
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  views       Int      @default(0)
+  
+  // Relacionamentos
+  inventory   InventoryItem[]
+  orderItems  OrderItem[]
+  
+  createdById String?
+  updatedById String?
+  createdBy   User?    @relation("ProductCreator", fields: [createdById], references: [id])
+  updatedBy   User?    @relation("ProductUpdater", fields: [updatedById], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([brandId])
+  @@index([slug])
+  @@map("products")
+}
+
+// ============================================
+// INVENTÁRIO (Controle por tamanho/cor)
+// ============================================
+model InventoryItem {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  
+  // Especificação do item
+  size        Int      // 38, 39, 40, 41, 42, 43
+  color       String   // "Branco", "Preto", "Azul"
+  sku         String   @unique  // NIKE-AIRMAX90-39-BRANCO
+  
+  // Controle de estoque
+  stock       Int      @default(0)   // Quantidade disponível
+  reserved    Int      @default(0)   // Itens no carrinho
+  
+  // Preço pode variar por tamanho/cor
+  price       Float    // Preço deste item específico
+  
+  // Status
+  active      Boolean  @default(true)
+  
+  // Relacionamentos
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([productId, size, color])
+  @@index([productId])
+  @@index([sku])
+  @@map("inventory_items")
+}
+
+// ============================================
+// CARRINHO
+// ============================================
+model Cart {
+  id         String      @id @default(uuid())
+  sessionId  String      @unique
+  items      CartItem[]
+  expiresAt  DateTime    @default(now())
+  
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  
+  @@index([sessionId])
+  @@map("carts")
+}
+
+// ============================================
+// ITEM DO CARRINHO
+// ============================================
+model CartItem {
+  id            String        @id @default(uuid())
+  cartId        String
+  cart          Cart          @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  inventoryId   String
+  inventory     InventoryItem @relation(fields: [inventoryId], references: [id])
+  quantity      Int           @default(1)
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@unique([cartId, inventoryId])
+  @@map("cart_items")
+}
+
+// ============================================
+// PEDIDO
+// ============================================
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+  status          OrderStatus @default(pending)
+  
+  // Dados do cliente (quem comprou)
+  clientName      String
+  clientPhone     String
+  clientAddress   String?
+  
+  // Funcionário que registrou a venda (admin/employee)
+  createdById     String?
+  createdBy       User?       @relation("OrderCreator", fields: [createdById], references: [id])
+  
+  // Funcionário que atualizou o pedido
+  updatedById     String?
+  updatedBy       User?       @relation("OrderUpdater", fields: [updatedById], references: [id])
+  
+  subtotal        Float
+  total           Float
+  
+  whatsappMessage String?
+  whatsappSentAt  DateTime?
+  
+  items           OrderItem[]
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  @@index([orderNumber])
+  @@index([clientPhone])
+  @@index([createdById])
+  @@map("orders")
+}
+
+// ============================================
+// ITEM DO PEDIDO
+// ============================================
+model OrderItem {
+  id            String        @id @default(uuid())
+  orderId       String
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  inventoryId   String
+  inventory     InventoryItem @relation(fields: [inventoryId], references: [id])
+  
+  // Relação com Product (para o relacionamento bidirecional)
+  productId     String
+  product       Product       @relation(fields: [productId], references: [id])
+  
+  // Snapshot (para não perder se produto mudar depois)
+  productName   String
+  brandName     String
+  size          Int
+  color         String
+  quantity      Int
+  price         Float
+  total         Float
+  
+  createdAt     DateTime      @default(now())
+  
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+// ============================================
+// STORE
+// ============================================
+model Store {
+  id           String   @id @default(uuid())
+  name         String   @default("FlexShoe")
+  whatsapp     String   @default("244935751955")
+  email        String?
+  address      String?
+  logo         String?
+  primaryColor String   @default("#E05A2A")
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@map("stores")
+}
+
+// ============================================
+// USER (Funcionários/Administradores)
+// ============================================
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  email       String    @unique
+  password    String
+  role        UserRole  @default(employee)
+  active      Boolean   @default(true)
+  deletedAt   DateTime?
+  lastLogin   DateTime?
+  
+  // Relações - Produtos
+  createdProducts   Product[]   @relation("ProductCreator")
+  updatedProducts   Product[]   @relation("ProductUpdater")
+  
+  // Relações - Pedidos
+  createdOrders     Order[]     @relation("OrderCreator")
+  updatedOrders     Order[]     @relation("OrderUpdater")
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("users")
+}
