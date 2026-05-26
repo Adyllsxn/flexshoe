@@ -9,8 +9,6 @@
 .vscode/**
 !.vscode/extensions.json
 
-# env files
-.env
 
 # Node.js / NPM
 node_modules/
