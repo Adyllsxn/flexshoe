@@ -1,90 +1,62 @@
-# 🤝 Contribuindo para o FlexShoe
+# Como Contribuir - FlexShoe
 
-Primeiro, obrigado por considerar contribuir com o FlexShoe! 🎉
+Contribuições são bem-vindas!
 
-## 📋 Índice
-- [Como reportar bugs](#como-reportar-bugs)
-- [Como sugerir features](#como-sugerir-features)
-- [Guia de desenvolvimento](#guia-de-desenvolvimento)
-- [Padrões de código](#padrões-de-código)
-- [Processo de Pull Request](#processo-de-pull-request)
+## 1. Faça um Fork
 
-## 🐛 Como reportar bugs
+Clique no botão "Fork" no GitHub.
 
-Abra uma **Issue** com o template de bug report:
-- Título claro e descritivo
-- Passos para reproduzir
-- Comportamento esperado vs atual
-- Screenshots se aplicável
-- Ambiente (OS, navegador, versões)
+## 2. Clone e Crie uma Branch
 
-## 💡 Como sugerir features
-
-Abra uma **Issue** com o template de feature request:
-- Descrição da funcionalidade
-- Motivação/uso
-- Alternativas consideradas
-
-## 🛠️ Guia de desenvolvimento
-
-### Pré-requisitos
-- Node.js 18+
-- npm ou yarn
-- Docker (opcional)
-
-### Setup local
 ```bash
-# Fork o projeto
-# Clone seu fork
 git clone https://github.com/Adyllsxn/flexshoe.git
-
-# Entre no diretório
 cd flexshoe
-
-# Instale dependências do backend
-cd backend && npm install
-
-# Instale dependências do frontend
-cd ../frontend && npm install
-
-# Configure variáveis de ambiente
-cp .env.example .env
-
-# Rode o projeto
-npm run dev
+git checkout -b minha-contribuicao
 ``` 
+## 3. Faça suas alterações e teste
+Execute o projeto localmente para testar.
+
+### 3.2 Execute com Aspire na raiz do projeto
+```bash
+aspire run
+```
+
+ou
+
+```bash
+make run
+```
+
+### 3.2 backend
+```bash
+cd src/apps/backend
+npm install
+npm run dev
+```
+
+### 3.3 frontend
+```bash
+cd src/apps/frontend
+npm install
+npm run start:dev
+``` 
+
+
+## 4. Commit e Push
+```bash
+git add .
+git commit -m "descrição clara da sua alteração"
+git push origin minha-contribuicao
+```
+
+## 5. Abra um Pull Request
+Volte ao GitHub e abra um Pull Request explicando o que você fez.
+
+## Dúvidas?
+Abra uma Issue.
 
 ---
 
-## 📏 Padrões de código
-- TypeScript estritamente tipado
-- ESLint para linting
-- Prettier para formatação
-- Commits semânticos:
-    - feat: nova funcionalidade
-    - fix: correção de bug
-    - docs: documentação
-    - style: formatação
-    - refactor: refatoração
-    - test: testes
-    - chore: manutenção
-
-## 🔄 Processo de Pull Request
-- Fork o repositório
-- Crie uma branch (git checkout -b feature/nova-feature)
-- Commit suas mudanças (git commit -m 'feat: add nova feature')
-- Push para a branch (git push origin feature/nova-feature)
-- Abra um Pull Request para main
-
-
-## Checklist do PR:
-- Código segue os padrões
-- Testes passam localmente
-- Documentação atualizada
-- Branch está atualizada com main
-
-
-## 📄 Licença
-> Ao contribuir, você concorda que suas contribuições serão licenciadas sob a licença MIT do projeto.
-
-> Dúvidas? Abra uma issue ou contate os mantenedores.
+<div align="center">
+  <h4>Obrigado por contribuir! 👟</h4>
+</div>

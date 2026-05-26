@@ -1,22 +1,21 @@
-# Código de Conduta do FlexShoe
+# Código de Conduta - FlexShoe
 
-## Nosso compromisso
-Nós, como contribuidores e mantenedores, nos comprometemos a tornar a participação em nosso projeto uma experiência livre de assédio para todos.
+Este é um projeto open source. Espera-se que todos os participantes mantenham um ambiente respeitoso e colaborativo.
 
-## Comportamentos esperados
-- Usar linguagem acolhedora e inclusiva
-- Respeitar pontos de vista diferentes
-- Aceitar críticas construtivas
-- Focar no que é melhor para a comunidade
+## Regras Básicas
 
-## Comportamentos inaceitáveis
-- Linguagem ou imagens sexualizadas
-- Comentários insultuosos/depreciativos
-- Assédio público ou privado
-- Publicação de informações privadas
+- Respeite opiniões diferentes
+- Use linguagem profissional
+- Não compartilhe informações privadas sem permissão
+- Ajude colegas que estão aprendendo
 
-## Aplicação
-Mantenedores do projeto têm o direito de remover, editar ou rejeitar comentários, commits, código e issues que não estejam alinhados a este código de conduta.
+## Reportar Problemas
 
-## Atribuição
-Este código de conduta é adaptado do [Contributor Covenant](https://www.contributor-covenant.org).
+Se algo acontecer, entre em contato:
+- Email: domingos.nxscimento@gamil.com
+
+---
+
+<div align="center">
+  <h4>Projeto Open Source</h4>
+</div>
