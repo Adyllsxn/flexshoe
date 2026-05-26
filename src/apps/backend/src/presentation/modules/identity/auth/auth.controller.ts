@@ -7,6 +7,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,6 +19,7 @@ import {
 import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
+import { RateLimitGuard } from 'src/presentation/common/guards/rate-limit.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,10 +27,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @UseGuards(RateLimitGuard)
   @ApiOperation({ summary: 'Login do utilizador' })
   @ApiBody({ type: LoginAuthDto })
   @ApiResponse({ status: 200, description: 'Login realizado com sucesso' })
   @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
+  @ApiResponse({ status: 429, description: 'Muitas tentativas. Aguarde um momento.' })
   async login(
     @Body() loginDto: LoginAuthDto,
     @Res({ passthrough: true }) response: Response,
