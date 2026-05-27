@@ -87,7 +87,7 @@ export class BrandController {
   @ApiParam({ name: 'id', description: 'UUID da marca' })
   @ApiResponse({ status: 200, description: 'Marca deletada' })
   @ApiResponse({ status: 404, description: 'Marca não encontrada' })
-  remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
-    return this.brandService.remove(id, user.id);
+  remove(@Param('id') id: string) {
+    return this.brandService.remove(id);
   }
 }

@@ -11,10 +11,9 @@ import {
   HttpStatus,
   UseGuards,
   UseInterceptors,
-  UploadedFile,
   UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
   ApiOperation,
@@ -86,69 +85,50 @@ export class ProductController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @AdminOnly()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Criar novo produto (admin) com imagem' })
+  @ApiOperation({ summary: 'Criar novo produto (admin)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        file: { type: 'string', format: 'binary' },
-        name: { type: 'string' },
-        slug: { type: 'string' },
-        description: { type: 'string' },
-        price: { type: 'number' },
-        brandId: { type: 'string' },
-        gender: { type: 'string', enum: ['male', 'female', 'unisex', 'kids'] },
-        active: { type: 'boolean' },
-        featured: { type: 'boolean' },
-        stock: { type: 'number' },
+        name: { type: 'string', example: 'Air Max 90' },
+        slug: { type: 'string', example: 'air-max-90' },
+        description: { type: 'string', example: 'Clássico tênis da Nike' },
+        price: { type: 'string', example: '599.90' },
+        brandId: { type: 'string', example: 'uuid-da-marca' },
+        gender: { type: 'string', enum: ['male', 'female', 'unisex', 'kids'], example: 'unisex' },
+        active: { type: 'string', example: 'true' },
+        featured: { type: 'string', example: 'false' },
+        stock: { type: 'string', example: '10' },
+        mainImage: { type: 'string', format: 'binary', description: 'Imagem principal do produto' },
+        images: { 
+          type: 'array', 
+          items: { type: 'string', format: 'binary' },
+          description: 'Imagens adicionais do produto'
+        },
       },
     },
   })
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'mainImage', maxCount: 1 },
+    { name: 'images', maxCount: 10 },
+  ]))
   async create(
     @Body() createProductDto: CreateProductDto,
-    @UploadedFile() file: Express.Multer.File,
-    @CurrentUser() user: AuthenticatedUser,
-  ) {
-    let mainImage: string | undefined;
-
-    if (file) {
-      mainImage = await this.uploadService.saveImage(file, 'products');
-    }
-
-    return this.productService.create(
-      { ...createProductDto, mainImage },
-      user.id,
-    );
-  }
-
-  @Post('with-images')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @AdminOnly()
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Criar produto com múltiplas imagens' })
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FilesInterceptor('files', 10))
-  async createWithImages(
-    @Body() createProductDto: CreateProductDto,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles() files: { mainImage?: Express.Multer.File[]; images?: Express.Multer.File[] },
     @CurrentUser() user: AuthenticatedUser,
   ) {
     let mainImage: string | undefined;
     const images: string[] = [];
 
-    if (files && files.length > 0) {
-      // Primeira imagem como principal
-      mainImage = await this.uploadService.saveImage(files[0], 'products');
+    if (files.mainImage && files.mainImage[0]) {
+      mainImage = await this.uploadService.saveImage(files.mainImage[0], 'products');
+    }
 
-      // Demais imagens
-      for (let i = 1; i < files.length; i++) {
-        const imageUrl = await this.uploadService.saveImage(
-          files[i],
-          'products',
-        );
+    if (files.images) {
+      for (const file of files.images) {
+        const imageUrl = await this.uploadService.saveImage(file, 'products');
         images.push(imageUrl);
       }
     }
@@ -168,7 +148,7 @@ export class ProductController {
   @ApiResponse({ status: 200, description: 'Produto atualizado' })
   @ApiResponse({ status: 404, description: 'Produto não encontrado' })
   @ApiResponse({ status: 409, description: 'Conflito de slug' })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
     @CurrentUser() user: AuthenticatedUser,
@@ -176,28 +156,69 @@ export class ProductController {
     return this.productService.update(id, updateProductDto, user.id);
   }
 
-  @Patch(':id/image')
+  @Patch(':id/images')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @AdminOnly()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Atualizar imagem do produto' })
+  @ApiOperation({ summary: 'Adicionar imagens ao produto (admin)' })
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('file'))
-  async updateImage(
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        images: { 
+          type: 'array', 
+          items: { type: 'string', format: 'binary' },
+          description: 'Novas imagens para adicionar'
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'images', maxCount: 10 },
+  ]))
+  async addImages(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: { images?: Express.Multer.File[] },
     @CurrentUser() user: AuthenticatedUser,
   ) {
     const product = await this.productService.findOne(id);
+    const currentImages = product.images || [];
+    const newImages: string[] = [];
 
-    // Deletar imagem antiga
-    if (product.mainImage) {
-      this.uploadService.deleteImage(product.mainImage);
+    if (files.images) {
+      for (const file of files.images) {
+        const imageUrl = await this.uploadService.saveImage(file, 'products');
+        newImages.push(imageUrl);
+      }
     }
 
-    const mainImage = await this.uploadService.saveImage(file, 'products');
+    return this.productService.update(id, { images: [...currentImages, ...newImages] }, user.id);
+  }
 
-    return this.productService.update(id, { mainImage }, user.id);
+  @Delete(':id/images')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @AdminOnly()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Remover imagem do produto (admin)' })
+  @ApiParam({ name: 'id', description: 'UUID do produto' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        imageUrl: { type: 'string', description: 'URL da imagem a ser removida' },
+      },
+    },
+  })
+  async removeImage(
+    @Param('id') id: string,
+    @Body('imageUrl') imageUrl: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    const product = await this.productService.findOne(id);
+    this.uploadService.deleteImage(imageUrl);
+    const images = (product.images || []).filter(img => img !== imageUrl);
+    return this.productService.update(id, { images }, user.id);
   }
 
   @Delete(':id')
@@ -232,10 +253,10 @@ export class ProductController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Atualizar estoque do produto (admin)' })
   @ApiParam({ name: 'id', description: 'UUID do produto' })
-  @ApiQuery({ name: 'quantity', required: true, example: 10 })
+  @ApiQuery({ name: 'quantity', required: true, example: '10' })
   @ApiResponse({ status: 200, description: 'Estoque atualizado' })
   @ApiResponse({ status: 404, description: 'Produto não encontrado' })
-  updateStock(
+  async updateStock(
     @Param('id') id: string,
     @Query('quantity') quantity: string,
     @CurrentUser() user: AuthenticatedUser,

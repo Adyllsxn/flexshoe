@@ -24,6 +24,9 @@ async function bootstrap() {
       whitelist: true, // Remove campos não declarados no DTO
       forbidNonWhitelisted: true, // Retorna erro se enviar campos não declarados
       transform: true, // Transforma os dados para os tipos do DTO
+      transformOptions: {
+        enableImplicitConversion: true, // ← Converte string para number/boolean automaticamente
+      }
     }),
   );
 
