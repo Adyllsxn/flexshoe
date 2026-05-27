@@ -26,8 +26,6 @@ import { PaginationDto } from 'src/domain/shared/pagination/pagination.dto';
 import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
 import { AdminOnly } from 'src/presentation/common/decorators/admin-only.decorator';
-import { CurrentUser } from 'src/presentation/common/decorators/current-user.decorator';
-import type { AuthenticatedUser } from 'src/domain/abstractions/types/auth.type';
 
 @ApiTags('inventory')
 @Controller('inventory')
@@ -66,11 +64,8 @@ export class InventoryController {
   @ApiResponse({ status: 201, description: 'Item criado com sucesso' })
   @ApiResponse({ status: 409, description: 'SKU ou combinação já existe' })
   @HttpCode(HttpStatus.CREATED)
-  create(
-    @Body() createInventoryDto: CreateInventoryDto,
-    @CurrentUser() user: AuthenticatedUser,
-  ) {
-    return this.inventoryService.create(createInventoryDto, user.id);
+  create(@Body() createInventoryDto: CreateInventoryDto) {
+    return this.inventoryService.create(createInventoryDto);
   }
 
   @Patch(':id')
@@ -84,9 +79,8 @@ export class InventoryController {
   update(
     @Param('id') id: string,
     @Body() updateInventoryDto: UpdateInventoryDto,
-    @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.inventoryService.update(id, updateInventoryDto, user.id);
+    return this.inventoryService.update(id, updateInventoryDto);
   }
 
   @Delete(':id')
@@ -97,8 +91,8 @@ export class InventoryController {
   @ApiParam({ name: 'id', description: 'UUID do item' })
   @ApiResponse({ status: 200, description: 'Item desativado' })
   @ApiResponse({ status: 404, description: 'Item não encontrado' })
-  remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
-    return this.inventoryService.remove(id, user.id);
+  remove(@Param('id') id: string) {
+    return this.inventoryService.remove(id);
   }
 
   @Patch(':id/stock')
@@ -112,10 +106,9 @@ export class InventoryController {
   updateStock(
     @Param('id') id: string,
     @Query('quantity') quantity: string,
-    @CurrentUser() user: AuthenticatedUser,
   ) {
     const quantityNum = parseInt(quantity, 10);
-    return this.inventoryService.updateStock(id, quantityNum, user.id);
+    return this.inventoryService.updateStock(id, quantityNum);
   }
 
   @Post(':id/reserve')
