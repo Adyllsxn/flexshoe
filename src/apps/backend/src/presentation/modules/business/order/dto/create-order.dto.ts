@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+} from 'class-validator';
 
 export class CreateOrderDto {
   @ApiProperty({ example: 'João Silva' })

@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { ICartService } from 'src/domain/abstractions/services/icart.service';
-import { ICartWithDetails, CartItemDto } from 'src/domain/abstractions/types/cart.type';
+import {
+  ICartWithDetails,
+  CartItemDto,
+} from 'src/domain/abstractions/types/cart.type';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
@@ -44,10 +47,13 @@ export class CartService implements ICartService {
       };
     }
 
-    return cart as ICartWithDetails;
+    return cart;
   }
 
-  async addItem(sessionId: string, addToCartDto: AddToCartDto): Promise<ICartWithDetails> {
+  async addItem(
+    sessionId: string,
+    addToCartDto: AddToCartDto,
+  ): Promise<ICartWithDetails> {
     const { inventoryId, quantity } = addToCartDto;
 
     const inventory = await this.prismaService.inventoryItem.findFirst({
@@ -60,7 +66,9 @@ export class CartService implements ICartService {
 
     const available = inventory.stock - inventory.reserved;
     if (available < quantity) {
-      throw new BadRequestException(`Estoque insuficiente. Disponível: ${available}`);
+      throw new BadRequestException(
+        `Estoque insuficiente. Disponível: ${available}`,
+      );
     }
 
     let cart = await this.prismaService.cart.findUnique({
@@ -139,7 +147,9 @@ export class CartService implements ICartService {
     const available = inventory.stock - inventory.reserved + cartItem.quantity;
 
     if (available < quantity) {
-      throw new BadRequestException(`Estoque insuficiente. Disponível: ${available}`);
+      throw new BadRequestException(
+        `Estoque insuficiente. Disponível: ${available}`,
+      );
     }
 
     const reservedDiff = quantity - cartItem.quantity;
@@ -159,7 +169,10 @@ export class CartService implements ICartService {
     return this.getCart(sessionId);
   }
 
-  async removeItem(sessionId: string, itemId: string): Promise<ICartWithDetails> {
+  async removeItem(
+    sessionId: string,
+    itemId: string,
+  ): Promise<ICartWithDetails> {
     const cartItem = await this.prismaService.cartItem.findFirst({
       where: { id: itemId },
       include: {
@@ -227,7 +240,7 @@ export class CartService implements ICartService {
     itemCount: number;
   }> {
     const cart = await this.getCart(sessionId);
-    
+
     const items: CartItemDto[] = cart.items.map((item) => {
       const subtotal = item.inventory.price * item.quantity;
       return {

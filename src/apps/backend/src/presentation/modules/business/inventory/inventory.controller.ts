@@ -125,10 +125,7 @@ export class InventoryController {
   @ApiParam({ name: 'id', description: 'UUID do item' })
   @ApiQuery({ name: 'quantity', required: true, example: 2 })
   @ApiResponse({ status: 200, description: 'Estoque reservado' })
-  reserveStock(
-    @Param('id') id: string,
-    @Query('quantity') quantity: string,
-  ) {
+  reserveStock(@Param('id') id: string, @Query('quantity') quantity: string) {
     const quantityNum = parseInt(quantity, 10);
     return this.inventoryService.reserveStock(id, quantityNum);
   }
@@ -140,10 +137,7 @@ export class InventoryController {
   @ApiParam({ name: 'id', description: 'UUID do item' })
   @ApiQuery({ name: 'quantity', required: true, example: 2 })
   @ApiResponse({ status: 200, description: 'Reserva liberada' })
-  releaseStock(
-    @Param('id') id: string,
-    @Query('quantity') quantity: string,
-  ) {
+  releaseStock(@Param('id') id: string, @Query('quantity') quantity: string) {
     const quantityNum = parseInt(quantity, 10);
     return this.inventoryService.releaseStock(id, quantityNum);
   }

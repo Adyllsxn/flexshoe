@@ -5,12 +5,27 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { IOrderService } from 'src/domain/abstractions/services/iorder.service';
-import { IOrder, IOrderWithItems, OrderStatus } from 'src/domain/abstractions/types/order.type';
+import {
+  IOrder,
+  IOrderWithItems,
+  OrderStatus,
+} from 'src/domain/abstractions/types/order.type';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PaginationHelper } from 'src/domain/shared/helper/pagination.helper';
 import { PaginationDto } from 'src/domain/shared/pagination/pagination.dto';
 import { CartService } from '../cart/cart.service';
+
+interface CartItemType {
+  inventoryId: string;
+  productName: string;
+  brandName: string;
+  size: number;
+  color: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
 
 @Injectable()
 export class OrderService implements IOrderService {
@@ -24,16 +39,27 @@ export class OrderService implements IOrderService {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const random = Math.floor(Math.random() * 1000)
+      .toString()
+      .padStart(3, '0');
     return `FX-${year}${month}${day}-${random}`;
   }
 
-  private async sendWhatsAppMessage(phone: string, orderNumber: string, items: any[], total: number) {
-    const itemsList = items.map(item => 
-      `- ${item.productName} (Tamanho: ${item.size}, Cor: ${item.color}) x${item.quantity} = ${(item.price * item.quantity).toFixed(2)} KZ`
-    ).join('\n');
+  private sendWhatsAppMessage(
+    phone: string,
+    orderNumber: string,
+    items: CartItemType[],
+    total: number,
+  ): string {
+    const itemsList = items
+      .map(
+        (item) =>
+          `- ${item.productName} (Tamanho: ${item.size}, Cor: ${item.color}) x${item.quantity} = ${(item.price * item.quantity).toFixed(2)} KZ`,
+      )
+      .join('\n');
 
-    const message = `🛍️ *NOVO PEDIDO - ${orderNumber}* 🛍️\n\n` +
+    const message =
+      `🛍️ *NOVO PEDIDO - ${orderNumber}* 🛍️\n\n` +
       `📋 *ITENS:*\n${itemsList}\n\n` +
       `💰 *TOTAL:* ${total.toFixed(2)} KZ\n\n` +
       `✅ Pedido recebido! Em breve entraremos em contato.\n\n` +
@@ -41,26 +67,27 @@ export class OrderService implements IOrderService {
 
     console.log(`📧 WhatsApp message to ${phone}:`);
     console.log(message);
-    
+
     return message;
   }
 
   async create(createOrderDto: CreateOrderDto): Promise<IOrderWithItems> {
-    const { clientName, clientPhone, clientAddress, cartSessionId } = createOrderDto;
+    const { clientName, clientPhone, clientAddress, cartSessionId } =
+      createOrderDto;
 
     const cartSummary = await this.cartService.getCartSummary(cartSessionId);
-    
+
     if (cartSummary.items.length === 0) {
       throw new BadRequestException('Carrinho vazio');
     }
 
     const orderNumber = this.generateOrderNumber();
 
-    const whatsappMessage = await this.sendWhatsAppMessage(
+    const whatsappMessage = this.sendWhatsAppMessage(
       clientPhone,
       orderNumber,
       cartSummary.items,
-      cartSummary.total
+      cartSummary.total,
     );
 
     const order = await this.prismaService.order.create({
@@ -129,7 +156,7 @@ export class OrderService implements IOrderService {
       this.prismaService.order.count(),
     ]);
 
-    return PaginationHelper.paginate(data as IOrderWithItems[], total, page, limit);
+    return PaginationHelper.paginate(data, total, page, limit);
   }
 
   async findOne(id: string): Promise<IOrderWithItems> {
@@ -144,10 +171,10 @@ export class OrderService implements IOrderService {
       throw new NotFoundException(`Pedido com ID "${id}" não encontrado`);
     }
 
-    return order as IOrderWithItems;
+    return order;
   }
 
-  async update(id: string, updateOrderDto: UpdateOrderDto, userId: string): Promise<IOrder> {
+  async update(id: string, updateOrderDto: UpdateOrderDto): Promise<IOrder> {
     await this.findOne(id);
 
     const order = await this.prismaService.order.update({
@@ -156,14 +183,17 @@ export class OrderService implements IOrderService {
         clientName: updateOrderDto.clientName,
         clientPhone: updateOrderDto.clientPhone,
         clientAddress: updateOrderDto.clientAddress,
-        updatedById: userId,
       },
     });
 
     return order;
   }
 
-  async updateStatus(id: string, status: OrderStatus, userId: string): Promise<IOrder> {
+  async updateStatus(
+    id: string,
+    status: OrderStatus,
+    userId: string,
+  ): Promise<IOrder> {
     await this.findOne(id);
 
     const order = await this.prismaService.order.update({
@@ -177,7 +207,7 @@ export class OrderService implements IOrderService {
     return order;
   }
 
-  async remove(id: string, userId: string): Promise<{ message: string }> {
+  async remove(id: string): Promise<{ message: string }> {
     const order = await this.findOne(id);
 
     await this.prismaService.order.delete({
@@ -189,7 +219,10 @@ export class OrderService implements IOrderService {
     };
   }
 
-  async getByPhone(phone: string, paginationDto: PaginationDto): Promise<{
+  async getByPhone(
+    phone: string,
+    paginationDto: PaginationDto,
+  ): Promise<{
     data: IOrderWithItems[];
     total: number;
     page: number;
@@ -214,6 +247,6 @@ export class OrderService implements IOrderService {
       }),
     ]);
 
-    return PaginationHelper.paginate(data as IOrderWithItems[], total, page, limit);
+    return PaginationHelper.paginate(data, total, page, limit);
   }
 }

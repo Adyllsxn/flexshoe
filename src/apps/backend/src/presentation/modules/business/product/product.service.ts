@@ -6,7 +6,10 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { IProductService } from 'src/domain/abstractions/services/iproduct.service';
-import { IProduct, IProductWithBrand } from 'src/domain/abstractions/types/product.type';
+import {
+  IProduct,
+  IProductWithBrand,
+} from 'src/domain/abstractions/types/product.type';
 import { CreateProductDto, Gender } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationHelper } from 'src/domain/shared/helper/pagination.helper';
@@ -77,8 +80,8 @@ export class ProductService implements IProductService {
 
     return {
       ...product,
-      gender: product.gender as Gender,
-    } as IProductWithBrand;
+      gender: product.gender,
+    };
   }
 
   async findByName(
@@ -179,13 +182,18 @@ export class ProductService implements IProductService {
     return PaginationHelper.paginate(formattedData, total, page, limit);
   }
 
-  async create(createProductDto: CreateProductDto, userId: string): Promise<IProduct> {
+  async create(
+    createProductDto: CreateProductDto,
+    userId: string,
+  ): Promise<IProduct> {
     const existingBySlug = await this.prismaService.product.findFirst({
       where: { slug: createProductDto.slug },
     });
 
     if (existingBySlug) {
-      throw new ConflictException(`Produto com slug "${createProductDto.slug}" já existe`);
+      throw new ConflictException(
+        `Produto com slug "${createProductDto.slug}" já existe`,
+      );
     }
 
     const brand = await this.prismaService.brand.findFirst({
@@ -193,7 +201,9 @@ export class ProductService implements IProductService {
     });
 
     if (!brand) {
-      throw new NotFoundException(`Marca com ID "${createProductDto.brandId}" não encontrada`);
+      throw new NotFoundException(
+        `Marca com ID "${createProductDto.brandId}" não encontrada`,
+      );
     }
 
     const product = await this.prismaService.product.create({
@@ -216,8 +226,8 @@ export class ProductService implements IProductService {
 
     return {
       ...product,
-      gender: product.gender as Gender,
-    } as IProduct;
+      gender: product.gender,
+    };
   }
 
   async update(
@@ -233,7 +243,9 @@ export class ProductService implements IProductService {
       });
 
       if (slugExists) {
-        throw new ConflictException(`Produto com slug "${updateProductDto.slug}" já existe`);
+        throw new ConflictException(
+          `Produto com slug "${updateProductDto.slug}" já existe`,
+        );
       }
     }
 
@@ -243,7 +255,9 @@ export class ProductService implements IProductService {
       });
 
       if (!brand) {
-        throw new NotFoundException(`Marca com ID "${updateProductDto.brandId}" não encontrada`);
+        throw new NotFoundException(
+          `Marca com ID "${updateProductDto.brandId}" não encontrada`,
+        );
       }
     }
 
@@ -267,11 +281,14 @@ export class ProductService implements IProductService {
 
     return {
       ...product,
-      gender: product.gender as Gender,
-    } as IProduct;
+      gender: product.gender,
+    };
   }
 
-  async remove(id: string, userId: string): Promise<{ message: string; product: IProduct }> {
+  async remove(
+    id: string,
+    userId: string,
+  ): Promise<{ message: string; product: IProduct }> {
     const product = await this.prismaService.product.findFirst({
       where: { id },
     });
@@ -281,7 +298,9 @@ export class ProductService implements IProductService {
     }
 
     if (product.deletedAt !== null) {
-      throw new BadRequestException(`Produto "${product.name}" já está deletado`);
+      throw new BadRequestException(
+        `Produto "${product.name}" já está deletado`,
+      );
     }
 
     const deletedProduct = await this.prismaService.product.update({
@@ -296,12 +315,15 @@ export class ProductService implements IProductService {
       message: `Produto "${product.name}" foi deletado com sucesso`,
       product: {
         ...deletedProduct,
-        gender: deletedProduct.gender as Gender,
-      } as IProduct,
+        gender: deletedProduct.gender,
+      },
     };
   }
 
-  async restore(id: string, userId: string): Promise<{ message: string; product: IProduct }> {
+  async restore(
+    id: string,
+    userId: string,
+  ): Promise<{ message: string; product: IProduct }> {
     const product = await this.prismaService.product.findFirst({
       where: { id },
     });
@@ -311,7 +333,9 @@ export class ProductService implements IProductService {
     }
 
     if (product.deletedAt === null) {
-      throw new BadRequestException(`Produto "${product.name}" não está deletado`);
+      throw new BadRequestException(
+        `Produto "${product.name}" não está deletado`,
+      );
     }
 
     const restoredProduct = await this.prismaService.product.update({
@@ -326,12 +350,16 @@ export class ProductService implements IProductService {
       message: `Produto "${product.name}" foi restaurado com sucesso`,
       product: {
         ...restoredProduct,
-        gender: restoredProduct.gender as Gender,
-      } as IProduct,
+        gender: restoredProduct.gender,
+      },
     };
   }
 
-  async updateStock(id: string, quantity: number, userId: string): Promise<IProduct> {
+  async updateStock(
+    id: string,
+    quantity: number,
+    userId: string,
+  ): Promise<IProduct> {
     const product = await this.prismaService.product.findFirst({
       where: { id, deletedAt: null },
     });
@@ -354,8 +382,8 @@ export class ProductService implements IProductService {
 
     return {
       ...updatedProduct,
-      gender: updatedProduct.gender as Gender,
-    } as IProduct;
+      gender: updatedProduct.gender,
+    };
   }
 
   async incrementViews(id: string): Promise<void> {

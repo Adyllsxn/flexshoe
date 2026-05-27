@@ -6,7 +6,11 @@ export interface IBrandService {
   findAll(): Promise<IBrand[]>;
   findOne(id: string): Promise<IBrand>;
   create(createBrandDto: CreateBrandDto, userId: string): Promise<IBrand>;
-  update(id: string, updateBrandDto: UpdateBrandDto, userId: string): Promise<IBrand>;
-  remove(id: string, userId: string): Promise<IBrand>;
-  restore(id: string, userId: string): Promise<IBrand>;
+  update(
+    id: string,
+    updateBrandDto: UpdateBrandDto,
+    userId: string,
+  ): Promise<IBrand>;
+  remove(id: string): Promise<IBrand>;
+  restore(): Promise<IBrand>;
 }

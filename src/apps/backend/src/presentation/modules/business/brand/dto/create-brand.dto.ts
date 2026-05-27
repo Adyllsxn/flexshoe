@@ -2,26 +2,26 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateBrandDto {
-  @ApiProperty({ 
+  @ApiProperty({
     example: 'Nike',
-    description: 'Nome da marca (ex: Nike, Adidas, Puma)'
+    description: 'Nome da marca (ex: Nike, Adidas, Puma)',
   })
   @IsNotEmpty()
   @IsString()
   name!: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     example: 'nike',
-    description: 'Slug da marca (identificador único para URL)'
+    description: 'Slug da marca (identificador único para URL)',
   })
   @IsNotEmpty()
   @IsString()
   slug!: string;
 
-  @ApiProperty({ 
-    example: true, 
+  @ApiProperty({
+    example: true,
     required: false,
-    description: 'Status da marca (true = ativo, false = inativo)'
+    description: 'Status da marca (true = ativo, false = inativo)',
   })
   @IsOptional()
   @IsBoolean()

@@ -12,14 +12,20 @@ export interface IProductService {
     totalPages: number;
   }>;
   findOne(id: string): Promise<IProductWithBrand>;
-  findByName(name: string, paginationDto: PaginationDto): Promise<{
+  findByName(
+    name: string,
+    paginationDto: PaginationDto,
+  ): Promise<{
     data: IProductWithBrand[];
     total: number;
     page: number;
     limit: number;
     totalPages: number;
   }>;
-  findByBrand(brandId: string, paginationDto: PaginationDto): Promise<{
+  findByBrand(
+    brandId: string,
+    paginationDto: PaginationDto,
+  ): Promise<{
     data: IProductWithBrand[];
     total: number;
     page: number;
@@ -27,9 +33,19 @@ export interface IProductService {
     totalPages: number;
   }>;
   create(createProductDto: CreateProductDto, userId: string): Promise<IProduct>;
-  update(id: string, updateProductDto: UpdateProductDto, userId: string): Promise<IProduct>;
-  remove(id: string, userId: string): Promise<{ message: string; product: IProduct }>;
-  restore(id: string, userId: string): Promise<{ message: string; product: IProduct }>;
+  update(
+    id: string,
+    updateProductDto: UpdateProductDto,
+    userId: string,
+  ): Promise<IProduct>;
+  remove(
+    id: string,
+    userId: string,
+  ): Promise<{ message: string; product: IProduct }>;
+  restore(
+    id: string,
+    userId: string,
+  ): Promise<{ message: string; product: IProduct }>;
   updateStock(id: string, quantity: number, userId: string): Promise<IProduct>;
   incrementViews(id: string): Promise<void>;
 }

@@ -5,7 +5,7 @@ export enum OrderStatus {
   pending = 'pending',
   approved = 'approved',
   delivered = 'delivered',
-  cancelled = 'cancelled'
+  cancelled = 'cancelled',
 }
 
 export class UpdateOrderDto {
