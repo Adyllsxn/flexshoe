@@ -10,6 +10,7 @@ import { BrandModule } from './presentation/modules/business/brand/brand.module'
 import { ProductModule } from './presentation/modules/business/product/product.module';
 import { InventoryModule } from './presentation/modules/business/inventory/inventory.module';
 import { CartModule } from './presentation/modules/business/cart/cart.module';
+import { OrderModule } from './presentation/modules/business/order/order.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CartModule } from './presentation/modules/business/cart/cart.module';
     ProductModule,
     InventoryModule,
     CartModule,
+    OrderModule,
   ],
 })
 export class AppModule {}
