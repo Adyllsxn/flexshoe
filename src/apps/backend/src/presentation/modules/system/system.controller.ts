@@ -13,9 +13,9 @@ export class SystemController {
   }
 
   @Get('info')
-  @ApiOperation({ 
-    summary: 'Informações do Sistema', 
-    description: 'Retorna informações sobre a API, servidor e uso de memória' 
+  @ApiOperation({
+    summary: 'Informações do Sistema',
+    description: 'Retorna informações sobre a API, servidor e uso de memória',
   })
   @ApiResponse({ status: 200, description: 'Informações obtidas com sucesso' })
   getSystemInfo() {
@@ -23,9 +23,9 @@ export class SystemController {
   }
 
   @Get('health')
-  @ApiOperation({ 
-    summary: 'Health Check', 
-    description: 'Verifica o status da API e conexão com o banco de dados' 
+  @ApiOperation({
+    summary: 'Health Check',
+    description: 'Verifica o status da API e conexão com o banco de dados',
   })
   @ApiResponse({ status: 200, description: 'Sistema saudável' })
   @ApiResponse({ status: 503, description: 'Sistema não saudável' })

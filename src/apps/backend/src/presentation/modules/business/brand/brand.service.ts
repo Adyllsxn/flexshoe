@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { IBrandService } from 'src/domain/abstractions/services/ibrand.service';
@@ -33,13 +32,18 @@ export class BrandService implements IBrandService {
     return brand;
   }
 
-  async create(createBrandDto: CreateBrandDto, userId: string): Promise<IBrand> {
+  async create(
+    createBrandDto: CreateBrandDto,
+    userId: string,
+  ): Promise<IBrand> {
     const existingByName = await this.prismaService.brand.findFirst({
       where: { name: createBrandDto.name },
     });
 
     if (existingByName) {
-      throw new ConflictException(`Marca com nome "${createBrandDto.name}" já existe`);
+      throw new ConflictException(
+        `Marca com nome "${createBrandDto.name}" já existe`,
+      );
     }
 
     const existingBySlug = await this.prismaService.brand.findFirst({
@@ -47,7 +51,9 @@ export class BrandService implements IBrandService {
     });
 
     if (existingBySlug) {
-      throw new ConflictException(`Marca com slug "${createBrandDto.slug}" já existe`);
+      throw new ConflictException(
+        `Marca com slug "${createBrandDto.slug}" já existe`,
+      );
     }
 
     return await this.prismaService.brand.create({
@@ -74,7 +80,9 @@ export class BrandService implements IBrandService {
       });
 
       if (existingByName) {
-        throw new ConflictException(`Marca com nome "${updateBrandDto.name}" já existe`);
+        throw new ConflictException(
+          `Marca com nome "${updateBrandDto.name}" já existe`,
+        );
       }
     }
 
@@ -84,7 +92,9 @@ export class BrandService implements IBrandService {
       });
 
       if (existingBySlug) {
-        throw new ConflictException(`Marca com slug "${updateBrandDto.slug}" já existe`);
+        throw new ConflictException(
+          `Marca com slug "${updateBrandDto.slug}" já existe`,
+        );
       }
     }
 
@@ -99,7 +109,7 @@ export class BrandService implements IBrandService {
     });
   }
 
-  async remove(id: string, userId: string): Promise<IBrand> {
+  async remove(id: string): Promise<IBrand> {
     const brand = await this.prismaService.brand.findFirst({
       where: { id },
     });
@@ -113,8 +123,7 @@ export class BrandService implements IBrandService {
     });
   }
 
-  async restore(id: string, userId: string): Promise<IBrand> {
-    // Como não tem soft delete, retorna erro
-    throw new BadRequestException('Marcas não suportam restauração');
+  restore(): Promise<IBrand> {
+    throw new Error('Marcas não suportam soft delete');
   }
 }

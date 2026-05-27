@@ -1,11 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsBoolean, IsEnum, IsUUID, Min } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  IsBoolean,
+  IsEnum,
+  IsUUID,
+  Min,
+} from 'class-validator';
 
 export enum Gender {
   male = 'male',
   female = 'female',
   unisex = 'unisex',
-  kids = 'kids'
+  kids = 'kids',
 }
 
 export class CreateProductDto {
@@ -24,7 +33,7 @@ export class CreateProductDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ example: 599.90 })
+  @ApiProperty({ example: 599.9 })
   @IsNotEmpty()
   @IsNumber()
   @Min(0)

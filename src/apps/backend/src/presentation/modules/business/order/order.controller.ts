@@ -34,7 +34,9 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Criar novo pedido (público - cliente finaliza compra)' })
+  @ApiOperation({
+    summary: 'Criar novo pedido (público - cliente finaliza compra)',
+  })
   @ApiResponse({ status: 201, description: 'Pedido criado com sucesso' })
   @ApiResponse({ status: 400, description: 'Carrinho vazio' })
   async create(@Body() createOrderDto: CreateOrderDto) {
@@ -84,12 +86,8 @@ export class OrderController {
   @ApiOperation({ summary: 'Atualizar pedido (admin/employee)' })
   @ApiParam({ name: 'id', description: 'UUID do pedido' })
   @ApiResponse({ status: 200, description: 'Pedido atualizado' })
-  update(
-    @Param('id') id: string,
-    @Body() updateOrderDto: UpdateOrderDto,
-    @CurrentUser() user: AuthenticatedUser,
-  ) {
-    return this.orderService.update(id, updateOrderDto, user.id);
+  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+    return this.orderService.update(id, updateOrderDto);
   }
 
   @Patch(':id/status')
@@ -115,7 +113,7 @@ export class OrderController {
   @ApiOperation({ summary: 'Deletar pedido (admin)' })
   @ApiParam({ name: 'id', description: 'UUID do pedido' })
   @ApiResponse({ status: 200, description: 'Pedido deletado' })
-  remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
-    return this.orderService.remove(id, user.id);
+  remove(@Param('id') id: string) {
+    return this.orderService.remove(id);
   }
 }

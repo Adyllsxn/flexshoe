@@ -10,7 +10,11 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
   ApiOperation,
@@ -18,6 +22,8 @@ import {
   ApiParam,
   ApiQuery,
   ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -29,11 +35,15 @@ import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
 import { AdminOnly } from 'src/presentation/common/decorators/admin-only.decorator';
 import { CurrentUser } from 'src/presentation/common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from 'src/domain/abstractions/types/auth.type';
+import { UploadService } from 'src/infrastructure/storage/upload.service';
 
 @ApiTags('product')
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Listar todos os produtos (com paginação)' })
@@ -76,16 +86,77 @@ export class ProductController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @AdminOnly()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Criar novo produto (admin)' })
-  @ApiResponse({ status: 201, description: 'Produto criado com sucesso' })
-  @ApiResponse({ status: 409, description: 'Produto com este slug já existe' })
-  @ApiResponse({ status: 404, description: 'Marca não encontrada' })
+  @ApiOperation({ summary: 'Criar novo produto (admin) com imagem' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        name: { type: 'string' },
+        slug: { type: 'string' },
+        description: { type: 'string' },
+        price: { type: 'number' },
+        brandId: { type: 'string' },
+        gender: { type: 'string', enum: ['male', 'female', 'unisex', 'kids'] },
+        active: { type: 'boolean' },
+        featured: { type: 'boolean' },
+        stock: { type: 'number' },
+      },
+    },
+  })
   @HttpCode(HttpStatus.CREATED)
-  create(
+  @UseInterceptors(FileInterceptor('file'))
+  async create(
     @Body() createProductDto: CreateProductDto,
+    @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.productService.create(createProductDto, user.id);
+    let mainImage: string | undefined;
+
+    if (file) {
+      mainImage = await this.uploadService.saveImage(file, 'products');
+    }
+
+    return this.productService.create(
+      { ...createProductDto, mainImage },
+      user.id,
+    );
+  }
+
+  @Post('with-images')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @AdminOnly()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Criar produto com múltiplas imagens' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('files', 10))
+  async createWithImages(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFiles() files: Express.Multer.File[],
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    let mainImage: string | undefined;
+    const images: string[] = [];
+
+    if (files && files.length > 0) {
+      // Primeira imagem como principal
+      mainImage = await this.uploadService.saveImage(files[0], 'products');
+
+      // Demais imagens
+      for (let i = 1; i < files.length; i++) {
+        const imageUrl = await this.uploadService.saveImage(
+          files[i],
+          'products',
+        );
+        images.push(imageUrl);
+      }
+    }
+
+    return this.productService.create(
+      { ...createProductDto, mainImage, images },
+      user.id,
+    );
   }
 
   @Patch(':id')
@@ -103,6 +174,30 @@ export class ProductController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.productService.update(id, updateProductDto, user.id);
+  }
+
+  @Patch(':id/image')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @AdminOnly()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Atualizar imagem do produto' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    const product = await this.productService.findOne(id);
+
+    // Deletar imagem antiga
+    if (product.mainImage) {
+      this.uploadService.deleteImage(product.mainImage);
+    }
+
+    const mainImage = await this.uploadService.saveImage(file, 'products');
+
+    return this.productService.update(id, { mainImage }, user.id);
   }
 
   @Delete(':id')

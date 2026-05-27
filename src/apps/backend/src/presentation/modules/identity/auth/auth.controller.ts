@@ -32,7 +32,10 @@ export class AuthController {
   @ApiBody({ type: LoginAuthDto })
   @ApiResponse({ status: 200, description: 'Login realizado com sucesso' })
   @ApiResponse({ status: 401, description: 'Credenciais inválidas' })
-  @ApiResponse({ status: 429, description: 'Muitas tentativas. Aguarde um momento.' })
+  @ApiResponse({
+    status: 429,
+    description: 'Muitas tentativas. Aguarde um momento.',
+  })
   async login(
     @Body() loginDto: LoginAuthDto,
     @Res({ passthrough: true }) response: Response,

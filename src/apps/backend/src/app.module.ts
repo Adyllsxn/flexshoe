@@ -11,6 +11,7 @@ import { ProductModule } from './presentation/modules/business/product/product.m
 import { InventoryModule } from './presentation/modules/business/inventory/inventory.module';
 import { CartModule } from './presentation/modules/business/cart/cart.module';
 import { OrderModule } from './presentation/modules/business/order/order.module';
+import { StorageModule } from './infrastructure/storage/storage.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { OrderModule } from './presentation/modules/business/order/order.module'
     InventoryModule,
     CartModule,
     OrderModule,
+    StorageModule,
   ],
 })
 export class AppModule {}

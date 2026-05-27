@@ -6,7 +6,10 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { IInventoryService } from 'src/domain/abstractions/services/iinventory.service';
-import { IInventoryItem, IInventoryItemWithProduct } from 'src/domain/abstractions/types/inventory.type';
+import {
+  IInventoryItem,
+  IInventoryItemWithProduct,
+} from 'src/domain/abstractions/types/inventory.type';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { PaginationHelper } from 'src/domain/shared/helper/pagination.helper';
@@ -50,7 +53,7 @@ export class InventoryService implements IInventoryService {
       }),
     ]);
 
-    return PaginationHelper.paginate(data as IInventoryItemWithProduct[], total, page, limit);
+    return PaginationHelper.paginate(data, total, page, limit);
   }
 
   async findByProduct(productId: string): Promise<IInventoryItem[]> {
@@ -59,7 +62,9 @@ export class InventoryService implements IInventoryService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Produto com ID "${productId}" não encontrado`);
+      throw new NotFoundException(
+        `Produto com ID "${productId}" não encontrado`,
+      );
     }
 
     return await this.prismaService.inventoryItem.findMany({
@@ -86,19 +91,25 @@ export class InventoryService implements IInventoryService {
     });
 
     if (!item) {
-      throw new NotFoundException(`Item de inventário com ID "${id}" não encontrado`);
+      throw new NotFoundException(
+        `Item de inventário com ID "${id}" não encontrado`,
+      );
     }
 
-    return item as IInventoryItemWithProduct;
+    return item;
   }
 
-  async create(createInventoryDto: CreateInventoryDto, userId: string): Promise<IInventoryItem> {
+  async create(
+    createInventoryDto: CreateInventoryDto,
+  ): Promise<IInventoryItem> {
     const product = await this.prismaService.product.findFirst({
       where: { id: createInventoryDto.productId },
     });
 
     if (!product) {
-      throw new NotFoundException(`Produto com ID "${createInventoryDto.productId}" não encontrado`);
+      throw new NotFoundException(
+        `Produto com ID "${createInventoryDto.productId}" não encontrado`,
+      );
     }
 
     const existingSku = await this.prismaService.inventoryItem.findFirst({
@@ -109,13 +120,14 @@ export class InventoryService implements IInventoryService {
       throw new ConflictException(`SKU "${createInventoryDto.sku}" já existe`);
     }
 
-    const existingCombination = await this.prismaService.inventoryItem.findFirst({
-      where: {
-        productId: createInventoryDto.productId,
-        size: createInventoryDto.size,
-        color: createInventoryDto.color,
-      },
-    });
+    const existingCombination =
+      await this.prismaService.inventoryItem.findFirst({
+        where: {
+          productId: createInventoryDto.productId,
+          size: createInventoryDto.size,
+          color: createInventoryDto.color,
+        },
+      });
 
     if (existingCombination) {
       throw new ConflictException(
@@ -142,7 +154,6 @@ export class InventoryService implements IInventoryService {
   async update(
     id: string,
     updateInventoryDto: UpdateInventoryDto,
-    userId: string,
   ): Promise<IInventoryItem> {
     await this.findOne(id);
 
@@ -152,7 +163,9 @@ export class InventoryService implements IInventoryService {
       });
 
       if (existingSku) {
-        throw new ConflictException(`SKU "${updateInventoryDto.sku}" já existe`);
+        throw new ConflictException(
+          `SKU "${updateInventoryDto.sku}" já existe`,
+        );
       }
     }
 
@@ -170,13 +183,15 @@ export class InventoryService implements IInventoryService {
     return item;
   }
 
-  async remove(id: string, userId: string): Promise<{ message: string; item: IInventoryItem }> {
+  async remove(id: string): Promise<{ message: string; item: IInventoryItem }> {
     const item = await this.prismaService.inventoryItem.findFirst({
       where: { id },
     });
 
     if (!item) {
-      throw new NotFoundException(`Item de inventário com ID "${id}" não encontrado`);
+      throw new NotFoundException(
+        `Item de inventário com ID "${id}" não encontrado`,
+      );
     }
 
     const deletedItem = await this.prismaService.inventoryItem.update({
@@ -192,13 +207,15 @@ export class InventoryService implements IInventoryService {
     };
   }
 
-  async updateStock(id: string, quantity: number, userId: string): Promise<IInventoryItem> {
+  async updateStock(id: string, quantity: number): Promise<IInventoryItem> {
     const item = await this.prismaService.inventoryItem.findFirst({
       where: { id, active: true },
     });
 
     if (!item) {
-      throw new NotFoundException(`Item de inventário com ID "${id}" não encontrado`);
+      throw new NotFoundException(
+        `Item de inventário com ID "${id}" não encontrado`,
+      );
     }
 
     if (quantity < 0) {
@@ -221,13 +238,17 @@ export class InventoryService implements IInventoryService {
     });
 
     if (!item) {
-      throw new NotFoundException(`Item de inventário com ID "${id}" não encontrado`);
+      throw new NotFoundException(
+        `Item de inventário com ID "${id}" não encontrado`,
+      );
     }
 
     const available = item.stock - item.reserved;
 
     if (available < quantity) {
-      throw new BadRequestException(`Estoque insuficiente. Disponível: ${available}`);
+      throw new BadRequestException(
+        `Estoque insuficiente. Disponível: ${available}`,
+      );
     }
 
     const updatedItem = await this.prismaService.inventoryItem.update({
@@ -246,7 +267,9 @@ export class InventoryService implements IInventoryService {
     });
 
     if (!item) {
-      throw new NotFoundException(`Item de inventário com ID "${id}" não encontrado`);
+      throw new NotFoundException(
+        `Item de inventário com ID "${id}" não encontrado`,
+      );
     }
 
     if (item.reserved < quantity) {

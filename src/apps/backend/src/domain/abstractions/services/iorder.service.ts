@@ -13,10 +13,17 @@ export interface IOrderService {
     totalPages: number;
   }>;
   findOne(id: string): Promise<IOrderWithItems>;
-  update(id: string, updateOrderDto: UpdateOrderDto, userId: string): Promise<IOrder>;
-  updateStatus(id: string, status: OrderStatus, userId: string): Promise<IOrder>;
+  update(id: string, updateOrderDto: UpdateOrderDto): Promise<IOrder>;
+  updateStatus(
+    id: string,
+    status: OrderStatus,
+    userId: string,
+  ): Promise<IOrder>;
   remove(id: string, userId: string): Promise<{ message: string }>;
-  getByPhone(phone: string, paginationDto: PaginationDto): Promise<{
+  getByPhone(
+    phone: string,
+    paginationDto: PaginationDto,
+  ): Promise<{
     data: IOrderWithItems[];
     total: number;
     page: number;
