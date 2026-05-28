@@ -26,7 +26,7 @@ async function bootstrap() {
       transform: true, // Transforma os dados para os tipos do DTO
       transformOptions: {
         enableImplicitConversion: true, // ← Converte string para number/boolean automaticamente
-      }
+      },
     }),
   );
 

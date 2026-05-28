@@ -103,10 +103,7 @@ export class InventoryController {
   @ApiParam({ name: 'id', description: 'UUID do item' })
   @ApiQuery({ name: 'quantity', required: true, example: 10 })
   @ApiResponse({ status: 200, description: 'Estoque atualizado' })
-  updateStock(
-    @Param('id') id: string,
-    @Query('quantity') quantity: string,
-  ) {
+  updateStock(@Param('id') id: string, @Query('quantity') quantity: string) {
     const quantityNum = parseInt(quantity, 10);
     return this.inventoryService.updateStock(id, quantityNum);
   }

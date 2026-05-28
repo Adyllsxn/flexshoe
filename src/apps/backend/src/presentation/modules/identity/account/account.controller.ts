@@ -17,12 +17,12 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
-  ApiQuery,
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { SearchAccountDto } from './dto/search-account.dto';
 import { PaginationDto } from 'src/domain/shared/pagination/pagination.dto';
 import { AdminOrEmployee } from 'src/presentation/common/decorators/admin-or-employee.decorator';
 import { AdminOnly } from 'src/presentation/common/decorators/admin-only.decorator';
@@ -58,13 +58,12 @@ export class AccountController {
   @Get('search')
   @AdminOnly()
   @ApiOperation({ summary: 'Buscar utilizador por nome' })
-  @ApiQuery({ name: 'name', required: true, example: 'João' })
   @ApiResponse({ status: 200, description: 'Lista retornada com sucesso' })
-  findByName(
-    @Query('name') name: string,
-    @Query() paginationDto: PaginationDto,
-  ) {
-    return this.accountService.findByName(name, paginationDto);
+  findByName(@Query() searchDto: SearchAccountDto) {
+    if (!searchDto.name) {
+      return this.accountService.findAll(searchDto);
+    }
+    return this.accountService.findByName(searchDto.name, searchDto);
   }
 
   @Get('me')
@@ -112,10 +111,6 @@ export class AccountController {
       throw new ForbiddenException(
         'Não tem permissão para editar este utilizador',
       );
-    }
-
-    if (user.role !== 'admin') {
-      delete (updateAccountDto as Record<string, unknown>).role;
     }
 
     return this.accountService.update(id, updateAccountDto);
