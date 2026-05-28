@@ -101,7 +101,7 @@ model Product {
 }
 
 // ============================================
-// INVENTÁRIO
+// INVENTÁRIO (sem price - usa o price do Product)
 // ============================================
 model InventoryItem {
   id          String   @id @default(uuid())
@@ -113,7 +113,7 @@ model InventoryItem {
   sku         String   @unique
   stock       Int      @default(0)
   reserved    Int      @default(0)
-  price       Float
+  // price removido - usar product.price
   
   active      Boolean  @default(true)
   
@@ -215,7 +215,7 @@ model OrderItem {
   size          Int
   color         String
   quantity      Int
-  price         Float
+  price         Float         // Snapshot do preço na hora da compra (vem do Product)
   total         Float
   
   createdAt     DateTime      @default(now())

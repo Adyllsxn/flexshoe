@@ -6,7 +6,6 @@ export type IInventoryItem = {
   sku: string;
   stock: number;
   reserved: number;
-  price: number;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -17,6 +16,8 @@ export type IInventoryItemWithProduct = IInventoryItem & {
     id: string;
     name: string;
     slug: string;
+    price: number;
+    stock: number;
     brand: {
       id: string;
       name: string;

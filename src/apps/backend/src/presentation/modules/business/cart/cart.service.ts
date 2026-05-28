@@ -242,16 +242,18 @@ export class CartService implements ICartService {
     const cart = await this.getCart(sessionId);
 
     const items: CartItemDto[] = cart.items.map((item) => {
-      const subtotal = item.inventory.price * item.quantity;
+      const productPrice = item.inventory.product.price;
+      const subtotal = productPrice * item.quantity;
       return {
         inventoryId: item.inventoryId,
+        productId: item.inventory.product.id,
         quantity: item.quantity,
         productName: item.inventory.product.name,
         productSlug: item.inventory.product.slug,
         brandName: item.inventory.product.brand.name,
         size: item.inventory.size,
         color: item.inventory.color,
-        price: item.inventory.price,
+        price: productPrice,
         subtotal,
       };
     });

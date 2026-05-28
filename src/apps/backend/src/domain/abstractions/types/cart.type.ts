@@ -33,13 +33,13 @@ export type ICartWithDetails = {
       id: string;
       size: number;
       color: string;
-      price: number;
       stock: number;
       reserved: number;
       product: {
         id: string;
         name: string;
         slug: string;
+        price: number;
         mainImage: string | null;
         brand: {
           id: string;
@@ -52,6 +52,7 @@ export type ICartWithDetails = {
 
 export type CartItemDto = {
   inventoryId: string;
+  productId: string;
   quantity: number;
   productName: string;
   productSlug: string;

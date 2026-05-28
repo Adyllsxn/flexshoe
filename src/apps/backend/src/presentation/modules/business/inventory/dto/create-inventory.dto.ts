@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsInt,
   IsOptional,
-  IsNumber,
   Min,
   IsUUID,
 } from 'class-validator';
@@ -36,12 +35,6 @@ export class CreateInventoryDto {
   @IsInt()
   @Min(0)
   stock?: number;
-
-  @ApiProperty({ example: 599.9 })
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  price!: number;
 
   @ApiProperty({ example: true, required: false })
   @IsOptional()

@@ -22,6 +22,7 @@ export interface IInventoryService {
     updateInventoryDto: UpdateInventoryDto,
   ): Promise<IInventoryItem>;
   remove(id: string): Promise<{ message: string; item: IInventoryItem }>;
+  restore(id: string): Promise<{ message: string; item: IInventoryItem }>;
   updateStock(id: string, quantity: number): Promise<IInventoryItem>;
   reserveStock(id: string, quantity: number): Promise<IInventoryItem>;
   releaseStock(id: string, quantity: number): Promise<IInventoryItem>;
