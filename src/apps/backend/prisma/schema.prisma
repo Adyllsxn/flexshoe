@@ -38,6 +38,7 @@ model Brand {
   name      String   @unique
   slug      String   @unique
   active    Boolean  @default(true)
+  deletedAt DateTime?
   
   // Auditoria
   createdById String?
@@ -50,11 +51,12 @@ model Brand {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
+  @@index([deletedAt])
   @@map("brands")
 }
 
 // ============================================
-// PRODUTO (TÊNIS) - CORRIGIDO
+// PRODUTO (TÊNIS)
 // ============================================
 model Product {
   id          String   @id @default(uuid())
@@ -69,7 +71,6 @@ model Product {
   mainImage   String?
   images      String[]
   
-  // ✅ CAMPOS ADICIONADOS
   price       Float    @default(0)
   stock       Int      @default(0)
   
@@ -100,29 +101,22 @@ model Product {
 }
 
 // ============================================
-// INVENTÁRIO (Controle por tamanho/cor)
+// INVENTÁRIO
 // ============================================
 model InventoryItem {
   id          String   @id @default(uuid())
   productId   String
   product     Product  @relation(fields: [productId], references: [id])
   
-  // Especificação do item
-  size        Int      // 38, 39, 40, 41, 42, 43
-  color       String   // "Branco", "Preto", "Azul"
-  sku         String   @unique  // NIKE-AIRMAX90-39-BRANCO
+  size        Int
+  color       String
+  sku         String   @unique
+  stock       Int      @default(0)
+  reserved    Int      @default(0)
+  price       Float
   
-  // Controle de estoque
-  stock       Int      @default(0)   // Quantidade disponível
-  reserved    Int      @default(0)   // Itens no carrinho
-  
-  // Preço pode variar por tamanho/cor
-  price       Float    // Preço deste item específico
-  
-  // Status
   active      Boolean  @default(true)
   
-  // Relacionamentos
   cartItems   CartItem[]
   orderItems  OrderItem[]
   
@@ -177,16 +171,12 @@ model Order {
   orderNumber     String      @unique
   status          OrderStatus @default(pending)
   
-  // Dados do cliente (quem comprou)
   clientName      String
   clientPhone     String
   clientAddress   String?
   
-  // Auditoria - Funcionário que registrou a venda (admin/employee)
   createdById     String?
   createdBy       User?       @relation("OrderCreator", fields: [createdById], references: [id])
-  
-  // Auditoria - Funcionário que atualizou o pedido
   updatedById     String?
   updatedBy       User?       @relation("OrderUpdater", fields: [updatedById], references: [id])
   
@@ -217,11 +207,9 @@ model OrderItem {
   inventoryId   String
   inventory     InventoryItem @relation(fields: [inventoryId], references: [id])
   
-  // Relação com Product (para o relacionamento bidirecional)
   productId     String
   product       Product       @relation(fields: [productId], references: [id])
   
-  // Snapshot (para não perder se produto mudar depois)
   productName   String
   brandName     String
   size          Int
@@ -256,7 +244,7 @@ model Store {
 }
 
 // ============================================
-// USER (Funcionários/Administradores)
+// USER
 // ============================================
 model User {
   id          String    @id @default(uuid())
@@ -268,15 +256,10 @@ model User {
   deletedAt   DateTime?
   lastLogin   DateTime?
   
-  // Relações - Produtos
   createdProducts   Product[]   @relation("ProductCreator")
   updatedProducts   Product[]   @relation("ProductUpdater")
-  
-  // Relações - Pedidos
   createdOrders     Order[]     @relation("OrderCreator")
   updatedOrders     Order[]     @relation("OrderUpdater")
-  
-  // Relações - Marcas
   createdBrands     Brand[]     @relation("BrandCreator")
   updatedBrands     Brand[]     @relation("BrandUpdater")
   

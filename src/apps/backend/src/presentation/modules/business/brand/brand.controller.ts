@@ -83,11 +83,25 @@ export class BrandController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @AdminOnly()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Deletar marca (admin)' })
+  @ApiOperation({ summary: 'Soft delete - esconder marca (admin)' })
   @ApiParam({ name: 'id', description: 'UUID da marca' })
   @ApiResponse({ status: 200, description: 'Marca deletada' })
   @ApiResponse({ status: 404, description: 'Marca não encontrada' })
-  remove(@Param('id') id: string) {
-    return this.brandService.remove(id);
+  @ApiResponse({ status: 400, description: 'Marca já está deletada' })
+  remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.brandService.remove(id, user.id);
+  }
+
+  @Patch(':id/restore')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @AdminOnly()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Restaurar marca deletada (admin)' })
+  @ApiParam({ name: 'id', description: 'UUID da marca' })
+  @ApiResponse({ status: 200, description: 'Marca restaurada' })
+  @ApiResponse({ status: 404, description: 'Marca não encontrada' })
+  @ApiResponse({ status: 400, description: 'Marca não está deletada' })
+  restore(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.brandService.restore(id, user.id);
   }
 }

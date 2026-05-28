@@ -11,6 +11,6 @@ export interface IBrandService {
     updateBrandDto: UpdateBrandDto,
     userId: string,
   ): Promise<IBrand>;
-  remove(id: string): Promise<IBrand>;
-  restore(): Promise<IBrand>;
+  remove(id: string, userId: string): Promise<IBrand>;
+  restore(id: string, userId: string): Promise<IBrand>;
 }

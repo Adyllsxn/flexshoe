@@ -3,6 +3,7 @@ export type IBrand = {
   name: string;
   slug: string;
   active: boolean;
+  deletedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   createdById?: string | null;

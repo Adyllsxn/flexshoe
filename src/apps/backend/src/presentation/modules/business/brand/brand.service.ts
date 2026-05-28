@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { IBrandService } from 'src/domain/abstractions/services/ibrand.service';
@@ -14,22 +15,23 @@ export class BrandService implements IBrandService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findAll(): Promise<IBrand[]> {
-    return await this.prismaService.brand.findMany({
-      where: { active: true },
+    const brands = await this.prismaService.brand.findMany({
+      where: { deletedAt: null },
       orderBy: { name: 'asc' },
     });
+    return brands as IBrand[];
   }
 
   async findOne(id: string): Promise<IBrand> {
     const brand = await this.prismaService.brand.findFirst({
-      where: { id },
+      where: { id, deletedAt: null },
     });
 
     if (!brand) {
       throw new NotFoundException(`Marca com ID "${id}" não encontrada`);
     }
 
-    return brand;
+    return brand as IBrand;
   }
 
   async create(
@@ -37,7 +39,7 @@ export class BrandService implements IBrandService {
     userId: string,
   ): Promise<IBrand> {
     const existingByName = await this.prismaService.brand.findFirst({
-      where: { name: createBrandDto.name },
+      where: { name: createBrandDto.name, deletedAt: null },
     });
 
     if (existingByName) {
@@ -47,7 +49,7 @@ export class BrandService implements IBrandService {
     }
 
     const existingBySlug = await this.prismaService.brand.findFirst({
-      where: { slug: createBrandDto.slug },
+      where: { slug: createBrandDto.slug, deletedAt: null },
     });
 
     if (existingBySlug) {
@@ -56,7 +58,7 @@ export class BrandService implements IBrandService {
       );
     }
 
-    return await this.prismaService.brand.create({
+    const brand = await this.prismaService.brand.create({
       data: {
         name: createBrandDto.name,
         slug: createBrandDto.slug,
@@ -65,6 +67,8 @@ export class BrandService implements IBrandService {
         updatedById: userId,
       },
     });
+
+    return brand as IBrand;
   }
 
   async update(
@@ -76,7 +80,7 @@ export class BrandService implements IBrandService {
 
     if (updateBrandDto.name) {
       const existingByName = await this.prismaService.brand.findFirst({
-        where: { name: updateBrandDto.name, id: { not: id } },
+        where: { name: updateBrandDto.name, id: { not: id }, deletedAt: null },
       });
 
       if (existingByName) {
@@ -88,7 +92,7 @@ export class BrandService implements IBrandService {
 
     if (updateBrandDto.slug) {
       const existingBySlug = await this.prismaService.brand.findFirst({
-        where: { slug: updateBrandDto.slug, id: { not: id } },
+        where: { slug: updateBrandDto.slug, id: { not: id }, deletedAt: null },
       });
 
       if (existingBySlug) {
@@ -98,7 +102,7 @@ export class BrandService implements IBrandService {
       }
     }
 
-    return await this.prismaService.brand.update({
+    const brand = await this.prismaService.brand.update({
       where: { id },
       data: {
         name: updateBrandDto.name,
@@ -107,9 +111,11 @@ export class BrandService implements IBrandService {
         updatedById: userId,
       },
     });
+
+    return brand as IBrand;
   }
 
-  async remove(id: string): Promise<IBrand> {
+  async remove(id: string, userId: string): Promise<IBrand> {
     const brand = await this.prismaService.brand.findFirst({
       where: { id },
     });
@@ -118,12 +124,46 @@ export class BrandService implements IBrandService {
       throw new NotFoundException(`Marca com ID "${id}" não encontrada`);
     }
 
-    return await this.prismaService.brand.delete({
+    if (brand.deletedAt !== null) {
+      throw new BadRequestException(
+        `Marca "${brand.name}" já está deletada`,
+      );
+    }
+
+    const deletedBrand = await this.prismaService.brand.update({
       where: { id },
+      data: {
+        deletedAt: new Date(),
+        updatedById: userId,
+      },
     });
+
+    return deletedBrand as IBrand;
   }
 
-  restore(): Promise<IBrand> {
-    throw new Error('Marcas não suportam soft delete');
+  async restore(id: string, userId: string): Promise<IBrand> {
+    const brand = await this.prismaService.brand.findFirst({
+      where: { id },
+    });
+
+    if (!brand) {
+      throw new NotFoundException(`Marca com ID "${id}" não encontrada`);
+    }
+
+    if (brand.deletedAt === null) {
+      throw new BadRequestException(
+        `Marca "${brand.name}" não está deletada`,
+      );
+    }
+
+    const restoredBrand = await this.prismaService.brand.update({
+      where: { id },
+      data: {
+        deletedAt: null,
+        updatedById: userId,
+      },
+    });
+
+    return restoredBrand as IBrand;
   }
 }
