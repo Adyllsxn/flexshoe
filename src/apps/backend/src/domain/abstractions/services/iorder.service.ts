@@ -19,7 +19,7 @@ export interface IOrderService {
     status: OrderStatus,
     userId: string,
   ): Promise<IOrder>;
-  remove(id: string, userId: string): Promise<{ message: string }>;
+  remove(id: string): Promise<{ message: string }>;
   getByPhone(
     phone: string,
     paginationDto: PaginationDto,

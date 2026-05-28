@@ -7,12 +7,13 @@ import {
   Param,
   Delete,
   Req,
+  Res,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CartService } from './cart.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 import { randomBytes } from 'crypto';
 
 interface CookieRequest extends Request {
@@ -26,10 +27,14 @@ interface CookieRequest extends Request {
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  private getSessionId(req: CookieRequest): string {
+  private getSessionId(req: CookieRequest, res: Response): string {
     let sessionId = req.cookies?.cart_session;
     if (!sessionId) {
       sessionId = randomBytes(32).toString('hex');
+      res.cookie('cart_session', sessionId, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
+      });
     }
     return sessionId;
   }
@@ -37,8 +42,11 @@ export class CartController {
   @Get()
   @ApiOperation({ summary: 'Ver carrinho' })
   @ApiResponse({ status: 200, description: 'Carrinho retornado com sucesso' })
-  async getCart(@Req() req: CookieRequest) {
-    const sessionId = this.getSessionId(req);
+  async getCart(
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const sessionId = this.getSessionId(req, res);
     const cart = await this.cartService.getCart(sessionId);
     const summary = await this.cartService.getCartSummary(sessionId);
 
@@ -54,9 +62,10 @@ export class CartController {
   @ApiResponse({ status: 400, description: 'Estoque insuficiente' })
   async addToCart(
     @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: Response,
     @Body() addToCartDto: AddToCartDto,
   ) {
-    const sessionId = this.getSessionId(req);
+    const sessionId = this.getSessionId(req, res);
     const cart = await this.cartService.addItem(sessionId, addToCartDto);
     const summary = await this.cartService.getCartSummary(sessionId);
 
@@ -72,10 +81,11 @@ export class CartController {
   @ApiResponse({ status: 200, description: 'Quantidade atualizada' })
   async updateItemQuantity(
     @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: Response,
     @Param('itemId') itemId: string,
     @Body() updateDto: UpdateCartItemDto,
   ) {
-    const sessionId = this.getSessionId(req);
+    const sessionId = this.getSessionId(req, res);
     const cart = await this.cartService.updateItemQuantity(
       sessionId,
       itemId,
@@ -93,8 +103,12 @@ export class CartController {
   @Delete('item/:itemId')
   @ApiOperation({ summary: 'Remover item do carrinho' })
   @ApiResponse({ status: 200, description: 'Item removido' })
-  async removeItem(@Req() req: CookieRequest, @Param('itemId') itemId: string) {
-    const sessionId = this.getSessionId(req);
+  async removeItem(
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: Response,
+    @Param('itemId') itemId: string,
+  ) {
+    const sessionId = this.getSessionId(req, res);
     const cart = await this.cartService.removeItem(sessionId, itemId);
     const summary = await this.cartService.getCartSummary(sessionId);
 
@@ -108,8 +122,11 @@ export class CartController {
   @Delete('clear')
   @ApiOperation({ summary: 'Limpar carrinho' })
   @ApiResponse({ status: 200, description: 'Carrinho limpo' })
-  async clearCart(@Req() req: CookieRequest) {
-    const sessionId = this.getSessionId(req);
+  async clearCart(
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const sessionId = this.getSessionId(req, res);
     await this.cartService.clearCart(sessionId);
 
     return {
@@ -120,8 +137,11 @@ export class CartController {
   @Get('summary')
   @ApiOperation({ summary: 'Resumo do carrinho' })
   @ApiResponse({ status: 200, description: 'Resumo retornado' })
-  async getSummary(@Req() req: CookieRequest) {
-    const sessionId = this.getSessionId(req);
+  async getSummary(
+    @Req() req: CookieRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const sessionId = this.getSessionId(req, res);
     return this.cartService.getCartSummary(sessionId);
   }
 }

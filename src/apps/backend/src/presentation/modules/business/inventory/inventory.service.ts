@@ -112,6 +112,24 @@ export class InventoryService implements IInventoryService {
       );
     }
 
+    // Verificar se a soma dos inventários não ultrapassa o stock do produto
+    const existingItems = await this.prismaService.inventoryItem.findMany({
+      where: { productId: createInventoryDto.productId, active: true },
+    });
+
+    const currentTotalStock = existingItems.reduce(
+      (sum, item) => sum + item.stock,
+      0,
+    );
+    const newStock = createInventoryDto.stock ?? 0;
+    const newTotalStock = currentTotalStock + newStock;
+
+    if (newTotalStock > product.stock) {
+      throw new BadRequestException(
+        `Estoque total do produto é ${product.stock}. Atualmente usado: ${currentTotalStock}. Tentando adicionar: ${newStock}. Limite disponível: ${product.stock - currentTotalStock}`,
+      );
+    }
+
     const existingSku = await this.prismaService.inventoryItem.findFirst({
       where: { sku: createInventoryDto.sku },
     });
@@ -143,7 +161,6 @@ export class InventoryService implements IInventoryService {
         sku: createInventoryDto.sku,
         stock: createInventoryDto.stock ?? 0,
         reserved: 0,
-        price: createInventoryDto.price,
         active: createInventoryDto.active ?? true,
       },
     });
@@ -155,7 +172,37 @@ export class InventoryService implements IInventoryService {
     id: string,
     updateInventoryDto: UpdateInventoryDto,
   ): Promise<IInventoryItem> {
-    await this.findOne(id);
+    const existingItem = await this.findOne(id);
+    const product = await this.prismaService.product.findFirst({
+      where: { id: existingItem.productId },
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Produto não encontrado`);
+    }
+
+    // Se estiver atualizando o stock, verificar limite
+    if (updateInventoryDto.stock !== undefined) {
+      const otherItems = await this.prismaService.inventoryItem.findMany({
+        where: {
+          productId: existingItem.productId,
+          active: true,
+          id: { not: id },
+        },
+      });
+
+      const otherItemsTotal = otherItems.reduce(
+        (sum, item) => sum + item.stock,
+        0,
+      );
+      const newTotalStock = otherItemsTotal + updateInventoryDto.stock;
+
+      if (newTotalStock > product.stock) {
+        throw new BadRequestException(
+          `Estoque total do produto é ${product.stock}. Outros itens somam: ${otherItemsTotal}. Tentando definir este item como: ${updateInventoryDto.stock}. Limite disponível: ${product.stock - otherItemsTotal}`,
+        );
+      }
+    }
 
     if (updateInventoryDto.sku) {
       const existingSku = await this.prismaService.inventoryItem.findFirst({
@@ -175,7 +222,6 @@ export class InventoryService implements IInventoryService {
         size: updateInventoryDto.size,
         color: updateInventoryDto.color,
         sku: updateInventoryDto.sku,
-        price: updateInventoryDto.price,
         active: updateInventoryDto.active,
       },
     });
@@ -207,9 +253,60 @@ export class InventoryService implements IInventoryService {
     };
   }
 
+  async restore(
+    id: string,
+  ): Promise<{ message: string; item: IInventoryItem }> {
+    const item = await this.prismaService.inventoryItem.findFirst({
+      where: { id },
+    });
+
+    if (!item) {
+      throw new NotFoundException(
+        `Item de inventário com ID "${id}" não encontrado`,
+      );
+    }
+
+    if (item.active) {
+      throw new BadRequestException(`Item ${item.sku} já está ativo`);
+    }
+
+    // Verificar se a reativação não ultrapassa o stock do produto
+    const product = await this.prismaService.product.findFirst({
+      where: { id: item.productId },
+    });
+
+    if (product) {
+      const otherItems = await this.prismaService.inventoryItem.findMany({
+        where: { productId: item.productId, active: true, id: { not: id } },
+      });
+
+      const otherItemsTotal = otherItems.reduce((sum, i) => sum + i.stock, 0);
+      const newTotalStock = otherItemsTotal + item.stock;
+
+      if (newTotalStock > product.stock) {
+        throw new BadRequestException(
+          `Não é possível reativar. Estoque total do produto é ${product.stock}. Outros itens somam: ${otherItemsTotal}. Este item tem ${item.stock}. Limite disponível: ${product.stock - otherItemsTotal}`,
+        );
+      }
+    }
+
+    const restoredItem = await this.prismaService.inventoryItem.update({
+      where: { id },
+      data: {
+        active: true,
+      },
+    });
+
+    return {
+      message: `Item ${item.sku} foi reativado com sucesso`,
+      item: restoredItem,
+    };
+  }
+
   async updateStock(id: string, quantity: number): Promise<IInventoryItem> {
     const item = await this.prismaService.inventoryItem.findFirst({
       where: { id, active: true },
+      include: { product: true },
     });
 
     if (!item) {
@@ -220,6 +317,20 @@ export class InventoryService implements IInventoryService {
 
     if (quantity < 0) {
       throw new BadRequestException('Quantidade não pode ser negativa');
+    }
+
+    // Verificar se o novo total não ultrapassa o produto
+    const otherItems = await this.prismaService.inventoryItem.findMany({
+      where: { productId: item.productId, active: true, id: { not: id } },
+    });
+
+    const otherItemsTotal = otherItems.reduce((sum, i) => sum + i.stock, 0);
+    const newTotalStock = otherItemsTotal + quantity;
+
+    if (newTotalStock > item.product.stock) {
+      throw new BadRequestException(
+        `Estoque total do produto é ${item.product.stock}. Outros itens somam: ${otherItemsTotal}. Este item teria ${quantity}. Limite disponível: ${item.product.stock - otherItemsTotal}`,
+      );
     }
 
     const updatedItem = await this.prismaService.inventoryItem.update({

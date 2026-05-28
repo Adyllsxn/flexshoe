@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
 
-export type EntityType = 'products' | 'categories' | 'users' | 'stores';
+export type EntityType = 'products' | 'users' | 'stores';
 
 interface CallbackFunction {
   (error: Error | null, accepted: boolean): void;
@@ -27,7 +27,6 @@ export class UploadService {
     const folders = [
       this.baseUploadDir,
       join(this.baseUploadDir, 'products'),
-      join(this.baseUploadDir, 'categories'),
       join(this.baseUploadDir, 'users'),
       join(this.baseUploadDir, 'stores'),
     ];
@@ -83,7 +82,7 @@ export class UploadService {
       storage: this.getStorageConfig(entity),
       fileFilter: this.getFileFilter(),
       limits: {
-        fileSize: 5 * 1024 * 1024,
+        fileSize: 2 * 1024 * 1024,
       },
     };
   }

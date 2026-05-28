@@ -19,7 +19,7 @@ export class BrandService implements IBrandService {
       where: { deletedAt: null },
       orderBy: { name: 'asc' },
     });
-    return brands as IBrand[];
+    return brands;
   }
 
   async findOne(id: string): Promise<IBrand> {
@@ -31,7 +31,7 @@ export class BrandService implements IBrandService {
       throw new NotFoundException(`Marca com ID "${id}" não encontrada`);
     }
 
-    return brand as IBrand;
+    return brand;
   }
 
   async create(
@@ -68,7 +68,7 @@ export class BrandService implements IBrandService {
       },
     });
 
-    return brand as IBrand;
+    return brand;
   }
 
   async update(
@@ -112,7 +112,7 @@ export class BrandService implements IBrandService {
       },
     });
 
-    return brand as IBrand;
+    return brand;
   }
 
   async remove(id: string, userId: string): Promise<IBrand> {
@@ -125,9 +125,7 @@ export class BrandService implements IBrandService {
     }
 
     if (brand.deletedAt !== null) {
-      throw new BadRequestException(
-        `Marca "${brand.name}" já está deletada`,
-      );
+      throw new BadRequestException(`Marca "${brand.name}" já está deletada`);
     }
 
     const deletedBrand = await this.prismaService.brand.update({
@@ -138,7 +136,7 @@ export class BrandService implements IBrandService {
       },
     });
 
-    return deletedBrand as IBrand;
+    return deletedBrand;
   }
 
   async restore(id: string, userId: string): Promise<IBrand> {
@@ -151,9 +149,7 @@ export class BrandService implements IBrandService {
     }
 
     if (brand.deletedAt === null) {
-      throw new BadRequestException(
-        `Marca "${brand.name}" não está deletada`,
-      );
+      throw new BadRequestException(`Marca "${brand.name}" não está deletada`);
     }
 
     const restoredBrand = await this.prismaService.brand.update({
@@ -164,6 +160,6 @@ export class BrandService implements IBrandService {
       },
     });
 
-    return restoredBrand as IBrand;
+    return restoredBrand;
   }
 }

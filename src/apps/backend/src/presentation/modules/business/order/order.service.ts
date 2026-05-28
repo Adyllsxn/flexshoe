@@ -18,6 +18,7 @@ import { CartService } from '../cart/cart.service';
 
 interface CartItemType {
   inventoryId: string;
+  productId: string;
   productName: string;
   brandName: string;
   size: number;
@@ -109,7 +110,7 @@ export class OrderService implements IOrderService {
         data: {
           orderId: order.id,
           inventoryId: item.inventoryId,
-          productId: item.inventoryId,
+          productId: item.productId,
           productName: item.productName,
           brandName: item.brandName,
           size: item.size,
@@ -205,6 +206,26 @@ export class OrderService implements IOrderService {
     });
 
     return order;
+  }
+
+  async cancel(id: string, userId: string): Promise<{ message: string }> {
+    const order = await this.findOne(id);
+
+    if (order.status === 'cancelled') {
+      throw new BadRequestException('Pedido já está cancelado');
+    }
+
+    const cancelledOrder = await this.prismaService.order.update({
+      where: { id },
+      data: {
+        status: 'cancelled',
+        updatedById: userId,
+      },
+    });
+
+    return {
+      message: `Pedido ${cancelledOrder.orderNumber} foi cancelado com sucesso`,
+    };
   }
 
   async remove(id: string): Promise<{ message: string }> {

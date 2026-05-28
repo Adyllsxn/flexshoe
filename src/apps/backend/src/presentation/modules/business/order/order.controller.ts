@@ -19,7 +19,8 @@ import {
 } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto, OrderStatus } from './dto/update-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
+import { OrderStatusEnum } from './enums/order-status.enum';
 import { PaginationDto } from 'src/domain/shared/pagination/pagination.dto';
 import { JwtAuthGuard } from 'src/presentation/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/presentation/common/guards/roles.guard';
@@ -83,7 +84,7 @@ export class OrderController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @AdminOrEmployee()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Atualizar pedido (admin/employee)' })
+  @ApiOperation({ summary: 'Atualizar dados do pedido (admin/employee)' })
   @ApiParam({ name: 'id', description: 'UUID do pedido' })
   @ApiResponse({ status: 200, description: 'Pedido atualizado' })
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
@@ -96,24 +97,24 @@ export class OrderController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Atualizar status do pedido (admin)' })
   @ApiParam({ name: 'id', description: 'UUID do pedido' })
-  @ApiQuery({ name: 'status', enum: OrderStatus, example: 'approved' })
+  @ApiQuery({ name: 'status', enum: OrderStatusEnum, example: 'approved' })
   @ApiResponse({ status: 200, description: 'Status atualizado' })
   updateStatus(
     @Param('id') id: string,
-    @Query('status') status: OrderStatus,
+    @Query('status') status: OrderStatusEnum,
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.orderService.updateStatus(id, status, user.id);
+    return this.orderService.updateStatus(id, status as any, user.id);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @AdminOnly()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Deletar pedido (admin)' })
+  @ApiOperation({ summary: 'Cancelar pedido (admin)' })
   @ApiParam({ name: 'id', description: 'UUID do pedido' })
-  @ApiResponse({ status: 200, description: 'Pedido deletado' })
-  remove(@Param('id') id: string) {
-    return this.orderService.remove(id);
+  @ApiResponse({ status: 200, description: 'Pedido cancelado' })
+  remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.orderService.cancel(id, user.id);
   }
 }

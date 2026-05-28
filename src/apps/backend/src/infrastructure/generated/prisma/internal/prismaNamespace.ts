@@ -1164,7 +1164,6 @@ export const InventoryItemScalarFieldEnum = {
   sku: 'sku',
   stock: 'stock',
   reserved: 'reserved',
-  price: 'price',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

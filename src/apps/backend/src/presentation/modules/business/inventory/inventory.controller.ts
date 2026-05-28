@@ -95,6 +95,19 @@ export class InventoryController {
     return this.inventoryService.remove(id);
   }
 
+  @Patch(':id/restore')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @AdminOnly()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Reativar item de inventário (admin)' })
+  @ApiParam({ name: 'id', description: 'UUID do item' })
+  @ApiResponse({ status: 200, description: 'Item reativado' })
+  @ApiResponse({ status: 404, description: 'Item não encontrado' })
+  @ApiResponse({ status: 400, description: 'Item já está ativo' })
+  restore(@Param('id') id: string) {
+    return this.inventoryService.restore(id);
+  }
+
   @Patch(':id/stock')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @AdminOnly()

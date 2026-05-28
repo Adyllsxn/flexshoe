@@ -1,25 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsEnum } from 'class-validator';
-
-export enum OrderStatus {
-  pending = 'pending',
-  approved = 'approved',
-  delivered = 'delivered',
-  cancelled = 'cancelled',
-}
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateOrderDto {
-  @ApiPropertyOptional({ enum: OrderStatus, example: 'approved' })
-  @IsOptional()
-  @IsEnum(OrderStatus)
-  status?: OrderStatus;
-
   @ApiPropertyOptional({ example: 'João Silva Atualizado' })
   @IsOptional()
   @IsString()
   clientName?: string;
 
-  @ApiPropertyOptional({ example: '244999999999' })
+  @ApiPropertyOptional({ example: '+244999999999' })
   @IsOptional()
   @IsString()
   clientPhone?: string;

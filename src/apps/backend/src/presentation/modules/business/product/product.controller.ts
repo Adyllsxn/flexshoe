@@ -161,16 +161,132 @@ export class ProductController {
   @AdminOnly()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Atualizar produto (admin)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'Air Max 90' },
+        slug: { type: 'string', example: 'air-max-90' },
+        description: { type: 'string', example: 'Clássico tênis da Nike' },
+        price: { type: 'string', example: '599.90' },
+        brandId: { type: 'string', example: 'uuid-da-marca' },
+        gender: {
+          type: 'string',
+          enum: ['male', 'female', 'unisex', 'kids'],
+          example: 'unisex',
+        },
+        active: { type: 'string', example: 'true' },
+        featured: { type: 'string', example: 'false' },
+        stock: { type: 'string', example: '10' },
+        mainImage: {
+          type: 'string',
+          format: 'binary',
+          description: 'Nova imagem principal do produto',
+        },
+        images: {
+          type: 'array',
+          items: { type: 'string', format: 'binary' },
+          description: 'Novas imagens adicionais do produto',
+        },
+      },
+    },
+  })
   @ApiParam({ name: 'id', description: 'UUID do produto' })
   @ApiResponse({ status: 200, description: 'Produto atualizado' })
   @ApiResponse({ status: 404, description: 'Produto não encontrado' })
   @ApiResponse({ status: 409, description: 'Conflito de slug' })
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'mainImage', maxCount: 1 },
+      { name: 'images', maxCount: 10 },
+    ]),
+  )
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
+    @UploadedFiles()
+    files: {
+      mainImage?: Express.Multer.File[];
+      images?: Express.Multer.File[];
+    },
     @CurrentUser() user: AuthenticatedUser,
   ) {
-    return this.productService.update(id, updateProductDto, user.id);
+    // Limpar campos vazios (remover strings vazias e undefined)
+    const cleanData: Partial<UpdateProductDto> = {};
+
+    if (updateProductDto.name !== undefined && updateProductDto.name !== '') {
+      cleanData.name = updateProductDto.name;
+    }
+    if (updateProductDto.slug !== undefined && updateProductDto.slug !== '') {
+      cleanData.slug = updateProductDto.slug;
+    }
+    if (
+      updateProductDto.description !== undefined &&
+      updateProductDto.description !== ''
+    ) {
+      cleanData.description = updateProductDto.description;
+    }
+    if (
+      updateProductDto.price !== undefined &&
+      updateProductDto.price !== null &&
+      updateProductDto.price !== 0
+    ) {
+      cleanData.price = updateProductDto.price;
+    }
+    if (
+      updateProductDto.brandId !== undefined &&
+      updateProductDto.brandId !== null &&
+      updateProductDto.brandId !== ''
+    ) {
+      cleanData.brandId = updateProductDto.brandId;
+    }
+    if (
+      updateProductDto.gender !== undefined &&
+      updateProductDto.gender !== null
+    ) {
+      cleanData.gender = updateProductDto.gender;
+    }
+    if (
+      updateProductDto.active !== undefined &&
+      updateProductDto.active !== null
+    ) {
+      cleanData.active = updateProductDto.active;
+    }
+    if (
+      updateProductDto.featured !== undefined &&
+      updateProductDto.featured !== null
+    ) {
+      cleanData.featured = updateProductDto.featured;
+    }
+    if (
+      updateProductDto.stock !== undefined &&
+      updateProductDto.stock !== null &&
+      updateProductDto.stock !== 0
+    ) {
+      cleanData.stock = updateProductDto.stock;
+    }
+
+    // Se houver nova imagem principal
+    if (files.mainImage && files.mainImage[0]) {
+      const mainImageUrl = await this.uploadService.saveImage(
+        files.mainImage[0],
+        'products',
+      );
+      cleanData.mainImage = mainImageUrl;
+    }
+
+    // Se houver novas imagens adicionais
+    if (files.images && files.images.length > 0) {
+      const newImages: string[] = [];
+      for (const file of files.images) {
+        const imageUrl = await this.uploadService.saveImage(file, 'products');
+        newImages.push(imageUrl);
+      }
+      cleanData.images = newImages;
+    }
+
+    return this.productService.update(id, cleanData, user.id);
   }
 
   @Patch(':id/images')

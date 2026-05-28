@@ -30,14 +30,12 @@ export type InventoryItemAvgAggregateOutputType = {
   size: number | null
   stock: number | null
   reserved: number | null
-  price: number | null
 }
 
 export type InventoryItemSumAggregateOutputType = {
   size: number | null
   stock: number | null
   reserved: number | null
-  price: number | null
 }
 
 export type InventoryItemMinAggregateOutputType = {
@@ -48,7 +46,6 @@ export type InventoryItemMinAggregateOutputType = {
   sku: string | null
   stock: number | null
   reserved: number | null
-  price: number | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -62,7 +59,6 @@ export type InventoryItemMaxAggregateOutputType = {
   sku: string | null
   stock: number | null
   reserved: number | null
-  price: number | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -76,7 +72,6 @@ export type InventoryItemCountAggregateOutputType = {
   sku: number
   stock: number
   reserved: number
-  price: number
   active: number
   createdAt: number
   updatedAt: number
@@ -88,14 +83,12 @@ export type InventoryItemAvgAggregateInputType = {
   size?: true
   stock?: true
   reserved?: true
-  price?: true
 }
 
 export type InventoryItemSumAggregateInputType = {
   size?: true
   stock?: true
   reserved?: true
-  price?: true
 }
 
 export type InventoryItemMinAggregateInputType = {
@@ -106,7 +99,6 @@ export type InventoryItemMinAggregateInputType = {
   sku?: true
   stock?: true
   reserved?: true
-  price?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -120,7 +112,6 @@ export type InventoryItemMaxAggregateInputType = {
   sku?: true
   stock?: true
   reserved?: true
-  price?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -134,7 +125,6 @@ export type InventoryItemCountAggregateInputType = {
   sku?: true
   stock?: true
   reserved?: true
-  price?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -235,7 +225,6 @@ export type InventoryItemGroupByOutputType = {
   sku: string
   stock: number
   reserved: number
-  price: number
   active: boolean
   createdAt: Date
   updatedAt: Date
@@ -272,7 +261,6 @@ export type InventoryItemWhereInput = {
   sku?: Prisma.StringFilter<"InventoryItem"> | string
   stock?: Prisma.IntFilter<"InventoryItem"> | number
   reserved?: Prisma.IntFilter<"InventoryItem"> | number
-  price?: Prisma.FloatFilter<"InventoryItem"> | number
   active?: Prisma.BoolFilter<"InventoryItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"InventoryItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InventoryItem"> | Date | string
@@ -289,7 +277,6 @@ export type InventoryItemOrderByWithRelationInput = {
   sku?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   reserved?: Prisma.SortOrder
-  price?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -310,7 +297,6 @@ export type InventoryItemWhereUniqueInput = Prisma.AtLeast<{
   color?: Prisma.StringFilter<"InventoryItem"> | string
   stock?: Prisma.IntFilter<"InventoryItem"> | number
   reserved?: Prisma.IntFilter<"InventoryItem"> | number
-  price?: Prisma.FloatFilter<"InventoryItem"> | number
   active?: Prisma.BoolFilter<"InventoryItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"InventoryItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InventoryItem"> | Date | string
@@ -327,7 +313,6 @@ export type InventoryItemOrderByWithAggregationInput = {
   sku?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   reserved?: Prisma.SortOrder
-  price?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -349,7 +334,6 @@ export type InventoryItemScalarWhereWithAggregatesInput = {
   sku?: Prisma.StringWithAggregatesFilter<"InventoryItem"> | string
   stock?: Prisma.IntWithAggregatesFilter<"InventoryItem"> | number
   reserved?: Prisma.IntWithAggregatesFilter<"InventoryItem"> | number
-  price?: Prisma.FloatWithAggregatesFilter<"InventoryItem"> | number
   active?: Prisma.BoolWithAggregatesFilter<"InventoryItem"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"InventoryItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"InventoryItem"> | Date | string
@@ -362,7 +346,6 @@ export type InventoryItemCreateInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -379,7 +362,6 @@ export type InventoryItemUncheckedCreateInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -394,7 +376,6 @@ export type InventoryItemUpdateInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -411,7 +392,6 @@ export type InventoryItemUncheckedUpdateInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -427,7 +407,6 @@ export type InventoryItemCreateManyInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -440,7 +419,6 @@ export type InventoryItemUpdateManyMutationInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -454,7 +432,6 @@ export type InventoryItemUncheckedUpdateManyInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -484,7 +461,6 @@ export type InventoryItemCountOrderByAggregateInput = {
   sku?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   reserved?: Prisma.SortOrder
-  price?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -494,7 +470,6 @@ export type InventoryItemAvgOrderByAggregateInput = {
   size?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   reserved?: Prisma.SortOrder
-  price?: Prisma.SortOrder
 }
 
 export type InventoryItemMaxOrderByAggregateInput = {
@@ -505,7 +480,6 @@ export type InventoryItemMaxOrderByAggregateInput = {
   sku?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   reserved?: Prisma.SortOrder
-  price?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -519,7 +493,6 @@ export type InventoryItemMinOrderByAggregateInput = {
   sku?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   reserved?: Prisma.SortOrder
-  price?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -529,7 +502,6 @@ export type InventoryItemSumOrderByAggregateInput = {
   size?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   reserved?: Prisma.SortOrder
-  price?: Prisma.SortOrder
 }
 
 export type InventoryItemScalarRelationFilter = {
@@ -614,7 +586,6 @@ export type InventoryItemCreateWithoutProductInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -629,7 +600,6 @@ export type InventoryItemUncheckedCreateWithoutProductInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -674,7 +644,6 @@ export type InventoryItemScalarWhereInput = {
   sku?: Prisma.StringFilter<"InventoryItem"> | string
   stock?: Prisma.IntFilter<"InventoryItem"> | number
   reserved?: Prisma.IntFilter<"InventoryItem"> | number
-  price?: Prisma.FloatFilter<"InventoryItem"> | number
   active?: Prisma.BoolFilter<"InventoryItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"InventoryItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"InventoryItem"> | Date | string
@@ -687,7 +656,6 @@ export type InventoryItemCreateWithoutCartItemsInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -703,7 +671,6 @@ export type InventoryItemUncheckedCreateWithoutCartItemsInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -733,7 +700,6 @@ export type InventoryItemUpdateWithoutCartItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -749,7 +715,6 @@ export type InventoryItemUncheckedUpdateWithoutCartItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -763,7 +728,6 @@ export type InventoryItemCreateWithoutOrderItemsInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -779,7 +743,6 @@ export type InventoryItemUncheckedCreateWithoutOrderItemsInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -809,7 +772,6 @@ export type InventoryItemUpdateWithoutOrderItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -825,7 +787,6 @@ export type InventoryItemUncheckedUpdateWithoutOrderItemsInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -839,7 +800,6 @@ export type InventoryItemCreateManyProductInput = {
   sku: string
   stock?: number
   reserved?: number
-  price: number
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -852,7 +812,6 @@ export type InventoryItemUpdateWithoutProductInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -867,7 +826,6 @@ export type InventoryItemUncheckedUpdateWithoutProductInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -882,7 +840,6 @@ export type InventoryItemUncheckedUpdateManyWithoutProductInput = {
   sku?: Prisma.StringFieldUpdateOperationsInput | string
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   reserved?: Prisma.IntFieldUpdateOperationsInput | number
-  price?: Prisma.FloatFieldUpdateOperationsInput | number
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -936,7 +893,6 @@ export type InventoryItemSelect<ExtArgs extends runtime.Types.Extensions.Interna
   sku?: boolean
   stock?: boolean
   reserved?: boolean
-  price?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -954,7 +910,6 @@ export type InventoryItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   sku?: boolean
   stock?: boolean
   reserved?: boolean
-  price?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -969,7 +924,6 @@ export type InventoryItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   sku?: boolean
   stock?: boolean
   reserved?: boolean
-  price?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -984,13 +938,12 @@ export type InventoryItemSelectScalar = {
   sku?: boolean
   stock?: boolean
   reserved?: boolean
-  price?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type InventoryItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productId" | "size" | "color" | "sku" | "stock" | "reserved" | "price" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["inventoryItem"]>
+export type InventoryItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productId" | "size" | "color" | "sku" | "stock" | "reserved" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["inventoryItem"]>
 export type InventoryItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   cartItems?: boolean | Prisma.InventoryItem$cartItemsArgs<ExtArgs>
@@ -1019,7 +972,6 @@ export type $InventoryItemPayload<ExtArgs extends runtime.Types.Extensions.Inter
     sku: string
     stock: number
     reserved: number
-    price: number
     active: boolean
     createdAt: Date
     updatedAt: Date
@@ -1456,7 +1408,6 @@ export interface InventoryItemFieldRefs {
   readonly sku: Prisma.FieldRef<"InventoryItem", 'String'>
   readonly stock: Prisma.FieldRef<"InventoryItem", 'Int'>
   readonly reserved: Prisma.FieldRef<"InventoryItem", 'Int'>
-  readonly price: Prisma.FieldRef<"InventoryItem", 'Float'>
   readonly active: Prisma.FieldRef<"InventoryItem", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"InventoryItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"InventoryItem", 'DateTime'>
