@@ -96,34 +96,51 @@ export class ProductController {
         description: { type: 'string', example: 'Clássico tênis da Nike' },
         price: { type: 'string', example: '599.90' },
         brandId: { type: 'string', example: 'uuid-da-marca' },
-        gender: { type: 'string', enum: ['male', 'female', 'unisex', 'kids'], example: 'unisex' },
+        gender: {
+          type: 'string',
+          enum: ['male', 'female', 'unisex', 'kids'],
+          example: 'unisex',
+        },
         active: { type: 'string', example: 'true' },
         featured: { type: 'string', example: 'false' },
         stock: { type: 'string', example: '10' },
-        mainImage: { type: 'string', format: 'binary', description: 'Imagem principal do produto' },
-        images: { 
-          type: 'array', 
+        mainImage: {
+          type: 'string',
+          format: 'binary',
+          description: 'Imagem principal do produto',
+        },
+        images: {
+          type: 'array',
           items: { type: 'string', format: 'binary' },
-          description: 'Imagens adicionais do produto'
+          description: 'Imagens adicionais do produto',
         },
       },
     },
   })
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'mainImage', maxCount: 1 },
-    { name: 'images', maxCount: 10 },
-  ]))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'mainImage', maxCount: 1 },
+      { name: 'images', maxCount: 10 },
+    ]),
+  )
   async create(
     @Body() createProductDto: CreateProductDto,
-    @UploadedFiles() files: { mainImage?: Express.Multer.File[]; images?: Express.Multer.File[] },
+    @UploadedFiles()
+    files: {
+      mainImage?: Express.Multer.File[];
+      images?: Express.Multer.File[];
+    },
     @CurrentUser() user: AuthenticatedUser,
   ) {
     let mainImage: string | undefined;
     const images: string[] = [];
 
     if (files.mainImage && files.mainImage[0]) {
-      mainImage = await this.uploadService.saveImage(files.mainImage[0], 'products');
+      mainImage = await this.uploadService.saveImage(
+        files.mainImage[0],
+        'products',
+      );
     }
 
     if (files.images) {
@@ -166,17 +183,15 @@ export class ProductController {
     schema: {
       type: 'object',
       properties: {
-        images: { 
-          type: 'array', 
+        images: {
+          type: 'array',
           items: { type: 'string', format: 'binary' },
-          description: 'Novas imagens para adicionar'
+          description: 'Novas imagens para adicionar',
         },
       },
     },
   })
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'images', maxCount: 10 },
-  ]))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 10 }]))
   async addImages(
     @Param('id') id: string,
     @UploadedFiles() files: { images?: Express.Multer.File[] },
@@ -193,7 +208,11 @@ export class ProductController {
       }
     }
 
-    return this.productService.update(id, { images: [...currentImages, ...newImages] }, user.id);
+    return this.productService.update(
+      id,
+      { images: [...currentImages, ...newImages] },
+      user.id,
+    );
   }
 
   @Delete(':id/images')
@@ -206,7 +225,10 @@ export class ProductController {
     schema: {
       type: 'object',
       properties: {
-        imageUrl: { type: 'string', description: 'URL da imagem a ser removida' },
+        imageUrl: {
+          type: 'string',
+          description: 'URL da imagem a ser removida',
+        },
       },
     },
   })
@@ -217,7 +239,7 @@ export class ProductController {
   ) {
     const product = await this.productService.findOne(id);
     this.uploadService.deleteImage(imageUrl);
-    const images = (product.images || []).filter(img => img !== imageUrl);
+    const images = (product.images || []).filter((img) => img !== imageUrl);
     return this.productService.update(id, { images }, user.id);
   }
 

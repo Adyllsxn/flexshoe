@@ -16,7 +16,6 @@ import { PaginationHelper } from 'src/domain/shared/helper/pagination.helper';
 type UpdateUserData = {
   name?: string;
   email?: string;
-  password?: string;
 };
 
 @Injectable()
@@ -197,10 +196,6 @@ export class AccountService implements IAccountService {
 
     if (updateAccountDto.email) {
       updateData.email = updateAccountDto.email;
-    }
-
-    if (updateAccountDto.password) {
-      updateData.password = await bcrypt.hash(updateAccountDto.password, 10);
     }
 
     const user = await this.prismaService.user.update({
