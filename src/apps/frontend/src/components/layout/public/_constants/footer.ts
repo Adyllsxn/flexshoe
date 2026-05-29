@@ -1,0 +1,1 @@
+export const FOOTER_TEXT = 'Todos os direitos reservados.';

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./docs/_logo.svg" alt="FlexShoe Logo" width="30%" /> 
+  <img src="./docs/assets/logo.svg" alt="FlexShoe Logo" width="30%" /> 
   </br> </br>
   
   [![GitHub](https://img.shields.io/badge/github-flexshoe-181717?style=for-the-badge&logo=github)](https://github.com/Adyllsxn/flexshoe)
@@ -43,7 +43,26 @@
 
 
 ## **📸 DEMO**
-<div align="center"> <img src="./docs/_demo.svg" alt="KwanzaSmart Dashboard" width="65%" /> <br /> <i>Interface principal com gráficos de temperatura, pH e alertas em tempo real</i> </div>
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <img src="./docs/assets/frontend-demo.png" alt="Frontend FlexShoe" width="90%" />
+        <br />
+        <b>🎨 Frontend (Next.js)</b>
+        <br />
+        Catálogo de produtos, carrinho e checkout
+       </td>
+      <td align="center" width="50%">
+        <img src="./docs/assets/api.svg" alt="API Swagger" width="90%" />
+        <br />
+        <b>📚 API Backend (Swagger)</b>
+        <br />
+        Documentação interativa dos endpoints
+       </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
