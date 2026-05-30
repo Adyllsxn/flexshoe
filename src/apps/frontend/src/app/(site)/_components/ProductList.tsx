@@ -1,16 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PRODUCT_FILTERS, PRODUCTS } from '../_constants/productList';
 
 export default function ProductList() {
   const [activeFilter, setActiveFilter] = useState('*');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const filteredProducts = activeFilter === '*' 
     ? PRODUCTS 
     : PRODUCTS.filter(product => product.category === activeFilter);
+
+  // Função auxiliar para formatar o preço
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('pt-BR');
+  };
 
   return (
     <section className="product-list py-20 bg-gradient-to-b from-white to-gray-50">
@@ -22,13 +32,11 @@ export default function ProductList() {
               key={filter.filter}
               onClick={() => setActiveFilter(filter.filter)}
               className={`group relative px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 overflow-hidden ${
-                activeFilter === filter.filter
-                  ? 'text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                activeFilter === filter.filter ? 'text-white' : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               {activeFilter === filter.filter && (
-                <span className="absolute inset-0 bg-gradient-to-r from-gray-900 to-gray-700 rounded-full animate-fade-in"></span>
+                <span className="absolute inset-0 bg-gradient-to-r from-gray-900 to-gray-700 rounded-full"></span>
               )}
               <span className="relative z-10">{filter.label}</span>
             </button>
@@ -37,11 +45,10 @@ export default function ProductList() {
 
         {/* Grid de produtos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
-          {filteredProducts.map((product, idx) => (
+          {filteredProducts.map((product) => (
             <div
               key={product.id}
               className="group bg-white rounded-2xl overflow-hidden shadow-sm transition-all duration-500"
-              style={{ animationDelay: `${idx * 0.1}s` }}
             >
               {/* Imagem */}
               <div className="relative bg-gradient-to-br from-gray-100 to-gray-50 aspect-square overflow-hidden">
@@ -49,7 +56,14 @@ export default function ProductList() {
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  // PROPRIEDADE 'sizes' CALCULADA DINAMICAMENTE
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  // ESTILO CORRETO PARA IMAGENS RESPONSIVAS
+                  style={{
+                    objectFit: 'cover',
+                    transition: 'transform 0.7s ease-in-out',
+                  }}
+                  className="group-hover:scale-110"
                 />
                 
                 {/* Badges */}
@@ -104,14 +118,14 @@ export default function ProductList() {
                   </div>
                 </div>
                 
-                {/* Preço */}
+                {/* Preço - corrigido para evitar hidratação */}
                 <div className="flex items-baseline gap-2">
                   <span className="text-xl font-bold text-gray-900">
-                    {product.price.toLocaleString()} Kz
+                    {isMounted ? `${formatPrice(product.price)} Kz` : '...'}
                   </span>
                   {product.oldPrice && (
                     <span className="text-sm text-gray-400 line-through">
-                      {product.oldPrice.toLocaleString()} Kz
+                      {isMounted ? `${formatPrice(product.oldPrice)} Kz` : '...'}
                     </span>
                   )}
                 </div>
@@ -131,16 +145,6 @@ export default function ProductList() {
           </Link>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out forwards;
-        }
-      `}</style>
     </section>
   );
 }
