@@ -74,7 +74,7 @@ export default function Hero() {
                   >
                     <div className="relative w-8 h-8 md:w-10 md:h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                       <Image
-                        src={HERO_CONTENT.image}
+                        src={HERO_CONTENT.subimage}
                         alt={card.title}
                         width={30}
                         height={30}

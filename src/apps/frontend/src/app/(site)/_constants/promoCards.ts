@@ -16,7 +16,7 @@ export const PROMO_CARDS = [
     originalPrice: '129.990 Kz',
     stock: 75,
     buttonLink: '/produtos?marca=nike',
-    image: '/images/1.png',
+    image: '/images/8.webp',
     imageAlt: "Nike Air Max"
   },
   {
@@ -26,7 +26,7 @@ export const PROMO_CARDS = [
     originalPrice: '119.990 Kz',
     stock: 60,
     buttonLink: '/produtos?marca=adidas',
-    image: '/images/1.png',
+    image: '/images/3.webp',
     imageAlt: "Adidas Ultraboost"
   },
   {
@@ -36,7 +36,7 @@ export const PROMO_CARDS = [
     originalPrice: '99.990 Kz',
     stock: 45,
     buttonLink: '/produtos?marca=puma',
-    image: '/images/1.png',
+    image: '/images/6.webp',
     imageAlt: "Puma Suede"
   },
   {
@@ -46,7 +46,7 @@ export const PROMO_CARDS = [
     originalPrice: '89.990 Kz',
     stock: 30,
     buttonLink: '/produtos?marca=vans',
-    image: '/images/1.png',
+    image: '/images/10.webp',
     imageAlt: "Vans Old Skool"
   }
 ];
