@@ -19,6 +19,7 @@ export const HERO_CONTENT = {
   ],
   badge: { discount: '30%', text: 'OFF' },
   image: '/images/1.png',
+  subimage: '/images/6.webp',
   animations: {
     floatDuration: '4s',
     floatDistance: '15px'
