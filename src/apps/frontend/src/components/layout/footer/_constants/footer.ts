@@ -4,8 +4,6 @@ export const FOOTER_NAVIGATION = [
   { href: '/produtos', label: 'Produtos' },
   { href: '/marcas', label: 'Marcas' },
   { href: '/sobre', label: 'Sobre' },
-  { href: '/carrinho', label: 'Carrinho' },
-  { href: '/checkout', label: 'Checkout' },
   { href: '/contacto', label: 'Contacto' },
 ];
 

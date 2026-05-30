@@ -1,7 +1,7 @@
 export const PROMO_MAIN = {
-  tag: 'Trending Now',
-  title: 'New Summer Collection',
-  description: 'Discover our latest arrivals designed for the modern lifestyle. Elegant, comfortable, and sustainable fashion for every occasion.',
+  tag: 'EM ALTA',
+  title: 'Nova Coleção Verão',
+  description: 'Descubra os lançamentos mais aguardados do ano. Elegante, confortável e sustentável para todas as ocasiões.',
   buttonText: 'Explorar Coleção',
   buttonLink: '/produtos',
   image: '/images/1.png',
@@ -10,43 +10,43 @@ export const PROMO_MAIN = {
 
 export const PROMO_CARDS = [
   {
-    title: 'Moda Masculina',
-    products: '242 produtos',
-    buttonText: 'Comprar Agora',
-    buttonLink: '/produtos?categoria=masculino',
+    title: "Nike Air Max",
+    products: '24 modelos',
+    price: '89.990 Kz',
+    originalPrice: '129.990 Kz',
+    stock: 75,
+    buttonLink: '/produtos?marca=nike',
     image: '/images/1.png',
-    imageAlt: 'Moda Masculina',
-    delay: 0.3,
-    col: 'col-xl-6'
+    imageAlt: "Nike Air Max"
   },
   {
-    title: 'Moda Infantil',
-    products: '185 produtos',
-    buttonText: 'Comprar Agora',
-    buttonLink: '/produtos?categoria=infantil',
+    title: "Adidas Ultraboost",
+    products: '18 modelos',
+    price: '79.990 Kz',
+    originalPrice: '119.990 Kz',
+    stock: 60,
+    buttonLink: '/produtos?marca=adidas',
     image: '/images/1.png',
-    imageAlt: 'Moda Infantil',
-    delay: 0.4,
-    col: 'col-xl-6'
+    imageAlt: "Adidas Ultraboost"
   },
   {
-    title: 'Produtos de Beleza',
-    products: '127 produtos',
-    buttonText: 'Comprar Agora',
-    buttonLink: '/produtos?categoria=beleza',
+    title: "Puma Suede",
+    products: '15 modelos',
+    price: '69.990 Kz',
+    originalPrice: '99.990 Kz',
+    stock: 45,
+    buttonLink: '/produtos?marca=puma',
     image: '/images/1.png',
-    imageAlt: 'Produtos de Beleza',
-    delay: 0.5,
-    col: 'col-xl-6'
+    imageAlt: "Puma Suede"
   },
   {
-    title: 'Acessórios',
-    products: '308 produtos',
-    buttonText: 'Comprar Agora',
-    buttonLink: '/produtos?categoria=acessorios',
+    title: "Vans Old Skool",
+    products: '22 modelos',
+    price: '59.990 Kz',
+    originalPrice: '89.990 Kz',
+    stock: 30,
+    buttonLink: '/produtos?marca=vans',
     image: '/images/1.png',
-    imageAlt: 'Acessórios',
-    delay: 0.6,
-    col: 'col-xl-6'
+    imageAlt: "Vans Old Skool"
   }
 ];
