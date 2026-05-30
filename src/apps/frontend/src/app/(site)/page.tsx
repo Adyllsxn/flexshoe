@@ -1,11 +1,13 @@
 import Hero from './_components/Hero';
 import PromoCards from './_components/PromoCards';
+import InfoCards from './_components/InfoCards';
 
 export default function HomePage() {
   return (
     <main className="flex-1 overflow-hidden">
       <Hero />
       <PromoCards />
+      <InfoCards />
     </main>
   );
 }
