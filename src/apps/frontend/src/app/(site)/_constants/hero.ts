@@ -18,8 +18,8 @@ export const HERO_CONTENT = {
     { title: 'Estilo Casual', price: '59.990 Kz', position: 'right', delay: 1 }
   ],
   badge: { discount: '30%', text: 'OFF' },
-  image: '/images/1.png',
-  subimage: '/images/6.webp',
+  image: '/images/puma_cali_dream_leather_gs_white_black.png',
+  subimage: '/images/puma_suede_classic.webp',
   animations: {
     floatDuration: '4s',
     floatDistance: '15px'
