@@ -4,7 +4,6 @@ export const SITE_DESCRIPTION = 'Os melhores tênis originais com finalização 
 export const FOOTER_NAVIGATION = [
   { href: '/produtos', label: 'Produtos' },
   { href: '/marcas', label: 'Marcas' },
-  { href: '/sobre', label: 'Sobre' },
   { href: '/contacto', label: 'Contacto' },
 ];
 
@@ -15,7 +14,7 @@ export const FOOTER_SOCIAL = [
 ];
 
 export const FOOTER_LEGAL = [
-  { href: '/termos', label: 'Termos de Uso' },
+  { href: '/termos', label: 'Termos' },
   { href: '/privacidade', label: 'Privacidade' },
 ];
 
