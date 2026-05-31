@@ -4,7 +4,7 @@ export const PROMO_MAIN = {
   description: 'Descubra os lançamentos mais aguardados do ano. Elegante, confortável e sustentável para todas as ocasiões.',
   buttonText: 'Explorar Coleção',
   buttonLink: '/produtos',
-  image: '/images/1.png',
+  image: '/images/puma_cali_sport.png',
   imageAlt: 'Coleção Verão'
 };
 
@@ -16,7 +16,7 @@ export const PROMO_CARDS = [
     originalPrice: '129.990 Kz',
     stock: 75,
     buttonLink: '/produtos?marca=nike',
-    image: '/images/8.webp',
+    image: '/images/nike_air_Jordan_masculino.webp',
     imageAlt: "Nike Air Max"
   },
   {
@@ -26,7 +26,7 @@ export const PROMO_CARDS = [
     originalPrice: '119.990 Kz',
     stock: 60,
     buttonLink: '/produtos?marca=adidas',
-    image: '/images/3.webp',
+    image: '/images/adidas_ultraboost.png',
     imageAlt: "Adidas Ultraboost"
   },
   {
@@ -36,7 +36,7 @@ export const PROMO_CARDS = [
     originalPrice: '99.990 Kz',
     stock: 45,
     buttonLink: '/produtos?marca=puma',
-    image: '/images/6.webp',
+    image: '/images/puma_suede_classic.webp',
     imageAlt: "Puma Suede"
   },
   {
@@ -46,7 +46,7 @@ export const PROMO_CARDS = [
     originalPrice: '89.990 Kz',
     stock: 30,
     buttonLink: '/produtos?marca=vans',
-    image: '/images/10.webp',
+    image: '/images/vans_old_skool.webp',
     imageAlt: "Vans Old Skool"
   }
 ];
