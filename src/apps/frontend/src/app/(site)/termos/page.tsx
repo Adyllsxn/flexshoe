@@ -3,22 +3,32 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { 
-  FiCheckCircle, 
-  FiShoppingBag, 
-  FiCreditCard, 
-  FiTruck, 
-  FiRepeat, 
-  FiShield, 
-  FiEdit, 
-  FiMail,
   FiInfo,
   FiAlertTriangle,
   FiChevronRight,
   FiHome,
   FiCheck,
-  FiPackage,
-  FiFileText
+  FiMail,
+  FiCheckCircle,
+  FiShoppingBag,
+  FiTruck,
+  FiCreditCard,
+  FiRepeat,
+  FiShield,
+  FiEdit
 } from 'react-icons/fi';
+import { 
+  SECTIONS, 
+  PAGE_META, 
+  ACEITACAO, 
+  PRODUTOS, 
+  PEDIDOS, 
+  ENTREGA, 
+  TROCAS, 
+  RESPONSABILIDADE, 
+  ALTERACOES, 
+  CONTATO_SECTION 
+} from './_constants/termos';
 
 export default function TermosPage() {
   const [activeSection, setActiveSection] = useState('');
@@ -46,17 +56,6 @@ export default function TermosPage() {
     }
   };
 
-  const sections = [
-    { id: 'aceitacao', label: '1. Aceitação dos Termos', icon: FiCheckCircle },
-    { id: 'produtos', label: '2. Produtos e Serviços', icon: FiShoppingBag },
-    { id: 'pedidos', label: '3. Pedidos e Pagamentos', icon: FiCreditCard },
-    { id: 'entrega', label: '4. Política de Entrega', icon: FiTruck },
-    { id: 'trocas', label: '5. Trocas e Devoluções', icon: FiRepeat },
-    { id: 'responsabilidade', label: '6. Limitação de Responsabilidade', icon: FiShield },
-    { id: 'alteracoes', label: '7. Alterações nos Termos', icon: FiEdit },
-    { id: 'contato', label: '8. Contato', icon: FiMail },
-  ];
-
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -65,19 +64,19 @@ export default function TermosPage() {
           <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
             <Link href="/" className="hover:text-black transition flex items-center gap-1">
               <FiHome className="text-xs" />
-              Início
+              {PAGE_META.breadcrumb.home}
             </Link>
             <FiChevronRight className="text-xs" />
-            <span className="text-black font-medium">Termos de Uso</span>
+            <span className="text-black font-medium">{PAGE_META.breadcrumb.current}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-black mb-3">
-            Termos de Uso
+            {PAGE_META.title}
           </h1>
           <p className="text-gray-500 max-w-2xl">
-            Por favor, leia estes termos atentamente antes de usar nossos serviços
+            {PAGE_META.description}
           </p>
           <div className="mt-4">
-            <span className="text-sm text-gray-400">Última atualização: 30 de Maio, 2025</span>
+            <span className="text-sm text-gray-400">Última atualização: {PAGE_META.lastUpdated}</span>
           </div>
         </div>
       </div>
@@ -90,7 +89,7 @@ export default function TermosPage() {
             <div className="sticky top-24 bg-white rounded-xl shadow-sm p-4 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4 px-2">Índice</h3>
               <nav className="space-y-1">
-                {sections.map((item) => {
+                {SECTIONS.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button
@@ -121,13 +120,13 @@ export default function TermosPage() {
                   <FiCheckCircle className="text-gray-700 text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">1. Aceitação dos Termos</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{ACEITACAO.title}</h2>
                   <p className="text-gray-600 leading-relaxed mb-3">
-                    Ao acessar e usar o site da FlexShoe, você concorda em cumprir estes Termos de Serviço e todas as leis e regulamentos aplicáveis. Se você não concordar com qualquer um destes termos, está proibido de usar ou acessar nossos serviços.
+                    {ACEITACAO.content}
                   </p>
                   <div className="bg-gray-50 rounded-lg p-3 flex gap-2 border border-gray-100">
                     <FiInfo className="text-gray-500 text-lg flex-shrink-0 mt-0.5" />
-                    <p className="text-gray-600 text-sm">Estes termos se aplicam a todos os usuários, visitantes e outros que acessam ou usam nossos serviços.</p>
+                    <p className="text-gray-600 text-sm">{ACEITACAO.note}</p>
                   </div>
                 </div>
               </div>
@@ -140,21 +139,20 @@ export default function TermosPage() {
                   <FiShoppingBag className="text-gray-700 text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">2. Produtos e Serviços</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{PRODUTOS.title}</h2>
                   <p className="text-gray-600 leading-relaxed mb-3">
-                    A FlexShoe comercializa tênis originais das melhores marcas. Nossos produtos são:
+                    {PRODUTOS.content}
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
-                    {[
-                      { icon: FiPackage, text: '100% originais' },
-                      { icon: FiFileText, text: 'Nota fiscal inclusa' },
-                      { icon: FiPackage, text: 'Embalagem original' },
-                    ].map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                        <item.icon className="text-gray-500 text-sm" />
-                        <span className="text-sm text-gray-700">{item.text}</span>
-                      </div>
-                    ))}
+                    {PRODUTOS.features.map((item, idx) => {
+                      const Icon = item.icon;
+                      return (
+                        <div key={idx} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                          <Icon className="text-gray-500 text-sm" />
+                          <span className="text-sm text-gray-700">{item.text}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -167,12 +165,12 @@ export default function TermosPage() {
                   <FiCreditCard className="text-gray-700 text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">3. Pedidos e Pagamentos</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{PEDIDOS.title}</h2>
                   <p className="text-gray-600 leading-relaxed mb-3">
-                    Ao realizar um pedido, você concorda em fornecer informações verdadeiras. O processo de compra é finalizado via WhatsApp.
+                    {PEDIDOS.content}
                   </p>
                   <div className="space-y-1">
-                    {['Confirmação imediata do pedido', 'Cálculo do valor total com frete', 'Previsão de entrega e rastreio'].map((text, idx) => (
+                    {PEDIDOS.steps.map((text, idx) => (
                       <div key={idx} className="flex items-center gap-2">
                         <FiCheck className="text-gray-500 text-sm" />
                         <span className="text-gray-600 text-sm">{text}</span>
@@ -181,7 +179,7 @@ export default function TermosPage() {
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3 flex gap-2 mt-3 border border-gray-100">
                     <FiAlertTriangle className="text-gray-500 text-lg flex-shrink-0 mt-0.5" />
-                    <p className="text-gray-600 text-sm">Os preços estão sujeitos a alteração. O valor final será confirmado no momento da finalização do pedido.</p>
+                    <p className="text-gray-600 text-sm">{PEDIDOS.note}</p>
                   </div>
                 </div>
               </div>
@@ -194,19 +192,17 @@ export default function TermosPage() {
                   <FiTruck className="text-gray-700 text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">4. Política de Entrega</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{ENTREGA.title}</h2>
                   <p className="text-gray-600 leading-relaxed mb-3">
-                    Entregamos para todo o território de Angola. Prazos estimados:
+                    {ENTREGA.content}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="bg-gray-50 rounded-lg p-3 text-center">
-                      <span className="font-medium text-gray-800 block">Luanda</span>
-                      <p className="text-sm text-gray-500">1 a 3 dias úteis</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-3 text-center">
-                      <span className="font-medium text-gray-800 block">Outras províncias</span>
-                      <p className="text-sm text-gray-500">3 a 7 dias úteis</p>
-                    </div>
+                    {ENTREGA.locations.map((loc, idx) => (
+                      <div key={idx} className="bg-gray-50 rounded-lg p-3 text-center">
+                        <span className="font-medium text-gray-800 block">{loc.name}</span>
+                        <p className="text-sm text-gray-500">{loc.time}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -219,12 +215,12 @@ export default function TermosPage() {
                   <FiRepeat className="text-gray-700 text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">5. Trocas e Devoluções</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{TROCAS.title}</h2>
                   <p className="text-gray-600 leading-relaxed mb-3">
-                    Oferecemos 7 dias após o recebimento para troca ou devolução.
+                    {TROCAS.content}
                   </p>
                   <div className="space-y-1">
-                    {['Produto sem uso e na embalagem original', 'Etiquetas e lacres intactos', 'Nota fiscal acompanhando o produto'].map((text, idx) => (
+                    {TROCAS.conditions.map((text, idx) => (
                       <div key={idx} className="flex items-center gap-2">
                         <FiCheck className="text-gray-500 text-sm" />
                         <span className="text-gray-600 text-sm">{text}</span>
@@ -242,9 +238,9 @@ export default function TermosPage() {
                   <FiShield className="text-gray-700 text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">6. Limitação de Responsabilidade</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{RESPONSABILIDADE.title}</h2>
                   <p className="text-gray-600 leading-relaxed">
-                    Em nenhum caso a FlexShoe será responsável por quaisquer danos indiretos, incidentais, especiais, consequenciais ou punitivos decorrentes do uso de nossos serviços ou produtos.
+                    {RESPONSABILIDADE.content}
                   </p>
                 </div>
               </div>
@@ -257,32 +253,32 @@ export default function TermosPage() {
                   <FiEdit className="text-gray-700 text-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">7. Alterações nos Termos</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">{ALTERACOES.title}</h2>
                   <p className="text-gray-600 leading-relaxed mb-3">
-                    Reservamos o direito de modificar estes Termos a qualquer momento.
+                    {ALTERACOES.content}
                   </p>
                   <div className="bg-gray-50 rounded-lg p-3 flex gap-2 border border-gray-100">
                     <FiInfo className="text-gray-500 text-lg flex-shrink-0 mt-0.5" />
-                    <p className="text-gray-600 text-sm">Ao continuar a usar nossos serviços após as alterações, você concorda em cumprir os termos revisados.</p>
+                    <p className="text-gray-600 text-sm">{ALTERACOES.note}</p>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* 8. Contato - Preto */}
+            {/* 8. Contato */}
             <section id="contato" className="bg-black rounded-xl p-8 text-center">
               <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiMail className="text-xl text-white" />
               </div>
-              <h2 className="text-xl font-bold text-white mb-2">Dúvidas sobre os Termos?</h2>
+              <h2 className="text-xl font-bold text-white mb-2">{CONTATO_SECTION.title}</h2>
               <p className="text-gray-400 mb-6 max-w-md mx-auto text-sm">
-                Se você tiver alguma dúvida sobre estes Termos, nossa equipe está disponível para ajudar.
+                {CONTATO_SECTION.description}
               </p>
               <Link
-                href="/contacto"
+                href={CONTATO_SECTION.buttonLink}
                 className="inline-flex items-center gap-2 px-5 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-100 transition-all text-sm"
               >
-                Falar com Suporte
+                {CONTATO_SECTION.buttonText}
                 <FiChevronRight className="text-sm" />
               </Link>
             </section>

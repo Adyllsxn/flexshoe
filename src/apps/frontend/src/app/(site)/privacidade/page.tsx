@@ -3,41 +3,25 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { 
-  FiShield, 
-  FiLock, 
-  FiUserCheck, 
-  FiDatabase, 
-  FiBarChart2, 
-  FiShare2,
-  FiEye,
-  FiEdit,
-  FiTrash2,
-  FiDownload,
-  FiGlobe,
-  FiUsers,
-  FiBell,
-  FiMail,
   FiChevronRight,
   FiHome,
   FiCheckCircle,
   FiCalendar,
-  FiShieldOff,
-  FiEyeOff,
-  FiAward,
-  FiShoppingBag,
-  FiMessageCircle,
-  FiTruck
+  FiMail
 } from 'react-icons/fi';
-import { FaFingerprint } from 'react-icons/fa';
+import { 
+  TABS, 
+  DIFFERENTIALS, 
+  COLLECTION_DATA, 
+  UTILIZATION_DATA, 
+  DISTRIBUTION_DATA, 
+  RIGHTS_DATA, 
+  PAGE_META, 
+  CONTACT_BANNER 
+} from './_constants/privacidade';
 
 export default function PrivacidadePage() {
   const [activeTab, setActiveTab] = useState('collection');
-
-  const tabs = [
-    { id: 'collection', label: 'Coleta de Dados', icon: FiDatabase },
-    { id: 'utilization', label: 'Uso de Dados', icon: FiBarChart2 },
-    { id: 'distribution', label: 'Compartilhamento', icon: FiShare2 },
-  ];
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -47,25 +31,25 @@ export default function PrivacidadePage() {
           <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
             <Link href="/" className="hover:text-black transition flex items-center gap-1">
               <FiHome className="text-xs" />
-              Início
+              {PAGE_META.breadcrumb.home}
             </Link>
             <FiChevronRight className="text-xs" />
-            <span className="text-black font-medium">Política de Privacidade</span>
+            <span className="text-black font-medium">{PAGE_META.breadcrumb.current}</span>
           </div>
           
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-black mb-3">
-                Política de Privacidade
+                {PAGE_META.title}
               </h1>
               <p className="text-gray-500 max-w-2xl">
-                Sua privacidade é importante para nós. Sem cadastro, sem complicações.
+                {PAGE_META.description}
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-full">
                 <FiCalendar className="text-gray-500 text-sm" />
-                <span className="text-sm text-gray-600">Atualizado: 30/05/2025</span>
+                <span className="text-sm text-gray-600">Atualizado: {PAGE_META.lastUpdated}</span>
               </div>
             </div>
           </div>
@@ -75,11 +59,7 @@ export default function PrivacidadePage() {
       <div className="container mx-auto px-4 py-12">
         {/* Diferenciais - Sem cadastro */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-          {[
-            { icon: FiShoppingBag, text: 'Compra sem Cadastro', sub: 'Não precisa criar conta' },
-            { icon: FiMessageCircle, text: 'Finalização via WhatsApp', sub: 'Pedido enviado diretamente' },
-            { icon: FiTruck, text: 'Entrega Rápida', sub: 'Receba seus tênis em casa' },
-          ].map((item, idx) => {
+          {DIFFERENTIALS.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div key={idx} className="bg-white rounded-xl p-4 border border-gray-100 flex items-center gap-4">
@@ -98,7 +78,7 @@ export default function PrivacidadePage() {
         {/* Tabs */}
         <div className="mb-10">
           <div className="flex flex-wrap gap-2 border-b border-gray-200">
-            {tabs.map((tab) => {
+            {TABS.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
@@ -121,32 +101,20 @@ export default function PrivacidadePage() {
             {activeTab === 'collection' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Nome e telefone (para contato via WhatsApp)</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Endereço de entrega</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Produtos adicionados ao carrinho</span>
-                  </li>
+                  {COLLECTION_DATA.left.map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <FiCheckCircle className="text-gray-500 text-sm" />
+                      <span className="text-gray-600 text-sm">{item}</span>
+                    </li>
+                  ))}
                 </ul>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Dados de navegação (anônimos)</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Cookies para carrinho de compras</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">NÃO coletamos senhas (não há cadastro)</span>
-                  </li>
+                  {COLLECTION_DATA.right.map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <FiCheckCircle className="text-gray-500 text-sm" />
+                      <span className="text-gray-600 text-sm">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}
@@ -154,24 +122,20 @@ export default function PrivacidadePage() {
             {activeTab === 'utilization' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Processar seu pedido via WhatsApp</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Coordenar a entrega dos produtos</span>
-                  </li>
+                  {UTILIZATION_DATA.left.map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <FiCheckCircle className="text-gray-500 text-sm" />
+                      <span className="text-gray-600 text-sm">{item}</span>
+                    </li>
+                  ))}
                 </ul>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Melhorar nosso catálogo de produtos</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Nunca usamos seus dados para marketing sem consentimento</span>
-                  </li>
+                  {UTILIZATION_DATA.right.map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <FiCheckCircle className="text-gray-500 text-sm" />
+                      <span className="text-gray-600 text-sm">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}
@@ -179,16 +143,20 @@ export default function PrivacidadePage() {
             {activeTab === 'distribution' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Compartilhado apenas com transportadoras para entrega</span>
-                  </li>
+                  {DISTRIBUTION_DATA.left.map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <FiCheckCircle className="text-gray-500 text-sm" />
+                      <span className="text-gray-600 text-sm">{item}</span>
+                    </li>
+                  ))}
                 </ul>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <FiCheckCircle className="text-gray-500 text-sm" />
-                    <span className="text-gray-600 text-sm">Nunca vendemos ou alugamos seus dados</span>
-                  </li>
+                  {DISTRIBUTION_DATA.right.map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <FiCheckCircle className="text-gray-500 text-sm" />
+                      <span className="text-gray-600 text-sm">{item}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}
@@ -206,11 +174,7 @@ export default function PrivacidadePage() {
             </div>
             <div className="lg:w-2/3">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { icon: FiEye, title: 'Acesso', desc: 'Solicite os dados do seu pedido' },
-                  { icon: FiEdit, title: 'Correção', desc: 'Corrija dados de entrega' },
-                  { icon: FiTrash2, title: 'Exclusão', desc: 'Solicite a remoção de seus dados após o pedido' },
-                ].map((item, idx) => {
+                {RIGHTS_DATA.map((item, idx) => {
                   const Icon = item.icon;
                   return (
                     <div key={idx} className="bg-white rounded-xl p-4 border border-gray-100 flex items-start gap-3">
@@ -234,15 +198,15 @@ export default function PrivacidadePage() {
           <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiMail className="text-xl text-white" />
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">Dúvidas sobre Privacidade?</h2>
+          <h2 className="text-xl font-bold text-white mb-2">{CONTACT_BANNER.title}</h2>
           <p className="text-gray-400 mb-6 max-w-md mx-auto text-sm">
-            Entre em contato conosco para esclarecer qualquer dúvida sobre seus dados.
+            {CONTACT_BANNER.description}
           </p>
           <Link
-            href="/contacto"
+            href={CONTACT_BANNER.buttonLink}
             className="inline-flex items-center gap-2 px-5 py-2 bg-white text-black rounded-lg font-medium hover:bg-gray-100 transition-all text-sm"
           >
-            Falar com Suporte
+            {CONTACT_BANNER.buttonText}
             <FiChevronRight className="text-sm" />
           </Link>
         </div>
