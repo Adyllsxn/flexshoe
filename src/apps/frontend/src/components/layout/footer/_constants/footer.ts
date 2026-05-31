@@ -11,6 +11,7 @@ export const FOOTER_COLUMNS = {
     links: [
       { href: '/produtos', label: 'Produtos' },
       { href: '/marcas', label: 'Marcas' },
+      { href: '/sobre', label: 'Sobre' },
       { href: '/contacto', label: 'Contacto' },
     ]
   },
