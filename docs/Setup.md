@@ -138,9 +138,11 @@ npm run dev
 
 ---
 
-## 🔐 Credenciais de Acesso (Após o Seed)
-### Admin
-- Email: admin@flexshoe.ao
-- Senha: admin123
+## 🔐 Acesso ao Painel Administrativo (Após o Seed)
 
+| Credencial | Valor |
+|------------|-------|
+| **Email** | `admin@flexshoe.ao` |
+| **Senha** | `admin123` |
 
+> ⚠️ **Nota:** Este é um projeto de estudo. As credenciais acima são apenas para teste do painel administrativo.

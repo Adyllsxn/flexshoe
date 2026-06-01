@@ -49,17 +49,21 @@
       <td align="center" width="50%">
         <img src="./docs/assets/client-demo.svg" alt="Frontend FlexShoe" width="90%" />
         <br />
-        <b>🎨 Frontend (Next.js)</b>
-        <br />
-        Catálogo de produtos, carrinho e checkout
-       </td>
+        <b>🎨 Loja (Cliente)</b>
+        <br /><br />
+        <b>🔗 Links:</b><br />
+        <a href="http://localhost:3000/">🌐 Local: http://localhost:3000/</a><br />
+        <a href="https://fl3xshoe.vercel.app">🚀 Remoto: https://fl3xshoe.vercel.app</a>
+      </td>
       <td align="center" width="50%">
-        <img src="./docs/assets/admin-demo.svg" alt="API Swagger" width="90%" />
+        <img src="./docs/assets/admin-demo.svg" alt="Admin FlexShoe" width="90%" />
         <br />
-        <b>📚 API Backend (Swagger)</b>
-        <br />
-        Documentação interativa dos endpoints
-       </td>
+        <b>⚙️ Painel Administrativo</b>
+        <br /><br />
+        <b>🔗 Links:</b><br />
+        <a href="http://localhost:3000/admin">🌐 Local: http://localhost:3000/admin</a><br />
+        <a href="https://fl3xshoe.vercel.app/admin">🚀 Remoto: https://fl3xshoe.vercel.app/admin</a>
+      </td>
     </tr>
   </table>
 </div>
