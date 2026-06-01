@@ -47,11 +47,12 @@ export const TOP_PRODUCTS = [
   { name: 'Nike Dunk Low', sales: 986, revenue: '7.888 Kz' },
 ];
 
-export const TRAFFIC_SOURCES = [
-  { name: 'Direto', percentage: 42, color: '#000000' },
-  { name: 'Orgânico', percentage: 28, color: '#3b82f6' },
-  { name: 'Indicação', percentage: 18, color: '#10b981' },
-  { name: 'Social', percentage: 12, color: '#f59e0b' },
+// Gênero Mais Vendido
+export const TOP_GENDER = [
+  { name: 'Masculino', percentage: 52, color: '#3b82f6' },
+  { name: 'Feminino', percentage: 28, color: '#ec4899' },
+  { name: 'Unisex', percentage: 15, color: '#10b981' },
+  { name: 'Kid', percentage: 5, color: '#f59e0b' },
 ];
 
 export const MONTHLY_REVENUE = [

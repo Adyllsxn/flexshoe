@@ -2,7 +2,7 @@
 
 import { StatsCards } from './StatsCards';
 import { RevenueChart } from './RevenueChart';
-import { TrafficSources } from './TrafficSources';
+import { TopGender } from './TopGender';
 import { TopProducts } from './TopProducts';
 import { RecentOrders } from './RecentOrders';
 
@@ -23,13 +23,13 @@ export function DashboardContent() {
       {/* Stats Cards */}
       <StatsCards />
 
-      {/* Gráfico de Receita + Fontes de Tráfego */}
+      {/* Gráfico de Receita + Gênero Mais Vendido */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <RevenueChart />
         </div>
         <div>
-          <TrafficSources />
+          <TopGender />
         </div>
       </div>
 

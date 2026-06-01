@@ -47,14 +47,14 @@
   <table>
     <tr>
       <td align="center" width="50%">
-        <img src="./docs/assets/frontend-demo.svg" alt="Frontend FlexShoe" width="90%" />
+        <img src="./docs/assets/client-demo.svg" alt="Frontend FlexShoe" width="90%" />
         <br />
         <b>🎨 Frontend (Next.js)</b>
         <br />
         Catálogo de produtos, carrinho e checkout
        </td>
       <td align="center" width="50%">
-        <img src="./docs/assets/api-demo.svg" alt="API Swagger" width="90%" />
+        <img src="./docs/assets/admin-demo.svg" alt="API Swagger" width="90%" />
         <br />
         <b>📚 API Backend (Swagger)</b>
         <br />
