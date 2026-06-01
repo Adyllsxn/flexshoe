@@ -4,21 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
-  FiGrid, 
-  FiShoppingBag, 
-  FiUsers, 
-  FiPackage, 
-  FiBox, 
-  FiLogOut,
-  FiUser,
-  FiTag,
-  FiHeart,
-  FiPieChart,
-  FiSettings,
-  FiDatabase
+  FiLogOut
 } from 'react-icons/fi';
+import { NAVIGATION, type NavItem } from './sidebar.constants';
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -26,51 +16,40 @@ interface SidebarProps {
   collapsed?: boolean;
 }
 
-interface NavItem {
-  name: string;
-  href?: string;
-  icon: any;
-  submenu?: NavItem[];
-  isHeading?: boolean;
-}
-
-const NAVIGATION: NavItem[] = [
-  { name: 'Dashboard', href: '/admin', icon: FiGrid },
-  {
-    name: 'Dashboards',
-    icon: FiPieChart,
-    submenu: [
-      { name: 'Vendas', href: '/admin/dashboards/vendas', icon: FiPieChart },
-      { name: 'Analytics', href: '/admin/dashboards/analytics', icon: FiPieChart },
-      { name: 'CRM', href: '/admin/dashboards/crm', icon: FiPieChart },
-    ]
-  },
-  { name: 'Utilizadores', href: '/admin/users', icon: FiUsers },
-  { name: 'Produtos', href: '/admin/produtos', icon: FiPackage },
-  { name: 'Catálogo', href: '#', icon: FiBox, isHeading: true },
-  { name: 'Marcas', href: '/admin/marcas', icon: FiTag },
-  { name: 'Gênero', href: '/admin/genero', icon: FiHeart },
-  { name: 'Inventory', href: '/admin/inventory', icon: FiDatabase },
-  { name: 'Configurações', href: '#', icon: FiSettings, isHeading: true },
-  { name: 'Store', href: '/admin/store', icon: FiShoppingBag },
-  { name: 'Settings', href: '/admin/settings', icon: FiSettings },
-];
-
 function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item: NavItem; depth?: number; collapsed?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const Icon = item.icon;
   const hasSubmenu = item.submenu && item.submenu.length > 0;
   const isActive = item.href ? pathname === item.href : false;
 
   useEffect(() => {
     if (hasSubmenu && !collapsed) {
-      const hasActiveChild = item.submenu?.some(sub => {
-        return sub.href === pathname;
-      });
+      const hasActiveChild = item.submenu?.some(sub => sub.href === pathname);
       if (hasActiveChild) setIsOpen(true);
     }
   }, [pathname, hasSubmenu, item.submenu, collapsed]);
+
+  const handleMouseEnter = () => {
+    if (collapsed && hasSubmenu) {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      setShowDropdown(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (collapsed && hasSubmenu) {
+      hoverTimeoutRef.current = setTimeout(() => setShowDropdown(false), 200);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
 
   if (item.isHeading) {
     if (collapsed) return null;
@@ -86,15 +65,55 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
   if (hasSubmenu) {
     if (collapsed) {
       return (
-        <li className="relative group">
+        <li className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
           <div className="flex justify-center py-2">
             <div className="relative">
               <div className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-all cursor-pointer">
                 <Icon size={20} />
               </div>
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                {item.name}
-              </div>
+              <AnimatePresence>
+                {showDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: -10, scale: 0.95 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                    className="fixed left-16 ml-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-[100]"
+                    style={{ 
+                      boxShadow: '0 20px 25px -12px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05)'
+                    }}
+                  >
+                    <div className="px-4 py-2.5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white rounded-t-xl">
+                      <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{item.name}</span>
+                    </div>
+                    <div className="py-1">
+                      {item.submenu!.map((sub, idx) => {
+                        const SubIcon = sub.icon;
+                        const isSubActive = sub.href === pathname;
+                        return (
+                          <Link
+                            key={idx}
+                            href={sub.href!}
+                            onClick={() => {
+                              setShowDropdown(false);
+                              onClose?.();
+                            }}
+                            className={`flex items-center gap-3 mx-2 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                              isSubActive 
+                                ? 'bg-gray-100 text-black font-medium shadow-sm' 
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-black'
+                            }`}
+                          >
+                            <SubIcon size={16} className={isSubActive ? 'text-black' : 'text-gray-400'} />
+                            <span className="text-sm">{sub.name}</span>
+                            {isSubActive && <div className="ml-auto w-1.5 h-1.5 bg-black rounded-full" />}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </li>
@@ -111,7 +130,7 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
             <Icon size={18} />
             <span className="text-sm font-medium">{item.name}</span>
           </div>
-          <ChevronRight size={14} className={`transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+          <ChevronRight size={14} className={`transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
         </button>
         <AnimatePresence>
           {isOpen && (
@@ -119,6 +138,7 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="ml-6 mt-1 space-y-1 overflow-hidden"
             >
               {item.submenu!.map((sub, idx) => (
@@ -145,8 +165,9 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
         >
           <Icon size={20} />
         </Link>
-        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+        <div className="fixed left-16 ml-2 px-3 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 shadow-lg">
           {item.name}
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 -ml-1 w-1.5 h-1.5 bg-gray-900 rotate-45" />
         </div>
       </li>
     );
@@ -183,21 +204,21 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: Sideba
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
         {!collapsed ? (
           <a href="/admin" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-gray-900 to-black rounded-xl flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-sm">F</span>
             </div>
             <span className="font-semibold text-gray-800">FlexShoe</span>
           </a>
         ) : (
           <a href="/admin" className="flex justify-center w-full">
-            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-gray-900 to-black rounded-xl flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-sm">F</span>
             </div>
           </a>
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4">
+      <nav className="flex-1 overflow-y-auto overflow-x-visible py-4">
         <ul className={`space-y-1 ${collapsed ? 'px-2' : 'px-3'}`}>
           {NAVIGATION.map((item, idx) => (
             <SidebarNavItem key={idx} item={item} collapsed={collapsed} />
@@ -208,28 +229,28 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: Sideba
       {!collapsed ? (
         <div className="p-3 border-t border-gray-200 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <a href="/admin/profile" className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                <span className="text-sm font-medium">AD</span>
+            <a href="/admin/profile" className="flex items-center gap-3 group">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
+                <span className="text-sm font-medium text-gray-700">AD</span>
               </div>
               <div className="hidden sm:block">
                 <div className="text-sm font-medium text-gray-800">Administrador</div>
                 <div className="text-xs text-gray-400">Admin</div>
               </div>
             </a>
-            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all">
-              <FiLogOut size={18} className="text-red-500" />
+            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all group">
+              <FiLogOut size={18} className="text-gray-400 group-hover:text-red-500 transition-colors" />
             </a>
           </div>
         </div>
       ) : (
         <div className="p-3 border-t border-gray-200 flex-shrink-0">
           <div className="flex flex-col items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-sm font-medium">AD</span>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-sm">
+              <span className="text-sm font-medium text-gray-700">AD</span>
             </div>
-            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all">
-              <FiLogOut size={18} className="text-red-500" />
+            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all group">
+              <FiLogOut size={18} className="text-gray-400 group-hover:text-red-500 transition-colors" />
             </a>
           </div>
         </div>
@@ -265,7 +286,7 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: Sideba
 
   return (
     <aside
-      className={`h-screen bg-white border-r border-gray-200 flex flex-col flex-shrink-0 transition-all duration-300 ${
+      className={`h-screen bg-white border-r border-gray-200 flex flex-col flex-shrink-0 transition-all duration-300 overflow-x-visible ${
         collapsed ? 'w-16' : 'w-64'
       }`}
     >

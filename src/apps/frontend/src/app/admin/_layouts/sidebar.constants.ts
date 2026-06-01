@@ -1,0 +1,42 @@
+import { 
+  FiGrid, 
+  FiShoppingBag, 
+  FiUsers, 
+  FiPackage, 
+  FiBox, 
+  FiTag,
+  FiHeart,
+  FiPieChart,
+  FiSettings,
+  FiDatabase
+} from 'react-icons/fi';
+
+export interface NavItem {
+  name: string;
+  href?: string;
+  icon: any;
+  submenu?: NavItem[];
+  isHeading?: boolean;
+}
+
+export const NAVIGATION: NavItem[] = [
+  { name: 'Dashboard', href: '/admin', icon: FiGrid },
+  {
+    name: 'Dashboards',
+    icon: FiPieChart,
+    submenu: [
+      { name: 'Vendas', href: '/admin/dashboards/vendas', icon: FiPieChart },
+      { name: 'Analytics', href: '/admin/dashboards/analytics', icon: FiPieChart },
+      { name: 'CRM', href: '/admin/dashboards/crm', icon: FiPieChart },
+    ]
+  },
+  { name: 'Utilizadores', href: '/admin/users', icon: FiUsers },
+  { name: 'Produtos', href: '/admin/produtos', icon: FiPackage },
+  { name: 'Catálogo', href: '#', icon: FiBox, isHeading: true },
+  { name: 'Marcas', href: '/admin/marcas', icon: FiTag },
+  { name: 'Gênero', href: '/admin/genero', icon: FiHeart },
+  { name: 'Inventory', href: '/admin/inventory', icon: FiDatabase },
+  { name: 'Configurações', href: '#', icon: FiSettings, isHeading: true },
+  { name: 'Store', href: '/admin/store', icon: FiShoppingBag },
+  { name: 'Settings', href: '/admin/settings', icon: FiSettings },
+];

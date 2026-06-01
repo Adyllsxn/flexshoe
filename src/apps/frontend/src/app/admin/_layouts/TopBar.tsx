@@ -4,16 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, ChevronDown, Menu, X, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { 
-  FiTag,
-  FiHeart,
-  FiPackage,
-  FiShoppingBag,
-  FiSettings,
-  FiDatabase,
   FiUser,
   FiLogOut,
   FiGrid
 } from 'react-icons/fi';
+import { QUICK_ACCESS_ITEMS } from './topbar.constants';
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -57,19 +52,10 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
     }
   }, []);
 
-  const quickAccessItems = [
-    { icon: FiTag, label: 'Marcas', href: '/admin/marcas' },
-    { icon: FiHeart, label: 'Gênero', href: '/admin/genero' },
-    { icon: FiPackage, label: 'Produtos', href: '/admin/produtos' },
-    { icon: FiShoppingBag, label: 'Store', href: '/admin/store' },
-    { icon: FiSettings, label: 'Settings', href: '/admin/settings' },
-    { icon: FiDatabase, label: 'Inventory', href: '/admin/inventory' },
-  ];
-
   return (
     <header className="header bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="flex items-center justify-between px-4 h-16">
-        {/* Header Left - Apenas os botões de menu */}
+        {/* Header Left */}
         <div className="header-left flex items-center gap-4">
           <button 
             onClick={onSidebarToggle}
@@ -121,7 +107,7 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
                     <h3 className="text-sm font-semibold text-gray-800">Acesso Rápido</h3>
                   </div>
                   <div className="grid grid-cols-2 gap-1 p-2">
-                    {quickAccessItems.map((item, idx) => {
+                    {QUICK_ACCESS_ITEMS.map((item, idx) => {
                       const Icon = item.icon;
                       return (
                         <Link
