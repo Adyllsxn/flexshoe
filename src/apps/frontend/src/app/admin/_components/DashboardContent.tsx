@@ -1,50 +1,43 @@
 'use client';
 
-import { DASHBOARD_CONFIG } from '../_constants/dashboard';
 import { StatsCards } from './StatsCards';
-import { PedidosRecentesTable } from './PedidosRecentesTable';
-
-const statsData = {
-  products: 24,
-  orders: 156,
-  revenue: 1899990,
-  averageTicket: 75990
-};
-
-const recentOrders = [
-  { id: '#ORD001', customer: 'João Silva', total: 89990, status: 'Entregue', date: '2024-05-30' },
-  { id: '#ORD002', customer: 'Maria Santos', total: 139990, status: 'Processando', date: '2024-05-29' },
-  { id: '#ORD003', customer: 'Carlos Mendes', total: 59990, status: 'Pendente', date: '2024-05-28' },
-  { id: '#ORD004', customer: 'Ana Oliveira', total: 189990, status: 'Entregue', date: '2024-05-27' },
-  { id: '#ORD005', customer: 'Pedro Costa', total: 74990, status: 'Processando', date: '2024-05-26' },
-];
-
-const formatCurrency = (value: number) => {
-  return value.toLocaleString('pt-AO') + ' Kz';
-};
+import { RevenueChart } from './RevenueChart';
+import { TrafficSources } from './TrafficSources';
+import { TopProducts } from './TopProducts';
+import { RecentOrders } from './RecentOrders';
 
 export function DashboardContent() {
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">{DASHBOARD_CONFIG.title}</h1>
-          <p className="text-gray-400 mt-1">{DASHBOARD_CONFIG.subtitle}</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Dashboard</h1>
+          <nav className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <span className="text-gray-400 dark:text-gray-500">Home</span> /{' '}
+            <span className="text-gray-800 dark:text-gray-200 font-medium">Dashboard</span>
+          </nav>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <StatsCards
-        productsCount={statsData.products}
-        ordersCount={statsData.orders}
-        totalRevenue={statsData.revenue}
-        averageTicket={statsData.averageTicket}
-        formatCurrency={formatCurrency}
-      />
+      <StatsCards />
 
-      {/* Recent Orders */}
-      <PedidosRecentesTable orders={recentOrders} formatCurrency={formatCurrency} />
+      {/* Gráfico de Receita + Fontes de Tráfego */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <RevenueChart />
+        </div>
+        <div>
+          <TrafficSources />
+        </div>
+      </div>
+
+      {/* Top Products + Recent Orders */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TopProducts />
+        <RecentOrders />
+      </div>
     </div>
   );
 }
