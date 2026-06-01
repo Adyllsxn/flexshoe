@@ -1,37 +1,29 @@
 'use client';
 
-import { FiPackage, FiShoppingBag, FiDollarSign, FiTrendingUp } from 'react-icons/fi';
-import { DASHBOARD_CONFIG } from '../_constants/dashboard';
+import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import { STATS_DATA } from '../_constants/dashboard';
 
-interface StatsCardsProps {
-  productsCount: number;
-  ordersCount: number;
-  totalRevenue: number;
-  averageTicket: number;
-  formatCurrency: (value: number) => string;
-}
-
-export function StatsCards({ productsCount, ordersCount, totalRevenue, averageTicket, formatCurrency }: StatsCardsProps) {
-  const stats = [
-    { icon: FiPackage, value: productsCount, label: DASHBOARD_CONFIG.messages.stats.products },
-    { icon: FiShoppingBag, value: ordersCount, label: DASHBOARD_CONFIG.messages.stats.orders },
-    { icon: FiDollarSign, value: formatCurrency(totalRevenue), label: DASHBOARD_CONFIG.messages.stats.revenue },
-    { icon: FiTrendingUp, value: formatCurrency(averageTicket), label: DASHBOARD_CONFIG.messages.stats.averageTicket },
-  ];
-
+export function StatsCards() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {stats.map((stat, idx) => {
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {STATS_DATA.map((stat, idx) => {
         const Icon = stat.icon;
         return (
-          <div key={idx} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Icon className="text-black text-xl" />
+          <div key={idx} className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-800 dark:text-white">{stat.value}</p>
               </div>
-              <span className="text-2xl font-bold text-black">{stat.value}</span>
+              <div className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                <Icon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              </div>
             </div>
-            <p className="text-gray-500 text-sm">{stat.label}</p>
+            <div className={`mt-3 flex items-center gap-1 text-sm ${stat.positive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+              {stat.positive ? <FiArrowUp size={14} /> : <FiArrowDown size={14} />}
+              <span>{stat.change}</span>
+              <span className="text-gray-400 dark:text-gray-500 text-xs">vs mês anterior</span>
+            </div>
           </div>
         );
       })}
