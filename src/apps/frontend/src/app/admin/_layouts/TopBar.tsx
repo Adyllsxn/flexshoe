@@ -1,18 +1,18 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Grid, ChevronDown, Menu, X, Moon, Sun } from 'lucide-react';
+import { Search, ChevronDown, Menu, X, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { 
-  FiMessageCircle, 
-  FiMail, 
-  FiCalendar, 
-  FiLayout, 
-  FiCheckSquare, 
-  FiFolder,
-  FiUser,
+  FiTag,
+  FiHeart,
+  FiPackage,
+  FiShoppingBag,
   FiSettings,
-  FiLogOut
+  FiDatabase,
+  FiUser,
+  FiLogOut,
+  FiGrid
 } from 'react-icons/fi';
 
 interface TopBarProps {
@@ -58,12 +58,12 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
   }, []);
 
   const quickAccessItems = [
-    { icon: FiMessageCircle, label: 'Chat', href: '/admin/chat' },
-    { icon: FiMail, label: 'Email', href: '/admin/email' },
-    { icon: FiCalendar, label: 'Calendar', href: '/admin/calendar' },
-    { icon: FiLayout, label: 'Kanban', href: '/admin/kanban' },
-    { icon: FiCheckSquare, label: 'Tasks', href: '/admin/todo' },
-    { icon: FiFolder, label: 'Files', href: '/admin/files' },
+    { icon: FiTag, label: 'Marcas', href: '/admin/marcas' },
+    { icon: FiHeart, label: 'Gênero', href: '/admin/genero' },
+    { icon: FiPackage, label: 'Produtos', href: '/admin/produtos' },
+    { icon: FiShoppingBag, label: 'Store', href: '/admin/store' },
+    { icon: FiSettings, label: 'Settings', href: '/admin/settings' },
+    { icon: FiDatabase, label: 'Inventory', href: '/admin/inventory' },
   ];
 
   return (
@@ -71,7 +71,6 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
       <div className="flex items-center justify-between px-4 h-16">
         {/* Header Left - Apenas os botões de menu */}
         <div className="header-left flex items-center gap-4">
-          {/* Botão para desktop - colapsar sidebar */}
           <button 
             onClick={onSidebarToggle}
             className="hidden lg:flex p-2 rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
@@ -79,7 +78,6 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
           >
             <Menu size={20} />
           </button>
-          {/* Botão para mobile - abrir menu */}
           <button 
             onClick={onMenuClick}
             className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
@@ -115,7 +113,7 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
                 className="p-2 rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
                 title="Acesso Rápido"
               >
-                <Grid size={18} />
+                <FiGrid size={18} />
               </button>
               {quickOpen && (
                 <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
@@ -186,10 +184,6 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
                     <Link href="/admin/perfil" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-all">
                       <FiUser size={18} className="text-gray-600" />
                       <span className="text-sm text-gray-700">Meu Perfil</span>
-                    </Link>
-                    <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-all">
-                      <FiSettings size={18} className="text-gray-600" />
-                      <span className="text-sm text-gray-700">Definições</span>
                     </Link>
                   </div>
                   <div className="border-t border-gray-100 pt-2">
