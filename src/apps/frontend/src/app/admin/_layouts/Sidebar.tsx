@@ -7,17 +7,17 @@ import { ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { 
   FiGrid, 
-  FiPieChart, 
+  FiShoppingBag, 
   FiUsers, 
-  FiShield, 
-  FiCalendar, 
-  FiLayout, 
+  FiPackage, 
   FiBox, 
-  FiFileText, 
-  FiHelpCircle,
   FiLogOut,
+  FiUser,
+  FiTag,
+  FiHeart,
+  FiPieChart,
   FiSettings,
-  FiUser
+  FiDatabase
 } from 'react-icons/fi';
 
 interface SidebarProps {
@@ -45,57 +45,15 @@ const NAVIGATION: NavItem[] = [
       { name: 'CRM', href: '/admin/dashboards/crm', icon: FiPieChart },
     ]
   },
-  {
-    name: 'Utilizadores',
-    icon: FiUsers,
-    submenu: [
-      { name: 'Lista de Utilizadores', href: '/admin/users', icon: FiUsers },
-      { name: 'Visualizar Utilizador', href: '/admin/users/view', icon: FiUser },
-      { name: 'Editar Utilizador', href: '/admin/users/edit', icon: FiUser },
-      { name: 'Perfil', href: '/admin/profile', icon: FiUser },
-      {
-        name: 'Definições',
-        icon: FiSettings,
-        submenu: [
-          { name: 'Conta', href: '/admin/settings/account', icon: FiSettings },
-          { name: 'Notificações', href: '/admin/settings/notifications', icon: FiSettings },
-        ]
-      },
-      { name: 'Funções e Permissões', href: '/admin/roles', icon: FiShield },
-    ]
-  },
-  {
-    name: 'Autenticação',
-    icon: FiShield,
-    submenu: [
-      { name: 'Login', href: '/auth/login', icon: FiShield },
-      { name: 'Registo', href: '/auth/register', icon: FiShield },
-      { name: 'Recuperar Senha', href: '/auth/forgot-password', icon: FiShield },
-    ]
-  },
-  { name: 'Apps', href: '#', icon: FiLayout, isHeading: true },
-  { name: 'Calendário', href: '/admin/calendar', icon: FiCalendar },
-  { name: 'Kanban', href: '/admin/kanban', icon: FiLayout },
-  { name: 'Chat', href: '/admin/chat', icon: FiLayout },
-  { name: 'Contactos', href: '/admin/contacts', icon: FiUsers },
-  { name: 'Gestor de Ficheiros', href: '/admin/files', icon: FiBox },
-  { name: 'Email', href: '/admin/email', icon: FiFileText },
-  { name: 'Lista de Tarefas', href: '/admin/todo', icon: FiFileText },
-  { name: 'UI Elements', href: '#', icon: FiLayout, isHeading: true },
-  {
-    name: 'Componentes',
-    icon: FiLayout,
-    submenu: [
-      { name: 'Alertas', href: '/admin/components/alerts', icon: FiLayout },
-      { name: 'Botões', href: '/admin/components/buttons', icon: FiLayout },
-      { name: 'Cards', href: '/admin/components/cards', icon: FiLayout },
-      { name: 'Modal', href: '/admin/components/modal', icon: FiLayout },
-    ]
-  },
-  { name: 'Páginas', href: '#', icon: FiFileText, isHeading: true },
-  { name: 'Contacto', href: '/admin/contact', icon: FiHelpCircle },
-  { name: 'FAQ', href: '/admin/faq', icon: FiHelpCircle },
-  { name: 'Preços', href: '/admin/pricing', icon: FiFileText },
+  { name: 'Utilizadores', href: '/admin/users', icon: FiUsers },
+  { name: 'Produtos', href: '/admin/produtos', icon: FiPackage },
+  { name: 'Catálogo', href: '#', icon: FiBox, isHeading: true },
+  { name: 'Marcas', href: '/admin/marcas', icon: FiTag },
+  { name: 'Gênero', href: '/admin/genero', icon: FiHeart },
+  { name: 'Inventory', href: '/admin/inventory', icon: FiDatabase },
+  { name: 'Configurações', href: '#', icon: FiSettings, isHeading: true },
+  { name: 'Store', href: '/admin/store', icon: FiShoppingBag },
+  { name: 'Settings', href: '/admin/settings', icon: FiSettings },
 ];
 
 function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item: NavItem; depth?: number; collapsed?: boolean; onClose?: () => void }) {
@@ -108,9 +66,6 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
   useEffect(() => {
     if (hasSubmenu && !collapsed) {
       const hasActiveChild = item.submenu?.some(sub => {
-        if (sub.submenu) {
-          return sub.submenu.some(deep => deep.href === pathname);
-        }
         return sub.href === pathname;
       });
       if (hasActiveChild) setIsOpen(true);
@@ -262,14 +217,9 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: Sideba
                 <div className="text-xs text-gray-400">Admin</div>
               </div>
             </a>
-            <div className="flex items-center gap-1">
-              <a href="/admin/settings" className="p-2 rounded-lg hover:bg-gray-100 transition-all">
-                <FiSettings size={16} className="text-gray-500" />
-              </a>
-              <a href="/auth/logout" className="p-2 rounded-lg hover:bg-gray-100 transition-all">
-                <FiLogOut size={16} className="text-red-500" />
-              </a>
-            </div>
+            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all">
+              <FiLogOut size={18} className="text-red-500" />
+            </a>
           </div>
         </div>
       ) : (
@@ -278,14 +228,9 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: Sideba
             <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
               <span className="text-sm font-medium">AD</span>
             </div>
-            <div className="flex gap-1">
-              <a href="/admin/settings" className="p-2 rounded-lg hover:bg-gray-100 transition-all">
-                <FiSettings size={16} className="text-gray-500" />
-              </a>
-              <a href="/auth/logout" className="p-2 rounded-lg hover:bg-gray-100 transition-all">
-                <FiLogOut size={16} className="text-red-500" />
-              </a>
-            </div>
+            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all">
+              <FiLogOut size={18} className="text-red-500" />
+            </a>
           </div>
         </div>
       )}
