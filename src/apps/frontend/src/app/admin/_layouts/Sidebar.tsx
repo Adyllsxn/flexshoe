@@ -62,64 +62,8 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
     );
   }
 
-  if (hasSubmenu) {
-    if (collapsed) {
-      return (
-        <li className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-          <div className="flex justify-center py-2">
-            <div className="relative">
-              <div className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-all cursor-pointer">
-                <Icon size={20} />
-              </div>
-              <AnimatePresence>
-                {showDropdown && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    exit={{ opacity: 0, x: -10, scale: 0.95 }}
-                    transition={{ duration: 0.15, ease: "easeOut" }}
-                    className="fixed left-16 ml-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-[100]"
-                    style={{ 
-                      boxShadow: '0 20px 25px -12px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05)'
-                    }}
-                  >
-                    <div className="px-4 py-2.5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white rounded-t-xl">
-                      <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{item.name}</span>
-                    </div>
-                    <div className="py-1">
-                      {item.submenu!.map((sub, idx) => {
-                        const SubIcon = sub.icon;
-                        const isSubActive = sub.href === pathname;
-                        return (
-                          <Link
-                            key={idx}
-                            href={sub.href!}
-                            onClick={() => {
-                              setShowDropdown(false);
-                              onClose?.();
-                            }}
-                            className={`flex items-center gap-3 mx-2 px-3 py-2.5 rounded-lg transition-all duration-200 ${
-                              isSubActive 
-                                ? 'bg-gray-100 text-black font-medium shadow-sm' 
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-black'
-                            }`}
-                          >
-                            <SubIcon size={16} className={isSubActive ? 'text-black' : 'text-gray-400'} />
-                            <span className="text-sm">{sub.name}</span>
-                            {isSubActive && <div className="ml-auto w-1.5 h-1.5 bg-black rounded-full" />}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </li>
-      );
-    }
-
+  // Se tem submenu e NÃO está colapsado -> renderiza como button (expansível)
+  if (hasSubmenu && !collapsed) {
     return (
       <li className={`${isOpen ? 'open' : ''}`}>
         <button
@@ -151,6 +95,65 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
     );
   }
 
+  // Se tem submenu e está colapsado -> renderiza com dropdown lateral
+  if (hasSubmenu && collapsed) {
+    return (
+      <li className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <div className="flex justify-center py-2">
+          <div className="relative">
+            <div className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-all cursor-pointer">
+              <Icon size={20} />
+            </div>
+            <AnimatePresence>
+              {showDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -10, scale: 0.95 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
+                  className="fixed left-16 ml-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-[100]"
+                  style={{ 
+                    boxShadow: '0 20px 25px -12px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05)'
+                  }}
+                >
+                  <div className="px-4 py-2.5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white rounded-t-xl">
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{item.name}</span>
+                  </div>
+                  <div className="py-1">
+                    {item.submenu!.map((sub, idx) => {
+                      const SubIcon = sub.icon;
+                      const isSubActive = sub.href === pathname;
+                      return (
+                        <Link
+                          key={idx}
+                          href={sub.href!}
+                          onClick={() => {
+                            setShowDropdown(false);
+                            onClose?.();
+                          }}
+                          className={`flex items-center gap-3 mx-2 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                            isSubActive 
+                              ? 'bg-gray-100 text-black font-medium shadow-sm' 
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-black'
+                          }`}
+                        >
+                          <SubIcon size={16} className={isSubActive ? 'text-black' : 'text-gray-400'} />
+                          <span className="text-sm">{sub.name}</span>
+                          {isSubActive && <div className="ml-auto w-1.5 h-1.5 bg-black rounded-full" />}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </li>
+    );
+  }
+
+  // Sem submenu (item normal)
   if (!item.href || item.href === '#') return null;
 
   if (collapsed) {

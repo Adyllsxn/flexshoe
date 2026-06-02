@@ -1,6 +1,5 @@
 import { 
   FiTag,
-  FiHeart,
   FiPackage,
   FiShoppingBag,
   FiSettings,
@@ -17,7 +16,6 @@ export interface QuickAccessItem {
 
 export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
   { icon: FiTag, label: 'Marcas', href: '/admin/marcas' },
-  { icon: FiHeart, label: 'Gênero', href: '/admin/genero' },
   { icon: FiPackage, label: 'Produtos', href: '/admin/produtos' },
   { icon: FiShoppingBag, label: 'Store', href: '/admin/store' },
   { icon: FiSettings, label: 'Settings', href: '/admin/settings' },
