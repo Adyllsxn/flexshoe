@@ -70,6 +70,11 @@
 
 ---
 
+## **⚠️ STATUS DO PROJETO**
+> **Nota:** Atualmente o frontend utiliza dados mockados. A integração com o backend será implementada em breve.
+
+---
+
 ## **📄 LICENÇA**
 
 > Este projeto está sob a licença MIT, o que significa que é de código aberto e pode ser utilizado livremente para fins académicos e comerciais, desde que mantidos os créditos.
