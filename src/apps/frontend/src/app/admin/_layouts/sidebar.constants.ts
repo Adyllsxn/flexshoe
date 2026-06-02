@@ -5,7 +5,6 @@ import {
   FiPackage, 
   FiBox, 
   FiTag,
-  FiPieChart,
   FiSettings,
   FiDatabase,
   FiShield,
@@ -21,15 +20,6 @@ export interface NavItem {
 
 export const NAVIGATION: NavItem[] = [
   { name: 'Dashboard', href: '/admin', icon: FiGrid },
-  {
-    name: 'Dashboards',
-    icon: FiPieChart,
-    submenu: [
-      { name: 'Vendas', href: '/admin/dashboards/vendas', icon: FiPieChart },
-      { name: 'Analytics', href: '/admin/dashboards/analytics', icon: FiPieChart },
-      { name: 'CRM', href: '/admin/dashboards/crm', icon: FiPieChart },
-    ]
-  },
   {
     name: 'Utilizadores',
     icon: FiUsers,
