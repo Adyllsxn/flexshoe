@@ -38,5 +38,4 @@ export const NAVIGATION: NavItem[] = [
   { name: 'Inventory', href: '/admin/inventory', icon: FiDatabase },
   { name: 'Configurações', href: '#', icon: FiSettings, isHeading: true },
   { name: 'Store', href: '/admin/store', icon: FiShoppingBag },
-  { name: 'Settings', href: '/admin/settings', icon: FiSettings },
 ];
