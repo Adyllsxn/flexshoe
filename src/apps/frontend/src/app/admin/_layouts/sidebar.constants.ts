@@ -5,10 +5,10 @@ import {
   FiPackage, 
   FiBox, 
   FiTag,
-  FiHeart,
   FiPieChart,
   FiSettings,
-  FiDatabase
+  FiDatabase,
+  FiShield,
 } from 'react-icons/fi';
 
 export interface NavItem {
@@ -30,11 +30,17 @@ export const NAVIGATION: NavItem[] = [
       { name: 'CRM', href: '/admin/dashboards/crm', icon: FiPieChart },
     ]
   },
-  { name: 'Utilizadores', href: '/admin/users', icon: FiUsers },
+  {
+    name: 'Utilizadores',
+    icon: FiUsers,
+    submenu: [
+      { name: 'Usuários', href: '/admin/users', icon: FiUsers },
+      { name: 'Permissões', href: '/admin/permissoes', icon: FiShield },
+    ]
+  },
   { name: 'Produtos', href: '/admin/produtos', icon: FiPackage },
   { name: 'Catálogo', href: '#', icon: FiBox, isHeading: true },
   { name: 'Marcas', href: '/admin/marcas', icon: FiTag },
-  { name: 'Gênero', href: '/admin/genero', icon: FiHeart },
   { name: 'Inventory', href: '/admin/inventory', icon: FiDatabase },
   { name: 'Configurações', href: '#', icon: FiSettings, isHeading: true },
   { name: 'Store', href: '/admin/store', icon: FiShoppingBag },
