@@ -1,0 +1,5 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#f3f4f6"/>
+  <text x="200" y="195" font-family="Arial" font-size="16" fill="#9ca3af" text-anchor="middle">Sem Imagem</text>
+  <text x="200" y="220" font-family="Arial" font-size="12" fill="#d1d5db" text-anchor="middle">404</text>
+</svg>
