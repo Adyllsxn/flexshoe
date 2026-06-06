@@ -1,12 +1,3 @@
-import { 
-  FiGrid, 
-  FiList,
-  FiSearch,
-  FiHeart,
-  FiRepeat,
-  FiEye
-} from 'react-icons/fi';
-
 export const produtosData = {
   title: 'Produtos',
   breadcrumb: {

@@ -2,11 +2,10 @@
 
 import Link from 'next/link';
 import { usePromoCards } from '../_hooks/usePromoCards';
-import { DataSourceIndicator } from '@/components/shared/DataSourceIndicator';
 import { OptimizedImage } from '@/components/shared/OptimizedImage';
 
 export default function PromoCards() {
-  const { promoMain, promoCards, loading, usingMock } = usePromoCards();
+  const { promoMain, promoCards, loading } = usePromoCards();
 
   if (loading) {
     return (
@@ -23,8 +22,6 @@ export default function PromoCards() {
   return (
     <section className="promo-cards py-16 bg-white">
       <div className="container mx-auto px-4">
-        <DataSourceIndicator usingMock={usingMock} />
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Card principal */}
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 min-h-[450px] flex flex-col justify-end p-8 group">
@@ -87,7 +84,6 @@ export default function PromoCards() {
                   </div>
                   
                   <div className="flex items-center gap-4">
-                    {/* SEM BG BRANCO - DEIXA TRANSPARENTE */}
                     <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
                       <OptimizedImage
                         src={card.image}
