@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FiHeart, FiRepeat, FiEye, FiStar, FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '@/lib/contexts/CartContext';
+import { getInventoryByProductId } from '@/lib/modules/inventory';
 import { toast } from 'sonner';
 
 interface ProdutosCardProps {
@@ -28,8 +30,10 @@ interface ProdutosCardProps {
 }
 
 export default function ProdutosCard({ product, viewMode, formatPrice, usingMock = false }: ProdutosCardProps) {
+  const router = useRouter();
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   const getLabelStyle = (labelType: string | null) => {
     switch(labelType) {
@@ -53,47 +57,131 @@ export default function ProdutosCard({ product, viewMode, formatPrice, usingMock
     return stars;
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (usingMock) {
-      toast.error('API offline. Não é possível adicionar ao carrinho', { duration: 3000 });
+      toast.error('API offline. Não é possível adicionar ao carrinho');
       return;
     }
+
+    setAdding(true);
     
-    const firstColor = product.colors[0] || 'Preto';
-    
-    addItem({
-      id: `${product.id}-42-${firstColor}`,
-      productId: product.id,
-      name: product.name,
-      size: 42,
-      color: firstColor,
-      price: product.price,
-      quantity: 1,
-    });
-    
-    setAdded(true);
-    toast.success(`${product.name} adicionado ao carrinho!`, { duration: 2000 });
-    setTimeout(() => setAdded(false), 2000);
+    try {
+      const inventory = await getInventoryByProductId(product.id);
+      if (inventory && inventory.length > 0) {
+        const firstItem = inventory[0];
+        const success = await addItem(firstItem.id, 1);
+        if (success) {
+          setAdded(true);
+          setTimeout(() => setAdded(false), 2000);
+        }
+      } else {
+        toast.error('Produto indisponível no momento');
+      }
+    } catch (error) {
+      toast.error('Erro ao adicionar ao carrinho');
+    } finally {
+      setAdding(false);
+    }
   };
 
   const handleViewDetails = (e: React.MouseEvent) => {
     if (usingMock) {
       e.preventDefault();
+      e.stopPropagation();
       toast.error('API offline. Não é possível ver detalhes do produto', { duration: 3000 });
+      // Volta para a página inicial
+      router.push('/');
     }
   };
 
-  const cardContent = (
-    <>
+  // Modo lista
+  if (viewMode === 'list') {
+    return (
+      <div className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex">
+        <Link 
+          href={usingMock ? '#' : `/produtos/${product.id}`} 
+          onClick={handleViewDetails}
+          className="relative w-48 bg-gray-50 aspect-square overflow-hidden block flex-shrink-0"
+        >
+          <Image
+            src={product.image}
+            alt={product.name}
+            width={192}
+            height={192}
+            className="object-contain p-4 w-full h-full group-hover:scale-110 transition-transform duration-500"
+          />
+          {product.label && (
+            <span className={`absolute top-3 left-3 px-2 py-1 text-xs font-bold rounded ${getLabelStyle(product.labelType)}`}>
+              {product.label}
+            </span>
+          )}
+        </Link>
+        <div className="flex-1 p-4 flex flex-col justify-between">
+          <div>
+            <div className="mb-1">
+              <span className="text-xs text-gray-400">{product.gender}</span>
+            </div>
+            <Link 
+              href={usingMock ? '#' : `/produtos/${product.id}`} 
+              onClick={handleViewDetails}
+              className="block"
+            >
+              <h3 className="font-bold text-black mb-1 hover:underline">{product.name}</h3>
+            </Link>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex gap-0.5">{renderStars(product.rating)}</div>
+              <span className="text-xs text-gray-400">{product.rating}</span>
+            </div>
+            <div className="flex items-baseline gap-2 mb-3">
+              <span className="text-xl font-bold text-black">{formatPrice(product.price)}</span>
+              {product.originalPrice && (
+                <span className="text-sm text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">Cores:</span>
+              <div className="flex gap-1.5">
+                {product.colorValues?.slice(0, 4).map((color, idx) => (
+                  <div
+                    key={idx}
+                    className="w-5 h-5 rounded-full border border-gray-200 cursor-pointer hover:scale-110 transition-transform duration-200"
+                    style={{ backgroundColor: color }}
+                    title={product.colors?.[idx]}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+          <button 
+            onClick={handleAddToCart}
+            disabled={added || adding}
+            className={`w-full mt-4 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${
+              added ? 'bg-green-500 text-white' : 
+              adding ? 'bg-gray-400 text-white' :
+              'bg-black text-white hover:bg-gray-800'
+            }`}
+          >
+            <FiShoppingBag size={14} />
+            {added ? 'Adicionado!' : adding ? 'Adicionando...' : 'Adicionar'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Modo grid
+  return (
+    <div className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
       <div className="relative bg-gray-50 aspect-square overflow-hidden">
         <Image
           src={product.image}
           alt={product.name}
-          fill
-          className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+          width={400}
+          height={400}
+          className="object-contain p-4 w-full h-full group-hover:scale-110 transition-transform duration-500"
         />
         {product.label && (
           <span className={`absolute top-3 left-3 px-2 py-1 text-xs font-bold rounded ${getLabelStyle(product.labelType)}`}>
@@ -121,7 +209,9 @@ export default function ProdutosCard({ product, viewMode, formatPrice, usingMock
         <div className="mb-1">
           <span className="text-xs text-gray-400">{product.gender}</span>
         </div>
-        <h3 className="font-bold text-black mb-1 line-clamp-1">{product.name}</h3>
+        <Link href={usingMock ? '#' : `/produtos/${product.id}`} onClick={handleViewDetails} className="block">
+          <h3 className="font-bold text-black mb-1 line-clamp-1 hover:underline">{product.name}</h3>
+        </Link>
         <div className="flex items-center gap-2 mb-2">
           <div className="flex gap-0.5">{renderStars(product.rating)}</div>
           <span className="text-xs text-gray-400">{product.rating}</span>
@@ -152,93 +242,17 @@ export default function ProdutosCard({ product, viewMode, formatPrice, usingMock
         
         <button 
           onClick={handleAddToCart}
-          disabled={added}
+          disabled={added || adding}
           className={`w-full py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${
-            added ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'
+            added ? 'bg-green-500 text-white' : 
+            adding ? 'bg-gray-400 text-white' :
+            'bg-black text-white hover:bg-gray-800'
           }`}
         >
           <FiShoppingBag size={14} />
-          {added ? 'Adicionado!' : 'Adicionar'}
+          {added ? 'Adicionado!' : adding ? 'Adicionando...' : 'Adicionar'}
         </button>
       </div>
-    </>
-  );
-
-  if (viewMode === 'list') {
-    return (
-      <div className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex">
-        <Link 
-          href={usingMock ? '#' : `/produtos/${product.id}`} 
-          onClick={handleViewDetails}
-          className="relative w-48 bg-gray-50 aspect-square overflow-hidden block"
-        >
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-          />
-          {product.label && (
-            <span className={`absolute top-3 left-3 px-2 py-1 text-xs font-bold rounded ${getLabelStyle(product.labelType)}`}>
-              {product.label}
-            </span>
-          )}
-        </Link>
-        <div className="flex-1 p-4 flex flex-col justify-between">
-          <div>
-            <div className="mb-1">
-              <span className="text-xs text-gray-400">{product.gender}</span>
-            </div>
-            <Link 
-              href={usingMock ? '#' : `/produtos/${product.id}`} 
-              onClick={handleViewDetails}
-            >
-              <h3 className="font-bold text-black mb-1 hover:underline">{product.name}</h3>
-            </Link>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="flex gap-0.5">{renderStars(product.rating)}</div>
-              <span className="text-xs text-gray-400">{product.rating}</span>
-            </div>
-            <div className="flex items-baseline gap-2 mb-3">
-              <span className="text-xl font-bold text-black">{formatPrice(product.price)}</span>
-              {product.originalPrice && (
-                <span className="text-sm text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400">Cores:</span>
-              <div className="flex gap-1.5">
-                {product.colorValues?.slice(0, 4).map((color, idx) => (
-                  <div
-                    key={idx}
-                    className="w-5 h-5 rounded-full border border-gray-200 cursor-pointer hover:scale-110 transition-transform duration-200"
-                    style={{ backgroundColor: color }}
-                    title={product.colors?.[idx]}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-          <button 
-            onClick={handleAddToCart}
-            disabled={added}
-            className={`w-full mt-4 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 ${
-              added ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'
-            }`}
-          >
-            <FiShoppingBag size={14} />
-            {added ? 'Adicionado!' : 'Adicionar'}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
-      <Link href={usingMock ? '#' : `/produtos/${product.id}`} onClick={handleViewDetails}>
-        {cardContent}
-      </Link>
     </div>
   );
 }

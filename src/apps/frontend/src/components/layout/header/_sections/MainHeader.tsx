@@ -13,7 +13,6 @@ export function MainHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
 
-  // Previne scroll quando o menu mobile está aberto
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -27,15 +26,12 @@ export function MainHeader() {
 
   return (
     <>
-      {/* Header principal */}
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between gap-4">
-          {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-black flex-shrink-0">
             {SITE_NAME}
           </Link>
 
-          {/* Busca Desktop */}
           <div className="hidden md:flex flex-1 max-w-md">
             <div className="relative w-full">
               <input
@@ -52,9 +48,7 @@ export function MainHeader() {
             </div>
           </div>
 
-          {/* Ícones: Busca Mobile + Carrinho + Menu Mobile */}
           <div className="flex items-center gap-2">
-            {/* Ícone de busca - Mobile */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="md:hidden p-2 hover:bg-gray-100 rounded-full transition cursor-pointer"
@@ -62,7 +56,6 @@ export function MainHeader() {
               <Search className="h-5 w-5" />
             </button>
 
-            {/* Carrinho com contador */}
             <Link href="/carrinho" className="p-2 hover:bg-gray-100 rounded-full relative transition cursor-pointer">
               <ShoppingBag className="h-5 w-5" />
               {totalItems > 0 && (
@@ -72,7 +65,6 @@ export function MainHeader() {
               )}
             </Link>
 
-            {/* Menu Hamburguer - Mobile */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="md:hidden p-2 hover:bg-gray-100 rounded-full transition cursor-pointer"
@@ -83,7 +75,6 @@ export function MainHeader() {
         </div>
       </div>
 
-      {/* Busca Mobile */}
       {isSearchOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white py-3 px-4">
           <div className="relative w-full">
@@ -109,18 +100,14 @@ export function MainHeader() {
         </div>
       )}
 
-      {/* Menu Mobile - Modal fullscreen */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          {/* Fundo escuro */}
           <div 
             className="absolute inset-0 bg-black/90 transition-opacity duration-300"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           
-          {/* Conteúdo do menu */}
           <div className="relative h-full flex flex-col pt-20 px-6">
-            {/* Botão X */}
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="absolute top-4 right-4 p-2 text-white hover:text-gray-300 transition cursor-pointer"
@@ -128,7 +115,6 @@ export function MainHeader() {
               <X className="h-8 w-8" />
             </button>
             
-            {/* Links do menu */}
             <div className="flex flex-col gap-4">
               {NAVIGATION_LINKS.map((link) => (
                 <Link

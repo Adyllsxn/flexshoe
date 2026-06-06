@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiShoppingBag, FiMinus, FiPlus, FiCheck, FiHome } from 'react-icons/fi';
 import { useCart } from '@/lib/contexts/CartContext';
-import { OptimizedImage } from '@/components/shared/OptimizedImage';
 import { toast } from 'sonner';
 
 interface ProductDetailProps {
@@ -32,10 +31,11 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(product.mainImage);
   const [addedToCart, setAddedToCart] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   const handleSizeSelect = (size: number) => {
     if (usingMock) {
-      toast.error('API offline. Não é possível selecionar tamanho', { duration: 3000 });
+      toast.error('API offline. Não é possível selecionar tamanho');
       return;
     }
     setSelectedSize(size);
@@ -43,17 +43,15 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
 
   const handleColorSelect = (color: string) => {
     if (usingMock) {
-      toast.error('API offline. Não é possível selecionar cor', { duration: 3000 });
+      toast.error('API offline. Não é possível selecionar cor');
       return;
     }
     setSelectedColor(color);
   };
 
   const increaseQuantity = () => {
-    if (!usingMock && quantity < product.stock) {
+    if (!usingMock && quantity < (selectedColor ? product.colors.find(c => c.name === selectedColor)?.stock || 0 : product.stock)) {
       setQuantity(prev => prev + 1);
-    } else if (usingMock) {
-      toast.error('API offline. Não é possível alterar quantidade', { duration: 3000 });
     }
   };
 
@@ -63,9 +61,9 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (usingMock) {
-      toast.error('API offline. Não é possível adicionar ao carrinho', { duration: 3000 });
+      toast.error('API offline. Não é possível adicionar ao carrinho');
       return;
     }
 
@@ -86,19 +84,22 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
       return;
     }
 
-    addItem({
-      id: `${product.id}-${selectedSize}-${selectedColor}`,
-      productId: product.id,
-      name: product.name,
-      size: selectedSize,
-      color: selectedColor,
-      price: product.price,
-      quantity,
-    });
+    setAdding(true);
 
-    setAddedToCart(true);
-    toast.success(`${product.name} adicionado ao carrinho!`);
-    setTimeout(() => setAddedToCart(false), 3000);
+    try {
+      // Aqui você precisa buscar o inventoryId correto
+      // Por enquanto, vamos usar um ID temporário
+      const success = await addItem(`${product.id}-${selectedSize}-${selectedColor}`, quantity);
+      if (success) {
+        setAddedToCart(true);
+        toast.success(`${product.name} adicionado ao carrinho!`);
+        setTimeout(() => setAddedToCart(false), 3000);
+      }
+    } catch (error) {
+      toast.error('Erro ao adicionar ao carrinho');
+    } finally {
+      setAdding(false);
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -107,27 +108,34 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
 
   const selectedColorStock = product.colors.find(c => c.name === selectedColor)?.stock || 0;
 
+  if (usingMock) {
+    return (
+      <div className="container mx-auto px-4 py-20 text-center">
+        <div className="max-w-md mx-auto">
+          <div className="text-6xl mb-4">🔌</div>
+          <h2 className="text-2xl font-bold text-black mb-2">API Offline</h2>
+          <p className="text-gray-500 mb-6">Não é possível carregar detalhes do produto no momento.</p>
+          <Link href="/produtos" className="inline-flex px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition">
+            Voltar para produtos
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-10">
-      {usingMock && (
-        <div className="mb-4 text-center">
-          <span className="inline-block bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full">
-            ⚠️ Modo demonstração - API offline. Não é possível interagir com o produto.
-          </span>
-        </div>
-      )}
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         
         {/* Galeria de Imagens */}
         <div>
           <div className="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-4">
-            <OptimizedImage
+            <Image
               src={selectedImage}
               alt={product.name}
-              fill
-              className="object-contain p-4"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              width={600}
+              height={600}
+              className="object-contain p-4 w-full h-full"
             />
           </div>
           <div className="flex gap-2 overflow-auto">
@@ -139,7 +147,7 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
                   selectedImage === img ? 'border-black' : 'border-transparent'
                 }`}
               >
-                <OptimizedImage src={img} alt={`${product.name} ${idx + 1}`} fill className="object-contain p-1" />
+                <Image src={img} alt={`${product.name} ${idx + 1}`} width={80} height={80} className="object-contain p-1 w-full h-full" />
               </button>
             ))}
           </div>
@@ -169,7 +177,7 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-black">Cores</h3>
-              {selectedColor && !usingMock && (
+              {selectedColor && (
                 <span className="text-xs text-gray-400">
                   Estoque: {selectedColorStock} unidades
                 </span>
@@ -180,12 +188,11 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
                 <button
                   key={color.name}
                   onClick={() => handleColorSelect(color.name)}
-                  disabled={usingMock}
                   className={`group relative w-10 h-10 rounded-full border-2 transition-all ${
                     selectedColor === color.name
                       ? 'border-black scale-110'
                       : 'border-gray-200 hover:scale-105'
-                  } ${usingMock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  }`}
                   style={{ backgroundColor: color.value }}
                   title={color.name}
                 >
@@ -205,12 +212,11 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
                 <button
                   key={size}
                   onClick={() => handleSizeSelect(size)}
-                  disabled={usingMock}
                   className={`w-14 h-12 rounded-lg border text-sm font-medium transition ${
                     selectedSize === size
                       ? 'bg-black text-white border-black'
                       : 'border-gray-200 text-gray-600 hover:border-black'
-                  } ${usingMock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  }`}
                 >
                   {size}
                 </button>
@@ -224,7 +230,7 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
             <div className="flex items-center gap-3">
               <button
                 onClick={decreaseQuantity}
-                disabled={quantity <= 1 || usingMock}
+                disabled={quantity <= 1}
                 className="w-10 h-10 border border-gray-200 rounded-lg flex items-center justify-center hover:border-black transition disabled:opacity-50"
               >
                 <FiMinus size={16} />
@@ -232,16 +238,14 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
               <span className="w-12 text-center text-lg font-medium">{quantity}</span>
               <button
                 onClick={increaseQuantity}
-                disabled={usingMock || (selectedColor ? quantity >= selectedColorStock : quantity >= product.stock)}
+                disabled={selectedColor ? quantity >= selectedColorStock : quantity >= product.stock}
                 className="w-10 h-10 border border-gray-200 rounded-lg flex items-center justify-center hover:border-black transition disabled:opacity-50"
               >
                 <FiPlus size={16} />
               </button>
-              {!usingMock && (
-                <span className="text-sm text-gray-400 ml-2">
-                  {selectedColor ? `${selectedColorStock} disponíveis` : `${product.stock} disponíveis`}
-                </span>
-              )}
+              <span className="text-sm text-gray-400 ml-2">
+                {selectedColor ? `${selectedColorStock} disponíveis` : `${product.stock} disponíveis`}
+              </span>
             </div>
           </div>
 
@@ -249,15 +253,15 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
           <div className="flex gap-4">
             <button
               onClick={handleAddToCart}
-              disabled={addedToCart || usingMock}
+              disabled={addedToCart || adding}
               className={`flex-1 py-4 rounded-full font-medium transition flex items-center justify-center gap-2 ${
                 addedToCart
                   ? 'bg-green-500 text-white'
                   : 'bg-black text-white hover:bg-gray-800'
-              } ${usingMock ? 'opacity-50 cursor-not-allowed' : ''}`}
+              }`}
             >
               <FiShoppingBag size={18} />
-              {addedToCart ? 'Adicionado ao Carrinho!' : usingMock ? 'API offline' : 'Adicionar ao Carrinho'}
+              {addedToCart ? 'Adicionado ao Carrinho!' : adding ? 'Adicionando...' : 'Adicionar ao Carrinho'}
             </button>
           </div>
 

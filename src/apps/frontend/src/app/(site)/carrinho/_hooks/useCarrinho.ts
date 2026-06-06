@@ -1,26 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useCart } from '@/lib/contexts/CartContext';
-import { getImageUrl } from '@/lib/api.connection';
+import { createOrder, type CreateOrderDto } from '@/lib/modules/order';
 import { toast } from 'sonner';
-import { SHIPPING_COST, TAX_RATE, STEPS, PAYMENT_METHODS } from '../_constants/carrinho';
-
-interface CartItem {
-  id: number;
-  productId: string;
-  name: string;
-  price: number;
-  originalPrice: number | null;
-  quantity: number;
-  image: string;
-  color: string;
-  size: string;
-  gender: string;
-}
+import { SHIPPING_COST, TAX_RATE, STEPS, PAYMENT_METHODS, CART_ITEMS } from '../_constants/carrinho';
 
 export function useCarrinho() {
-  const { items: cartContextItems, updateQuantity: updateContextQuantity, removeItem: removeContextItem, clearCart } = useCart();
+  const { items: apiItems, removeItem, updateQuantity, clearCart, totalPrice, loading: cartLoading, usingMock: apiUsingMock } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -34,74 +21,40 @@ export function useCarrinho() {
   const [promoCode, setPromoCode] = useState('');
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Mapeamento de imagens por nome do produto (fallback)
-  const getProductImage = (productName: string): string => {
-    const name = productName.toLowerCase();
-    if (name.includes('nike')) return '/images/nike_air_max_plus.png';
-    if (name.includes('adidas')) return '/images/adidas_ultraboost.png';
-    if (name.includes('puma')) return '/images/puma_suede_classic.webp';
-    if (name.includes('vans')) return '/images/vans_old_skool.webp';
-    return '/images/placeholder.svg';
-  };
-
-  // Converter itens do cart context para o formato da página
-  useEffect(() => {
-    if (cartContextItems.length > 0) {
-      const convertedItems: CartItem[] = cartContextItems.map((item, index) => ({
-        id: index + 1,
-        productId: item.productId,
+  const isUsingMock = apiUsingMock || (apiItems.length === 0 && !cartLoading);
+  
+  const cartItems = apiItems.length > 0 
+    ? apiItems.map(item => ({
+        id: item.id,
         name: item.name,
         price: item.price,
-        originalPrice: null,
         quantity: item.quantity,
-        image: getProductImage(item.name),
+        image: item.image || `/images/placeholder.svg`,
         color: item.color,
         size: String(item.size),
-        gender: 'Unisex'
-      }));
-      setCartItems(convertedItems);
-    } else {
-      setCartItems([]);
-    }
-  }, [cartContextItems]);
-
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('pt-AO') + ' Kz';
-  };
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    
-    const item = cartItems.find(i => i.id === id);
-    if (item && item.productId) {
-      updateContextQuantity(`${item.productId}-${item.size}-${item.color}`, newQuantity);
-    }
-    
-    setCartItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-    toast.success('Quantidade atualizada');
-  };
-
-  const removeItem = (id: number) => {
-    const item = cartItems.find(i => i.id === id);
-    if (item && item.productId) {
-      removeContextItem(`${item.productId}-${item.size}-${item.color}`);
-    }
-    
-    setCartItems(prev => prev.filter(item => item.id !== id));
-    toast.success('Produto removido do carrinho');
-  };
+      }))
+    : (isUsingMock ? CART_ITEMS.map(item => ({
+        id: String(item.id),
+        name: item.name,
+        price: item.price,
+        originalPrice: item.originalPrice,
+        quantity: item.quantity,
+        image: item.image,
+        color: item.color,
+        size: item.size,
+      })) : []);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = subtotal > 250000 ? 0 : SHIPPING_COST;
   const tax = Math.round(subtotal * TAX_RATE);
   const discount = promoDiscount;
   const total = subtotal + shipping + tax - discount;
+
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('pt-AO') + ' Kz';
+  };
 
   const applyPromoCode = () => {
     if (promoCode.toUpperCase() === 'FLEX10') {
@@ -137,7 +90,7 @@ export function useCarrinho() {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const generateWhatsAppMessage = () => {
+  const generateWhatsAppMessage = (orderId: string) => {
     const itemsList = cartItems.map(item => 
       `• ${item.name} - ${item.color} | Tamanho ${item.size} - ${item.quantity}x = ${formatPrice(item.price * item.quantity)}`
     ).join('\n');
@@ -158,45 +111,108 @@ export function useCarrinho() {
       `*TOTAL: ${formatPrice(total)}*\n\n` +
       `*PAGAMENTO*\n` +
       `${formData.paymentMethod === 'money' ? '💵 Pagamento na Entrega (Dinheiro)' : '📱 Pagamento via WhatsApp'}\n\n` +
+      `*Nº DO PEDIDO: ${orderId}*\n\n` +
       `_Pedido gerado automaticamente via site_`;
     
     return encodeURIComponent(message);
   };
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
+    if (cartItems.length === 0) {
+      toast.error('Seu carrinho está vazio');
+      return;
+    }
+
+    setSubmitting(true);
     toast.loading('Processando pedido...');
-    
-    setTimeout(() => {
+
+    if (isUsingMock) {
+      setTimeout(() => {
+        toast.dismiss();
+        const demoOrderId = 'DEMO-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        
+        if (formData.paymentMethod === 'whatsapp') {
+          const message = generateWhatsAppMessage(demoOrderId);
+          const whatsappUrl = `https://wa.me/244900000000?text=${message}`;
+          window.open(whatsappUrl, '_blank');
+          toast.success('Redirecionando para o WhatsApp...');
+        } else {
+          toast.success('Pedido realizado com sucesso!');
+        }
+        
+        setOrderPlaced(true);
+        setTimeout(() => {
+          setOrderPlaced(false);
+          setCurrentStep(1);
+          setFormData({
+            firstName: '',
+            lastName: '',
+            phone: '',
+            address: '',
+            city: '',
+            province: '',
+            paymentMethod: 'money'
+          });
+          setPromoDiscount(0);
+          setPromoCode('');
+        }, 3000);
+        setSubmitting(false);
+      }, 1500);
+      return;
+    }
+
+    try {
+      const orderData: CreateOrderDto = {
+        customerName: `${formData.firstName} ${formData.lastName}`,
+        customerPhone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        province: formData.province,
+        paymentMethod: formData.paymentMethod,
+      };
+
+      const order = await createOrder(orderData);
+
       toast.dismiss();
       
-      if (formData.paymentMethod === 'whatsapp') {
-        const message = generateWhatsAppMessage();
-        const whatsappUrl = `https://wa.me/244900000000?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-        toast.success('Redirecionando para o WhatsApp...');
+      if (order) {
+        if (formData.paymentMethod === 'whatsapp') {
+          const message = generateWhatsAppMessage(order.id);
+          const whatsappUrl = `https://wa.me/244900000000?text=${message}`;
+          window.open(whatsappUrl, '_blank');
+          toast.success('Redirecionando para o WhatsApp...');
+        } else {
+          toast.success('Pedido realizado com sucesso!');
+        }
+        
+        setOrderPlaced(true);
+        await clearCart();
+        
+        setTimeout(() => {
+          setOrderPlaced(false);
+          setCurrentStep(1);
+          setFormData({
+            firstName: '',
+            lastName: '',
+            phone: '',
+            address: '',
+            city: '',
+            province: '',
+            paymentMethod: 'money'
+          });
+          setPromoDiscount(0);
+          setPromoCode('');
+        }, 3000);
       } else {
-        toast.success('Pedido realizado com sucesso!');
+        toast.dismiss();
+        toast.error('Erro ao processar pedido. Tente novamente.');
       }
-      
-      setOrderPlaced(true);
-      setTimeout(() => {
-        setOrderPlaced(false);
-        setCurrentStep(1);
-        clearCart();
-        setCartItems([]);
-        setFormData({
-          firstName: '',
-          lastName: '',
-          phone: '',
-          address: '',
-          city: '',
-          province: '',
-          paymentMethod: 'money'
-        });
-        setPromoDiscount(0);
-        setPromoCode('');
-      }, 2000);
-    }, 1500);
+    } catch (error) {
+      toast.dismiss();
+      toast.error('Erro ao processar pedido. Tente novamente.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return {
@@ -204,13 +220,14 @@ export function useCarrinho() {
     currentStep,
     formData,
     promoCode,
-    promoDiscount,
     orderPlaced,
     subtotal,
     shipping,
     tax,
     discount,
     total,
+    loading: cartLoading,
+    submitting,
     formatPrice,
     updateQuantity,
     removeItem,

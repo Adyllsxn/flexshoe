@@ -1,87 +1,150 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { 
+  getCart, 
+  addToCart as apiAddToCart,
+  updateCartItem as apiUpdateCartItem,
+  removeCartItem as apiRemoveCartItem,
+  clearCart as apiClearCart,
+  type CartItem,
+  type AddToCartDto
+} from '@/lib/modules/cart';
+import { toast } from 'sonner';
 
-interface CartItem {
-  id: string;
-  productId: string;
-  name: string;
-  size: number;
-  color: string;
-  price: number;
-  quantity: number;
-}
+// Dados estáticos para fallback
+const STATIC_CART_ITEMS: CartItem[] = [];
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: CartItem) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
-  clearCart: () => void;
+  addItem: (inventoryId: string, quantity: number) => Promise<boolean>;
+  removeItem: (itemId: string) => Promise<boolean>;
+  updateQuantity: (itemId: string, quantity: number) => Promise<boolean>;
+  clearCart: () => Promise<boolean>;
   totalItems: number;
   totalPrice: number;
+  loading: boolean;
+  usingMock: boolean;
+  refreshCart: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [items, setItems] = useState<CartItem[]>(STATIC_CART_ITEMS);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [usingMock, setUsingMock] = useState(false);
 
-  // Carregar carrinho do localStorage
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart));
-      } catch (e) {
-        console.error('Erro ao carregar carrinho:', e);
+  const refreshCart = useCallback(async () => {
+    try {
+      const cartData = await getCart();
+      if (cartData && cartData.cart && cartData.cart.items) {
+        setItems(cartData.cart.items);
+        setTotalItems(cartData.summary?.totalItems || 0);
+        setTotalPrice(cartData.summary?.subtotal || 0);
+        setUsingMock(false);
+      } else {
+        setItems(STATIC_CART_ITEMS);
+        setTotalItems(0);
+        setTotalPrice(0);
+        setUsingMock(true);
       }
+    } catch (error) {
+      setItems(STATIC_CART_ITEMS);
+      setTotalItems(0);
+      setTotalPrice(0);
+      setUsingMock(true);
+    } finally {
+      setLoading(false);
     }
-    setIsLoaded(true);
   }, []);
 
-  // Salvar carrinho no localStorage
   useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('cart', JSON.stringify(items));
-    }
-  }, [items, isLoaded]);
+    refreshCart();
+  }, [refreshCart]);
 
-  const addItem = (item: CartItem) => {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
-      if (existing) {
-        return prev.map((i) =>
-          i.id === item.id
-            ? { ...i, quantity: i.quantity + item.quantity }
-            : i
-        );
+  const addItem = async (inventoryId: string, quantity: number): Promise<boolean> => {
+    if (usingMock) {
+      toast.warning('API offline. Não é possível adicionar ao carrinho', { duration: 3000 });
+      return false;
+    }
+    
+    try {
+      const result = await apiAddToCart({ inventoryId, quantity });
+      if (result) {
+        await refreshCart();
+        toast.success('Produto adicionado ao carrinho!');
+        return true;
       }
-      return [...prev, item];
-    });
-  };
-
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
-  };
-
-  const updateQuantity = (id: string, quantity: number) => {
-    if (quantity < 1) {
-      removeItem(id);
-      return;
+      toast.error('Erro ao adicionar ao carrinho');
+      return false;
+    } catch (error) {
+      toast.error('Erro ao adicionar ao carrinho');
+      return false;
     }
-    setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, quantity } : i))
-    );
   };
 
-  const clearCart = () => {
-    setItems([]);
+  const removeItem = async (itemId: string): Promise<boolean> => {
+    if (usingMock) {
+      toast.warning('API offline. Não é possível remover item', { duration: 3000 });
+      return false;
+    }
+    
+    try {
+      const result = await apiRemoveCartItem(itemId);
+      if (result) {
+        await refreshCart();
+        toast.success('Produto removido do carrinho');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      toast.error('Erro ao remover item');
+      return false;
+    }
   };
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const updateQuantity = async (itemId: string, quantity: number): Promise<boolean> => {
+    if (usingMock) {
+      toast.warning('API offline. Não é possível atualizar quantidade', { duration: 3000 });
+      return false;
+    }
+    
+    try {
+      const result = await apiUpdateCartItem(itemId, { quantity });
+      if (result) {
+        await refreshCart();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const clearCartItems = async (): Promise<boolean> => {
+    if (usingMock) {
+      setItems([]);
+      setTotalItems(0);
+      setTotalPrice(0);
+      toast.success('Carrinho limpo');
+      return true;
+    }
+    
+    try {
+      const result = await apiClearCart();
+      if (result) {
+        await refreshCart();
+        toast.success('Carrinho limpo');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
 
   return (
     <CartContext.Provider
@@ -90,9 +153,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addItem,
         removeItem,
         updateQuantity,
-        clearCart,
+        clearCart: clearCartItems,
         totalItems,
         totalPrice,
+        loading,
+        usingMock,
+        refreshCart,
       }}
     >
       {children}

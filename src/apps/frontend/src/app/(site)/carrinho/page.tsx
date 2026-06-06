@@ -25,6 +25,8 @@ export default function CarrinhoPage() {
     tax,
     discount,
     total,
+    loading,
+    submitting,
     formatPrice,
     updateQuantity,
     removeItem,
@@ -37,6 +39,19 @@ export default function CarrinhoPage() {
     STEPS,
     PAYMENT_METHODS,
   } = useCarrinho();
+
+  // Loading
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-white">
+        <div className="container mx-auto px-4 py-20">
+          <div className="flex justify-center items-center h-96">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   // Carrinho vazio
   if (cartItems.length === 0 && !orderPlaced) {
@@ -331,8 +346,8 @@ export default function CarrinhoPage() {
                   <button onClick={prevStep} className="px-6 py-3 border border-gray-300 text-gray-600 rounded-lg font-medium hover:border-black hover:text-black transition">
                     Voltar
                   </button>
-                  <button onClick={placeOrder} className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition">
-                    Finalizar Pedido
+                  <button onClick={placeOrder} disabled={submitting} className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50">
+                    {submitting ? 'Processando...' : 'Finalizar Pedido'}
                   </button>
                 </div>
               </div>
@@ -345,7 +360,7 @@ export default function CarrinhoPage() {
               <h3 className="text-xl font-bold text-black mb-4">Resumo do Pedido</h3>
               
               <div className="space-y-4 max-h-80 overflow-auto mb-4">
-                {cartItems.map((item) => (
+                {cartItems.map((item: any) => (
                   <div key={item.id} className="flex gap-3 pb-3 border-b border-gray-200">
                     <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
                       <Image src={item.image} alt={item.name} width={50} height={50} className="object-contain" />
