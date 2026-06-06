@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getAllProducts } from '@/lib/modules/product';
+import { getInventoryByProductId } from '@/lib/modules/inventory';
 import { getImageUrl } from '@/lib/api.connection';
 import { PRODUCT_FILTERS, PRODUCTS as MOCK_PRODUCTS } from '../_constants/productList';
 import { toast } from 'sonner';
@@ -22,6 +23,19 @@ interface Product {
   colors: string[];
   colorValues: string[];
 }
+
+const colorMap: Record<string, string> = {
+  'Branco': '#ffffff',
+  'Preto': '#1a1a1a',
+  'Azul': '#2563eb',
+  'Vermelho': '#dc2626',
+  'Verde': '#16a34a',
+  'Amarelo': '#eab308',
+  'Rosa': '#ec4899',
+  'Marrom': '#78350f',
+  'Cinza': '#6b7280',
+  'Azul Marinho': '#1e3a8a',
+};
 
 export function useProductList(initialFilter: string = '*') {
   const [activeFilter, setActiveFilter] = useState(initialFilter);
@@ -50,27 +64,44 @@ export function useProductList(initialFilter: string = '*') {
         const response = await getAllProducts({ brand, limit: 8 });
         
         if (response.data && response.data.length > 0) {
-          const apiProducts = response.data.map((product, index) => {
-            const imageUrl = getImageUrl(product.mainImage);
-            const fallbackImage = MOCK_PRODUCTS[index % MOCK_PRODUCTS.length]?.image;
-            
-            return {
-              id: index + 1,
-              name: product.name,
-              price: product.price,
-              oldPrice: null,
-              rating: 4.5,
-              reviews: Math.floor(Math.random() * 50),
-              image: imageUrl !== '/images/placeholder.svg' ? imageUrl : fallbackImage,
-              hoverImage: imageUrl !== '/images/placeholder.svg' ? imageUrl : fallbackImage,
-              brand: product.brand?.name?.toLowerCase() || 'nike',
-              isNew: false,
-              isSale: false,
-              category: `.filter-${product.brand?.name?.toLowerCase() || 'nike'}`,
-              colors: ['Preto', 'Branco'],
-              colorValues: ['#1a1a1a', '#f5f5f5'],
-            };
-          });
+          const apiProducts = await Promise.all(
+            response.data.map(async (product, index) => {
+              // Busca inventory do produto
+              const inventory = await getInventoryByProductId(product.id);
+              
+              // Pega cores únicas do inventory
+              let colors: string[] = ['Preto', 'Branco'];
+              let colorValues: string[] = ['#1a1a1a', '#ffffff'];
+              
+              if (inventory && inventory.length > 0) {
+                const uniqueColors = [...new Set(inventory.map((item) => item.color))];
+                if (uniqueColors.length > 0) {
+                  colors = uniqueColors;
+                  colorValues = colors.map((c) => colorMap[c] || '#cccccc');
+                }
+              }
+              
+              const imageUrl = getImageUrl(product.mainImage);
+              
+              return {
+                id: index + 1,
+                name: product.name,
+                price: Math.floor(product.price),
+                oldPrice: null,
+                rating: 4.5,
+                reviews: 24,
+                image: imageUrl,
+                hoverImage: imageUrl,
+                brand: product.brand?.name?.toLowerCase() || 'nike',
+                isNew: false,
+                isSale: false,
+                category: `.filter-${product.brand?.name?.toLowerCase() || 'nike'}`,
+                colors: colors,
+                colorValues: colorValues,
+              };
+            })
+          );
+          
           setProducts(apiProducts);
           setUsingMock(false);
           toast.success('✅ Produtos carregados da API', { duration: 2000 });
@@ -80,10 +111,8 @@ export function useProductList(initialFilter: string = '*') {
           toast.warning('⚠️ Usando dados estáticos (API offline)', { duration: 3000 });
         }
       } catch (error) {
-        // Não mostrar erro no console, apenas usar mock silenciosamente
         setProducts(MOCK_PRODUCTS);
         setUsingMock(true);
-        // Mostrar apenas um toast sucinto
         toast.warning('⚠️ Modo offline - usando dados locais', { duration: 3000 });
       } finally {
         setLoading(false);
