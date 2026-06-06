@@ -8,9 +8,10 @@ interface ProdutosGridProps {
   viewMode: 'grid' | 'list';
   formatPrice: (price: number) => string;
   onClearFilters: () => void;
+  usingMock?: boolean;
 }
 
-export default function ProdutosGrid({ products, viewMode, formatPrice, onClearFilters }: ProdutosGridProps) {
+export default function ProdutosGrid({ products, viewMode, formatPrice, onClearFilters, usingMock = false }: ProdutosGridProps) {
   if (products.length === 0) {
     return (
       <div className="text-center py-20">
@@ -33,6 +34,7 @@ export default function ProdutosGrid({ products, viewMode, formatPrice, onClearF
           product={product}
           viewMode={viewMode}
           formatPrice={formatPrice}
+          usingMock={usingMock}
         />
       ))}
     </div>

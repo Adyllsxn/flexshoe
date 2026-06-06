@@ -5,7 +5,6 @@ import { getAllProducts } from '@/lib/modules/product';
 import { getInventoryByProductId } from '@/lib/modules/inventory';
 import { getAllBrands } from '@/lib/modules/brand';
 import { getImageUrl } from '@/lib/api.connection';
-import { toast } from 'sonner';
 import { GENDER as STATIC_GENDER, COLORS as STATIC_COLORS, BRANDS as STATIC_BRANDS, PRODUCTS as STATIC_PRODUCTS, ITEMS_PER_PAGE } from '../_constants/produtos';
 
 interface Product {
@@ -110,7 +109,6 @@ export function useProdutos() {
       });
       
       if (response.data && response.data.length > 0) {
-        // Buscar inventory para cada produto (cores)
         const productsWithColors = await Promise.all(
           response.data.map(async (product) => {
             let colorsList: string[] = [];
@@ -126,7 +124,6 @@ export function useProdutos() {
               console.error(`Erro ao buscar inventory:`, error);
             }
             
-            // Se não tiver cores no inventory, usa padrão
             if (colorsList.length === 0) {
               colorsList = ['Preto', 'Branco'];
               colorValuesList = ['#1a1a1a', '#ffffff'];
@@ -165,7 +162,6 @@ export function useProdutos() {
         setTotalPages(response.totalPages);
         setUsingMock(false);
         
-        // Atualizar contagem de gêneros baseado nos produtos
         const genderCount: Record<string, number> = {};
         productsWithColors.forEach(p => {
           genderCount[p.gender] = (genderCount[p.gender] || 0) + 1;
@@ -177,7 +173,6 @@ export function useProdutos() {
           { name: 'Infantil', count: genderCount['Infantil'] || 0 },
         ]);
         
-        // Atualizar contagem de marcas
         const brandCount: Record<string, number> = {};
         productsWithColors.forEach(p => {
           if (p.brandId) {
@@ -190,7 +185,6 @@ export function useProdutos() {
         })));
         
       } else {
-        // Fallback para dados estáticos
         const staticProducts = STATIC_PRODUCTS.map(p => ({
           id: String(p.id),
           name: p.name,
@@ -214,11 +208,9 @@ export function useProdutos() {
         setTotal(staticProducts.length);
         setTotalPages(Math.ceil(staticProducts.length / ITEMS_PER_PAGE));
         setUsingMock(true);
-        toast.warning('⚠️ Usando dados estáticos (API offline)', { duration: 3000 });
       }
     } catch (error) {
       console.error('Erro ao buscar produtos:', error);
-      // Fallback para dados estáticos
       const staticProducts = STATIC_PRODUCTS.map(p => ({
         id: String(p.id),
         name: p.name,
@@ -242,7 +234,6 @@ export function useProdutos() {
       setTotal(staticProducts.length);
       setTotalPages(Math.ceil(staticProducts.length / ITEMS_PER_PAGE));
       setUsingMock(true);
-      toast.warning('⚠️ Modo offline - usando dados locais', { duration: 3000 });
     } finally {
       setLoading(false);
     }
@@ -256,7 +247,6 @@ export function useProdutos() {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Filtrar por preço e cor (client-side)
   const filteredByPriceAndColor = products.filter(product => {
     const min = minPrice ? parseInt(minPrice) : 0;
     const max = maxPrice ? parseInt(maxPrice) : Infinity;

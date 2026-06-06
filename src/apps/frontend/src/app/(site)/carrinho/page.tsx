@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
-import { toast } from 'sonner';
 import { 
   FiHome, 
   FiTrash2,
@@ -12,118 +10,35 @@ import {
   FiShield,
   FiCheck
 } from 'react-icons/fi';
-import { 
-  carrinhoData, 
-  CART_ITEMS, 
-  SHIPPING_COST, 
-  TAX_RATE,
-  STEPS,
-  PAYMENT_METHODS
-} from './_constants/carrinho';
+import { useCarrinho } from './_hooks/useCarrinho';
+import { carrinhoData } from './_constants/carrinho';
 
 export default function CarrinhoPage() {
-  const [cartItems, setCartItems] = useState(CART_ITEMS);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
-    // Step 1
-    firstName: '',
-    lastName: '',
-    phone: '',
-    // Step 2
-    address: '',
-    city: '',
-    province: '',
-    // Step 3
-    paymentMethod: 'money'
-  });
-  const [promoCode, setPromoCode] = useState('');
-  const [promoDiscount, setPromoDiscount] = useState(0);
-  const [orderPlaced, setOrderPlaced] = useState(false);
+  const {
+    cartItems,
+    currentStep,
+    formData,
+    promoCode,
+    orderPlaced,
+    subtotal,
+    shipping,
+    tax,
+    discount,
+    total,
+    formatPrice,
+    updateQuantity,
+    removeItem,
+    applyPromoCode,
+    handleInputChange,
+    setPromoCode,
+    nextStep,
+    prevStep,
+    placeOrder,
+    STEPS,
+    PAYMENT_METHODS,
+  } = useCarrinho();
 
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('pt-AO') + ' Kz';
-  };
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCartItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-    toast.success('Quantidade atualizada');
-  };
-
-  const removeItem = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
-    toast.success('Produto removido do carrinho');
-  };
-
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = subtotal > 250000 ? 0 : SHIPPING_COST;
-  const tax = Math.round(subtotal * TAX_RATE);
-  const discount = promoDiscount;
-  const total = subtotal + shipping + tax - discount;
-
-  const applyPromoCode = () => {
-    if (promoCode.toUpperCase() === 'FLEX10') {
-      setPromoDiscount(Math.round(subtotal * 0.1));
-      toast.success('Código FLEX10 aplicado! 10% de desconto');
-      setPromoCode('');
-    } else if (promoCode.toUpperCase() === 'FLEX20') {
-      setPromoDiscount(Math.round(subtotal * 0.2));
-      toast.success('Código FLEX20 aplicado! 20% de desconto');
-      setPromoCode('');
-    } else {
-      toast.error('Código inválido');
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const nextStep = () => {
-    if (currentStep === 1 && (!formData.firstName || !formData.lastName || !formData.phone)) {
-      toast.error('Preencha todos os campos');
-      return;
-    }
-    if (currentStep === 2 && (!formData.address || !formData.city || !formData.province)) {
-      toast.error('Preencha todos os campos');
-      return;
-    }
-    setCurrentStep(prev => Math.min(prev + 1, 4));
-  };
-
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
-
-  const placeOrder = () => {
-    toast.loading('Processando pedido...');
-    setTimeout(() => {
-      toast.dismiss();
-      toast.success('Pedido realizado com sucesso!');
-      setOrderPlaced(true);
-      setTimeout(() => {
-        setOrderPlaced(false);
-        setCurrentStep(1);
-        setCartItems([]);
-        setFormData({
-          firstName: '',
-          lastName: '',
-          phone: '',
-          address: '',
-          city: '',
-          province: '',
-          paymentMethod: 'money'
-        });
-        setPromoDiscount(0);
-        setPromoCode('');
-      }, 2000);
-    }, 1500);
-  };
-
+  // Carrinho vazio
   if (cartItems.length === 0 && !orderPlaced) {
     return (
       <main className="min-h-screen bg-white">
@@ -160,6 +75,7 @@ export default function CarrinhoPage() {
     );
   }
 
+  // Pedido finalizado
   if (orderPlaced) {
     return (
       <main className="min-h-screen bg-white">
@@ -174,7 +90,11 @@ export default function CarrinhoPage() {
               <FiCheck className="text-green-500 text-3xl" />
             </div>
             <h2 className="text-2xl font-bold text-black mb-2">Pedido realizado com sucesso!</h2>
-            <p className="text-gray-500 mb-6">Em breve você receberá a confirmação via WhatsApp</p>
+            <p className="text-gray-500 mb-6">
+              {formData.paymentMethod === 'whatsapp' 
+                ? 'Você será redirecionado para o WhatsApp para finalizar o pagamento'
+                : 'Em breve você receberá a confirmação via WhatsApp'}
+            </p>
             <Link href="/produtos" className="inline-flex px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition">
               Continuar comprando
             </Link>
@@ -355,7 +275,7 @@ export default function CarrinhoPage() {
                       key={method.id}
                       className={`border rounded-xl p-4 cursor-pointer transition ${formData.paymentMethod === method.id ? 'border-black bg-white' : 'border-gray-200'}`}
                     >
-                      <div className="flex items-center gap-3" onClick={() => setFormData({ ...formData, paymentMethod: method.id })}>
+                      <div className="flex items-center gap-3" onClick={() => handleInputChange({ target: { name: 'paymentMethod', value: method.id } } as any)}>
                         <input type="radio" checked={formData.paymentMethod === method.id} onChange={() => {}} className="w-4 h-4" />
                         <span className="font-medium">{method.icon} {method.name}</span>
                       </div>

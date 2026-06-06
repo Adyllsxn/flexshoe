@@ -9,3 +9,5 @@ export type {
 
 // Services
 export { getAllProducts } from "./services/getAllProducts.service";
+export { getProductById } from "./services/getProductById.service";
+export { getProductBySlug } from "./services/getProductBySlug.service";

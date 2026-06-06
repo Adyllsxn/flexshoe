@@ -6,10 +6,12 @@ import { ShoppingBag, Search, X, Menu } from 'lucide-react';
 import { SITE_NAME } from '../_constants/site';
 import { HEADER_SEARCH } from '../_constants/search';
 import { NAVIGATION_LINKS } from '../_constants/navigation';
+import { useCart } from '@/lib/contexts/CartContext';
 
 export function MainHeader() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { totalItems } = useCart();
 
   // Previne scroll quando o menu mobile está aberto
   useEffect(() => {
@@ -60,9 +62,14 @@ export function MainHeader() {
               <Search className="h-5 w-5" />
             </button>
 
-            {/* Carrinho */}
+            {/* Carrinho com contador */}
             <Link href="/carrinho" className="p-2 hover:bg-gray-100 rounded-full relative transition cursor-pointer">
               <ShoppingBag className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
             </Link>
 
             {/* Menu Hamburguer - Mobile */}
