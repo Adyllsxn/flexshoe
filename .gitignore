@@ -61,3 +61,4 @@ debug/
 # Snippets (atalhos do VS Code)
 docs/javascript-snippets.md
 docs/typescript-snippets.md
+/src/apps/backend/uploads

@@ -1,33 +1,42 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { PRODUCT_FILTERS, PRODUCTS } from '../_constants/productList';
+import { useProductList } from '../_hooks/useProductList';
+import { DataSourceIndicator } from '@/components/shared/DataSourceIndicator';
+import { OptimizedImage } from '@/components/shared/OptimizedImage';
 
 export default function ProductList() {
-  const [activeFilter, setActiveFilter] = useState('*');
-  const [isMounted, setIsMounted] = useState(false);
+  const {
+    activeFilter,
+    setActiveFilter,
+    filteredProducts,
+    loading,
+    usingMock,
+    isMounted,
+    formatPrice,
+    filters,
+  } = useProductList();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const filteredProducts = activeFilter === '*' 
-    ? PRODUCTS 
-    : PRODUCTS.filter(product => product.category === activeFilter);
-
-  // Função auxiliar para formatar o preço
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('pt-BR');
-  };
+  if (loading) {
+    return (
+      <section className="product-list py-20 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center items-center h-96">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="product-list py-20 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
+        <DataSourceIndicator usingMock={usingMock} />
+
         {/* Filtros */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {PRODUCT_FILTERS.map((filter) => (
+          {filters.map((filter) => (
             <button
               key={filter.filter}
               onClick={() => setActiveFilter(filter.filter)}
@@ -48,26 +57,20 @@ export default function ProductList() {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="group bg-white rounded-2xl overflow-hidden shadow-sm transition-all duration-500"
+              className="group bg-white rounded-2xl overflow-hidden shadow-sm transition-all duration-500 hover:shadow-xl"
             >
               {/* Imagem */}
-              <div className="relative bg-gradient-to-br from-gray-100 to-gray-50 aspect-square overflow-hidden">
-                <Image
+              <div className="relative bg-gray-100 aspect-square overflow-hidden">
+                <OptimizedImage
                   src={product.image}
                   alt={product.name}
                   fill
-                  // PROPRIEDADE 'sizes' CALCULADA DINAMICAMENTE
+                  className="group-hover:scale-110 transition-transform duration-500"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  // ESTILO CORRETO PARA IMAGENS RESPONSIVAS
-                  style={{
-                    objectFit: 'cover',
-                    transition: 'transform 0.7s ease-in-out',
-                  }}
-                  className="group-hover:scale-110"
                 />
                 
                 {/* Badges */}
-                <div className="absolute top-3 left-3 flex gap-2">
+                <div className="absolute top-3 left-3 flex gap-2 z-10">
                   {product.isSale && product.oldPrice && (
                     <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
                       -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
@@ -80,8 +83,8 @@ export default function ProductList() {
                   )}
                 </div>
                 
-                {/* Ícones flutuantes no hover */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4">
+                {/* Ícones flutuantes */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center gap-4 z-10">
                   <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center transform scale-0 group-hover:scale-100 transition-all duration-300 hover:bg-gray-100 hover:scale-110">
                     <i className="bi bi-eye text-gray-800 text-xl"></i>
                   </button>
@@ -103,7 +106,7 @@ export default function ProductList() {
                   </div>
                 </div>
                 
-                {/* Cores disponíveis */}
+                {/* Cores */}
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xs text-gray-400">Cores:</span>
                   <div className="flex gap-1.5">
@@ -113,12 +116,12 @@ export default function ProductList() {
                         className="w-5 h-5 rounded-full border border-gray-200 cursor-pointer hover:scale-110 transition-transform duration-200"
                         style={{ backgroundColor: color }}
                         title={product.colors[i]}
-                      ></div>
+                      />
                     ))}
                   </div>
                 </div>
                 
-                {/* Preço - corrigido para evitar hidratação */}
+                {/* Preço */}
                 <div className="flex items-baseline gap-2">
                   <span className="text-xl font-bold text-gray-900">
                     {isMounted ? `${formatPrice(product.price)} Kz` : '...'}
