@@ -91,13 +91,35 @@ export class UploadService {
     file: Express.Multer.File,
     entity: EntityType,
   ): Promise<string> {
-    const filename = `${uuidv4()}${extname(file.originalname)}`;
+    // Preserva a extensão original
+    const ext = extname(file.originalname);
+    const filename = `${uuidv4()}${ext}`;
     const filepath = join(this.baseUploadDir, entity, filename);
 
-    await sharp(file.buffer)
-      .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
-      .jpeg({ quality: 80 })
-      .toFile(filepath);
+    let sharpInstance = sharp(file.buffer).resize(800, 800, {
+      fit: 'inside',
+      withoutEnlargement: true,
+    });
+
+    // Preserva transparência baseado no formato original
+    switch (file.mimetype) {
+      case 'image/png':
+        await sharpInstance.png({ quality: 90, compressionLevel: 6 }).toFile(filepath);
+        break;
+      case 'image/webp':
+        await sharpInstance.webp({ quality: 90, alphaQuality: 100 }).toFile(filepath);
+        break;
+      case 'image/jpeg':
+      case 'image/jpg':
+        await sharpInstance.jpeg({ quality: 85 }).toFile(filepath);
+        break;
+      default:
+        // Fallback para webp (suporta transparência)
+        const webpFilename = `${uuidv4()}.webp`;
+        const webpFilepath = join(this.baseUploadDir, entity, webpFilename);
+        await sharpInstance.webp({ quality: 90, alphaQuality: 100 }).toFile(webpFilepath);
+        return `/uploads/${entity}/${webpFilename}`;
+    }
 
     return `/uploads/${entity}/${filename}`;
   }
