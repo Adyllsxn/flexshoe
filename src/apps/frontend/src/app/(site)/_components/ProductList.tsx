@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useProductList } from '../_hooks/useProductList';
-import { DataSourceIndicator } from '@/components/shared/DataSourceIndicator';
 import { OptimizedImage } from '@/components/shared/OptimizedImage';
 
 export default function ProductList() {
@@ -11,7 +10,6 @@ export default function ProductList() {
     setActiveFilter,
     filteredProducts,
     loading,
-    usingMock,
     isMounted,
     formatPrice,
     filters,
@@ -32,8 +30,6 @@ export default function ProductList() {
   return (
     <section className="product-list py-20 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
-        <DataSourceIndicator usingMock={usingMock} />
-
         {/* Filtros */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {filters.map((filter) => (

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { getAllProducts } from '@/lib/modules/product';
 import { getImageUrl } from '@/lib/api.connection';
 import { PROMO_MAIN, PROMO_CARDS as MOCK_PROMO_CARDS } from '../_constants/promoCards';
-import { toast } from 'sonner';
 
 interface PromoCard {
   title: string;
@@ -50,16 +49,13 @@ export function usePromoCards() {
           });
           setPromoCards(apiCards);
           setUsingMock(false);
-          toast.success('✅ Promoções carregadas da API', { duration: 2000 });
         } else {
           setPromoCards(MOCK_PROMO_CARDS);
           setUsingMock(true);
-          toast.warning('⚠️ Usando dados estáticos (API offline)', { duration: 3000 });
         }
       } catch (error) {
         setPromoCards(MOCK_PROMO_CARDS);
         setUsingMock(true);
-        toast.warning('⚠️ Modo offline - usando dados locais', { duration: 3000 });
       } finally {
         setLoading(false);
       }

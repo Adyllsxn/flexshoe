@@ -5,7 +5,6 @@ import { getAllProducts } from '@/lib/modules/product';
 import { getInventoryByProductId } from '@/lib/modules/inventory';
 import { getImageUrl } from '@/lib/api.connection';
 import { PRODUCT_FILTERS, PRODUCTS as MOCK_PRODUCTS } from '../_constants/productList';
-import { toast } from 'sonner';
 
 interface Product {
   id: number;
@@ -66,10 +65,8 @@ export function useProductList(initialFilter: string = '*') {
         if (response.data && response.data.length > 0) {
           const apiProducts = await Promise.all(
             response.data.map(async (product, index) => {
-              // Busca inventory do produto
               const inventory = await getInventoryByProductId(product.id);
               
-              // Pega cores únicas do inventory
               let colors: string[] = ['Preto', 'Branco'];
               let colorValues: string[] = ['#1a1a1a', '#ffffff'];
               
@@ -104,16 +101,13 @@ export function useProductList(initialFilter: string = '*') {
           
           setProducts(apiProducts);
           setUsingMock(false);
-          toast.success('✅ Produtos carregados da API', { duration: 2000 });
         } else {
           setProducts(MOCK_PRODUCTS);
           setUsingMock(true);
-          toast.warning('⚠️ Usando dados estáticos (API offline)', { duration: 3000 });
         }
       } catch (error) {
         setProducts(MOCK_PRODUCTS);
         setUsingMock(true);
-        toast.warning('⚠️ Modo offline - usando dados locais', { duration: 3000 });
       } finally {
         setLoading(false);
       }
