@@ -10,7 +10,7 @@ export function ApiStatusIndicator() {
   useEffect(() => {
     const checkApi = async () => {
       try {
-        await api.get('/product?limit=1');
+        await api.get('/product?limit=1', { timeout: 3000 });
         setIsApiAvailable(true);
       } catch {
         setIsApiAvailable(false);
@@ -19,7 +19,6 @@ export function ApiStatusIndicator() {
     
     checkApi();
     
-    // Desaparece após 10 segundos
     const timer = setTimeout(() => {
       setVisible(false);
     }, 10000);

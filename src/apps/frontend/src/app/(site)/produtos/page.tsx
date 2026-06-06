@@ -7,7 +7,6 @@ import ProdutosTopBar from './_components/ProdutosTopBar';
 import ProdutosGrid from './_components/ProdutosGrid';
 import ProdutosPagination from './_components/ProdutosPagination';
 import { useProdutos } from './_hooks/useProdutos';
-import { DataSourceIndicator } from '@/components/shared/DataSourceIndicator';
 
 export default function ProdutosPage() {
   const {
@@ -24,7 +23,6 @@ export default function ProdutosPage() {
     sortBy,
     setSortBy,
     loading,
-    usingMock,
     totalProducts,
     filteredCount,
     products,
@@ -57,7 +55,6 @@ export default function ProdutosPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <DataSourceIndicator usingMock={usingMock} />
       <ProdutosHeader />
 
       <div className="container mx-auto px-4 py-10">
