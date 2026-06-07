@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/contexts/CartContext';
-import { createOrder, type CreateOrderDto } from '@/lib/modules/order';
+import { getCart } from '@/lib/modules/cart';
+import { getStore } from '@/lib/modules/store';
 import { toast } from 'sonner';
-import { SHIPPING_COST, TAX_RATE, STEPS, PAYMENT_METHODS, CART_ITEMS } from '../_constants/carrinho';
+import { SHIPPING_COST, TAX_RATE, STEPS, PAYMENT_METHODS } from '../_constants/carrinho';
 
 export function useCarrinho() {
-  const { items: apiItems, removeItem, updateQuantity, clearCart, totalPrice, loading: cartLoading, usingMock: apiUsingMock } = useCart();
+  const { items: apiItems, removeItem, updateQuantity, clearCart, totalPrice, totalItems, loading: cartLoading, usingMock: apiUsingMock } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -22,37 +23,39 @@ export function useCarrinho() {
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [storeWhatsapp, setStoreWhatsapp] = useState('244900000000');
 
-  const isUsingMock = apiUsingMock || (apiItems.length === 0 && !cartLoading);
+  // Buscar WhatsApp da loja
+  useEffect(() => {
+    const fetchStore = async () => {
+      const store = await getStore();
+      if (store && store.whatsapp) {
+        setStoreWhatsapp(store.whatsapp);
+      }
+    };
+    fetchStore();
+  }, []);
+
+  const isUsingMock = apiUsingMock;
   
-  const cartItems = apiItems.length > 0 
-    ? apiItems.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image || `/images/placeholder.svg`,
-        color: item.color,
-        size: String(item.size),
-      }))
-    : (isUsingMock ? CART_ITEMS.map(item => ({
-        id: String(item.id),
-        name: item.name,
-        price: item.price,
-        originalPrice: item.originalPrice,
-        quantity: item.quantity,
-        image: item.image,
-        color: item.color,
-        size: item.size,
-      })) : []);
+  const cartItems = apiItems.map(item => ({
+    id: item.id,
+    name: item.name,
+    price: item.price,
+    quantity: item.quantity,
+    image: item.image || '/images/placeholder.svg',
+    color: item.color,
+    size: String(item.size),
+  }));
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = totalPrice;
   const shipping = subtotal > 250000 ? 0 : SHIPPING_COST;
   const tax = Math.round(subtotal * TAX_RATE);
   const discount = promoDiscount;
   const total = subtotal + shipping + tax - discount;
 
   const formatPrice = (price: number) => {
+    if (isNaN(price)) return '0 Kz';
     return price.toLocaleString('pt-AO') + ' Kz';
   };
 
@@ -106,7 +109,6 @@ export function useCarrinho() {
       `*RESUMO*\n` +
       `Subtotal: ${formatPrice(subtotal)}\n` +
       `Entrega: ${shipping === 0 ? 'Grátis' : formatPrice(shipping)}\n` +
-      `Taxa: ${formatPrice(tax)}\n` +
       `${discount > 0 ? `Desconto: -${formatPrice(discount)}\n` : ''}` +
       `*TOTAL: ${formatPrice(total)}*\n\n` +
       `*PAGAMENTO*\n` +
@@ -127,58 +129,44 @@ export function useCarrinho() {
     toast.loading('Processando pedido...');
 
     if (isUsingMock) {
-      setTimeout(() => {
-        toast.dismiss();
-        const demoOrderId = 'DEMO-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-        
-        if (formData.paymentMethod === 'whatsapp') {
-          const message = generateWhatsAppMessage(demoOrderId);
-          const whatsappUrl = `https://wa.me/244900000000?text=${message}`;
-          window.open(whatsappUrl, '_blank');
-          toast.success('Redirecionando para o WhatsApp...');
-        } else {
-          toast.success('Pedido realizado com sucesso!');
-        }
-        
-        setOrderPlaced(true);
-        setTimeout(() => {
-          setOrderPlaced(false);
-          setCurrentStep(1);
-          setFormData({
-            firstName: '',
-            lastName: '',
-            phone: '',
-            address: '',
-            city: '',
-            province: '',
-            paymentMethod: 'money'
-          });
-          setPromoDiscount(0);
-          setPromoCode('');
-        }, 3000);
-        setSubmitting(false);
-      }, 1500);
+      toast.dismiss();
+      toast.error('API offline. Não é possível finalizar o pedido.');
+      setSubmitting(false);
       return;
     }
 
     try {
-      const orderData: CreateOrderDto = {
-        customerName: `${formData.firstName} ${formData.lastName}`,
-        customerPhone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        province: formData.province,
-        paymentMethod: formData.paymentMethod,
+      const cartData = await getCart();
+      const cartSessionId = cartData?.cart?.sessionId;
+      
+      if (!cartSessionId) {
+        toast.error('Erro ao identificar carrinho');
+        setSubmitting(false);
+        return;
+      }
+
+      const orderData = {
+        clientName: `${formData.firstName} ${formData.lastName}`,
+        clientPhone: formData.phone,
+        clientAddress: `${formData.address}, ${formData.city} - ${formData.province}`,
+        cartSessionId: cartSessionId
       };
 
-      const order = await createOrder(orderData);
+      const response = await fetch('http://localhost:3001/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+
+      const order = await response.json();
 
       toast.dismiss();
       
-      if (order) {
+      if (order && order.id) {
         if (formData.paymentMethod === 'whatsapp') {
-          const message = generateWhatsAppMessage(order.id);
-          const whatsappUrl = `https://wa.me/244900000000?text=${message}`;
+          // Usar o WhatsApp da loja configurado
+          const message = generateWhatsAppMessage(order.orderNumber || order.id);
+          const whatsappUrl = `https://wa.me/${storeWhatsapp}?text=${message}`;
           window.open(whatsappUrl, '_blank');
           toast.success('Redirecionando para o WhatsApp...');
         } else {

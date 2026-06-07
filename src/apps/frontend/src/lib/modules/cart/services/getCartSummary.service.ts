@@ -6,7 +6,6 @@ export async function getCartSummary(): Promise<CartSummary | null> {
     const response = await api.get("/cart/summary");
     return response.data;
   } catch (error) {
-    console.error("Erro ao buscar resumo:", error);
     return null;
   }
 }

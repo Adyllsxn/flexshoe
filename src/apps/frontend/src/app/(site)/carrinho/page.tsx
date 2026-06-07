@@ -40,10 +40,14 @@ export default function CarrinhoPage() {
     PAYMENT_METHODS,
   } = useCarrinho();
 
-  // Loading
   if (loading) {
     return (
       <main className="min-h-screen bg-white">
+        <div className="border-b border-gray-100">
+          <div className="container mx-auto px-4 py-12">
+            <h1 className="text-3xl md:text-4xl font-bold text-black">{carrinhoData.title}</h1>
+          </div>
+        </div>
         <div className="container mx-auto px-4 py-20">
           <div className="flex justify-center items-center h-96">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
@@ -53,7 +57,6 @@ export default function CarrinhoPage() {
     );
   }
 
-  // Carrinho vazio
   if (cartItems.length === 0 && !orderPlaced) {
     return (
       <main className="min-h-screen bg-white">
@@ -90,7 +93,6 @@ export default function CarrinhoPage() {
     );
   }
 
-  // Pedido finalizado
   if (orderPlaced) {
     return (
       <main className="min-h-screen bg-white">
@@ -121,7 +123,6 @@ export default function CarrinhoPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Page Title */}
       <div className="border-b border-gray-100">
         <div className="container mx-auto px-4 py-12">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -145,10 +146,7 @@ export default function CarrinhoPage() {
       <div className="container mx-auto px-4 py-10">
         <div className="flex flex-col lg:flex-row gap-8">
           
-          {/* Conteúdo Principal */}
           <div className="lg:w-2/3">
-            
-            {/* Steps */}
             <div className="flex items-center justify-between mb-8">
               {STEPS.map((step, idx) => (
                 <div key={step.number} className="flex items-center flex-1">
@@ -175,7 +173,6 @@ export default function CarrinhoPage() {
               ))}
             </div>
 
-            {/* Step 1 - Informações */}
             {currentStep === 1 && (
               <div className="bg-gray-50 rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-black mb-2">Informações Pessoais</h3>
@@ -223,7 +220,6 @@ export default function CarrinhoPage() {
               </div>
             )}
 
-            {/* Step 2 - Entrega */}
             {currentStep === 2 && (
               <div className="bg-gray-50 rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-black mb-2">Endereço de Entrega</h3>
@@ -278,7 +274,6 @@ export default function CarrinhoPage() {
               </div>
             )}
 
-            {/* Step 3 - Pagamento */}
             {currentStep === 3 && (
               <div className="bg-gray-50 rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-black mb-2">Método de Pagamento</h3>
@@ -314,7 +309,6 @@ export default function CarrinhoPage() {
               </div>
             )}
 
-            {/* Step 4 - Revisão */}
             {currentStep === 4 && (
               <div className="bg-gray-50 rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-black mb-2">Revisar Pedido</h3>
@@ -354,7 +348,6 @@ export default function CarrinhoPage() {
             )}
           </div>
 
-          {/* Resumo do Pedido */}
           <div className="lg:w-1/3">
             <div className="bg-gray-50 rounded-2xl p-6 sticky top-24">
               <h3 className="text-xl font-bold text-black mb-4">Resumo do Pedido</h3>
@@ -388,7 +381,6 @@ export default function CarrinhoPage() {
                 ))}
               </div>
               
-              {/* Promo Code */}
               <div className="flex gap-2 mb-4">
                 <input
                   type="text"
@@ -402,7 +394,6 @@ export default function CarrinhoPage() {
                 </button>
               </div>
               
-              {/* Totais */}
               <div className="space-y-2 pt-4 border-t border-gray-200">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Subtotal</span>

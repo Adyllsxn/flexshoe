@@ -1,4 +1,3 @@
-// Types
 export type {
   CartItem,
   CartSummary,
@@ -7,7 +6,6 @@ export type {
   UpdateCartItemDto,
 } from "./types/cart.types";
 
-// Services
 export { getCart } from "./services/getCart.service";
 export { addToCart } from "./services/addToCart.service";
 export { updateCartItem } from "./services/updateCartItem.service";

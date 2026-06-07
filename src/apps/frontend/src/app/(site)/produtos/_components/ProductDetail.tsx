@@ -16,7 +16,7 @@ interface ProductDetailProps {
     mainImage: string;
     images: string[];
     sizes: number[];
-    colors: { name: string; value: string; stock: number }[];
+    colors: { name: string; value: string; stock: number; inventoryId?: string }[];
     stock: number;
     brand: string;
     slug: string;
@@ -28,6 +28,7 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
   const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedInventoryId, setSelectedInventoryId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(product.mainImage);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -41,12 +42,13 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
     setSelectedSize(size);
   };
 
-  const handleColorSelect = (color: string) => {
+  const handleColorSelect = (colorName: string, inventoryId?: string) => {
     if (usingMock) {
       toast.error('API offline. Não é possível selecionar cor');
       return;
     }
-    setSelectedColor(color);
+    setSelectedColor(colorName);
+    setSelectedInventoryId(inventoryId || null);
   };
 
   const increaseQuantity = () => {
@@ -71,7 +73,7 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
       toast.error('Selecione um tamanho');
       return;
     }
-    if (!selectedColor) {
+    if (!selectedColor || !selectedInventoryId) {
       toast.error('Selecione uma cor');
       return;
     }
@@ -87,9 +89,7 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
     setAdding(true);
 
     try {
-      // Aqui você precisa buscar o inventoryId correto
-      // Por enquanto, vamos usar um ID temporário
-      const success = await addItem(`${product.id}-${selectedSize}-${selectedColor}`, quantity);
+      const success = await addItem(selectedInventoryId, quantity);
       if (success) {
         setAddedToCart(true);
         toast.success(`${product.name} adicionado ao carrinho!`);
@@ -187,7 +187,7 @@ export default function ProductDetail({ product, usingMock = false }: ProductDet
               {product.colors.map((color) => (
                 <button
                   key={color.name}
-                  onClick={() => handleColorSelect(color.name)}
+                  onClick={() => handleColorSelect(color.name, color.inventoryId)}
                   className={`group relative w-10 h-10 rounded-full border-2 transition-all ${
                     selectedColor === color.name
                       ? 'border-black scale-110'

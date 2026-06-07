@@ -23,11 +23,16 @@ export interface CartResponse {
   cart: {
     id: string;
     sessionId: string;
-    items: CartItem[];
+    items: any[];
     createdAt: string;
     updatedAt: string;
   };
-  summary: CartSummary;
+  summary: {
+    items: any[];
+    subtotal: number;
+    total: number;
+    itemCount: number;
+  };
 }
 
 export interface AddToCartDto {

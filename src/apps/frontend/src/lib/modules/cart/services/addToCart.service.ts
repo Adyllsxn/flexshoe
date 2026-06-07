@@ -6,7 +6,6 @@ export async function addToCart(data: AddToCartDto): Promise<CartResponse | null
     const response = await api.post("/cart/add", data);
     return response.data;
   } catch (error) {
-    console.error("Erro ao adicionar ao carrinho:", error);
     return null;
   }
 }

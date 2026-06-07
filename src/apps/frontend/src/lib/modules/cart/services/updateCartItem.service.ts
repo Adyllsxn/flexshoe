@@ -6,7 +6,6 @@ export async function updateCartItem(itemId: string, data: UpdateCartItemDto): P
     const response = await api.patch(`/cart/item/${itemId}`, data);
     return response.data;
   } catch (error) {
-    console.error("Erro ao atualizar item:", error);
     return null;
   }
 }

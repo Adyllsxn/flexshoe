@@ -10,10 +10,8 @@ import {
   type CartItem,
   type AddToCartDto
 } from '@/lib/modules/cart';
+import { getImageUrl } from '@/lib/api.connection';
 import { toast } from 'sonner';
-
-// Dados estáticos para fallback
-const STATIC_CART_ITEMS: CartItem[] = [];
 
 interface CartContextType {
   items: CartItem[];
@@ -31,7 +29,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(STATIC_CART_ITEMS);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -41,18 +39,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const cartData = await getCart();
       if (cartData && cartData.cart && cartData.cart.items) {
-        setItems(cartData.cart.items);
-        setTotalItems(cartData.summary?.totalItems || 0);
+        const mappedItems: CartItem[] = cartData.cart.items.map((item: any) => ({
+          id: item.id,
+          productId: item.inventory?.product?.id || '',
+          inventoryId: item.inventoryId,
+          name: item.inventory?.product?.name || '',
+          size: item.inventory?.size || 0,
+          color: item.inventory?.color || '',
+          price: item.inventory?.product?.price || 0,
+          quantity: item.quantity,
+          image: getImageUrl(item.inventory?.product?.mainImage),
+          sku: item.inventory?.sku || '',
+        }));
+        
+        setItems(mappedItems);
+        setTotalItems(cartData.summary?.itemCount || 0);
         setTotalPrice(cartData.summary?.subtotal || 0);
         setUsingMock(false);
       } else {
-        setItems(STATIC_CART_ITEMS);
+        setItems([]);
         setTotalItems(0);
         setTotalPrice(0);
         setUsingMock(true);
       }
     } catch (error) {
-      setItems(STATIC_CART_ITEMS);
+      setItems([]);
       setTotalItems(0);
       setTotalPrice(0);
       setUsingMock(true);
