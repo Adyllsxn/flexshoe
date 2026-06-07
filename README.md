@@ -70,8 +70,9 @@
 
 ---
 
-## **⚠️ STATUS DO PROJETO**
-> **Nota:** Atualmente o frontend utiliza dados mockados. A integração com o backend será implementada em breve.
+## **🔌 INTEGRAÇÃO COM API**
+
+> O projeto já possui integração completa com a API backend. Para testar localmente, basta clonar o repositório, configurar o backend e executar ambos os servidores.
 
 ---
 
