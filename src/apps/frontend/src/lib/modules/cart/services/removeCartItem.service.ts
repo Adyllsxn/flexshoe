@@ -6,7 +6,6 @@ export async function removeCartItem(itemId: string): Promise<CartResponse | nul
     const response = await api.delete(`/cart/item/${itemId}`);
     return response.data;
   } catch (error) {
-    console.error("Erro ao remover item:", error);
     return null;
   }
 }

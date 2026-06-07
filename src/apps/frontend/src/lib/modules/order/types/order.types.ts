@@ -1,10 +1,8 @@
 export interface CreateOrderDto {
-  customerName: string;
-  customerPhone: string;
-  address: string;
-  city: string;
-  province: string;
-  paymentMethod: string;
+  clientName: string;
+  clientPhone: string;
+  clientAddress: string;
+  cartSessionId: string;
 }
 
 export interface OrderItem {
@@ -19,14 +17,12 @@ export interface OrderItem {
 
 export interface OrderResponse {
   id: string;
-  customerName: string;
-  customerPhone: string;
-  address: string;
-  city: string;
-  province: string;
-  paymentMethod: string;
-  total: number;
+  orderNumber: string;
   status: string;
+  clientName: string;
+  clientPhone: string;
+  clientAddress: string;
+  total: number;
   items: OrderItem[];
   createdAt: string;
 }

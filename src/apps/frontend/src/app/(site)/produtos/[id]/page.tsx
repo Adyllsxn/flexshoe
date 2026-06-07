@@ -22,14 +22,12 @@ export default function ProdutoDetalhePage() {
       try {
         setLoading(true);
         
-        // Tentar buscar da API
         const productData = await getProductById(id);
         
         if (productData) {
-          // Buscar inventory
           const inventory = await getInventoryByProductId(id);
           
-          const sizes = [...new Set(inventory.map(item => item.size))].sort((a, b) => a - b);
+          const sizes = [...new Set(inventory.map((item: any) => item.size))].sort((a, b) => a - b);
           
           const colorMap: Record<string, string> = {
             'Branco': '#ffffff',
@@ -43,13 +41,15 @@ export default function ProdutoDetalhePage() {
             'Cinza': '#6b7280',
           };
           
+          // Mapear cores com inventoryId
           const colorMapInv: Record<string, any> = {};
-          inventory.forEach(item => {
+          inventory.forEach((item: any) => {
             if (!colorMapInv[item.color]) {
               colorMapInv[item.color] = {
                 name: item.color,
                 value: colorMap[item.color] || '#cccccc',
-                stock: 0
+                stock: 0,
+                inventoryId: item.id
               };
             }
             colorMapInv[item.color].stock += item.stock;
@@ -57,7 +57,7 @@ export default function ProdutoDetalhePage() {
           const colors = Object.values(colorMapInv);
           
           const mainImageUrl = getImageUrl(productData.mainImage);
-          const imagesUrls = productData.images.map(img => getImageUrl(img));
+          const imagesUrls = productData.images.map((img: string) => getImageUrl(img));
           
           setProduct({
             id: productData.id,
@@ -74,13 +74,11 @@ export default function ProdutoDetalhePage() {
           });
           setUsingMock(false);
         } else {
-          // Fallback: produto não encontrado
           toast.error('Produto não encontrado');
           router.push('/produtos');
         }
       } catch (error) {
         console.error('Erro ao buscar produto:', error);
-        // Se API offline, redireciona com mensagem
         toast.error('API offline. Não é possível carregar detalhes do produto');
         router.push('/produtos');
       } finally {

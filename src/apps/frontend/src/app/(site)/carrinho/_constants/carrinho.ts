@@ -6,44 +6,8 @@ export const carrinhoData = {
   }
 };
 
-export const CART_ITEMS = [
-  {
-    id: 1,
-    name: 'Nike Air Max',
-    price: 89990,
-    originalPrice: 129990,
-    quantity: 1,
-    image: '/images/nike_air_max_plus.png',
-    color: 'Preto',
-    size: '42',
-    gender: 'Unisex'
-  },
-  {
-    id: 2,
-    name: 'Adidas Ultraboost',
-    price: 139990,
-    originalPrice: 199990,
-    quantity: 1,
-    image: '/images/adidas_ultraboost.png',
-    color: 'Azul',
-    size: '43',
-    gender: 'Masculino'
-  },
-  {
-    id: 3,
-    name: 'Vans Old Skool',
-    price: 59990,
-    originalPrice: null,
-    quantity: 2,
-    image: '/images/vans_old_skool.webp',
-    color: 'Preto/Branco',
-    size: '41',
-    gender: 'Unisex'
-  }
-];
-
 export const SHIPPING_COST = 4990;
-export const TAX_RATE = 0.15;
+export const TAX_RATE = 0;
 
 export const STEPS = [
   { number: 1, title: 'Informações' },
