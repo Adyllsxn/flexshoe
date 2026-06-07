@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiAlertCircle } from 'react-icons/fi';
 import { toast } from 'sonner';
+import { login } from '@/lib/modules/auth';
 import { LOGIN_CONFIG, LOGIN_FORM_FIELDS, BRAND_PANEL } from '../_constants/login';
 
 export default function LoginForm() {
@@ -19,7 +20,6 @@ export default function LoginForm() {
   });
   const [error, setError] = useState('');
 
-  // Garantir que não há dark mode na página de login
   useEffect(() => {
     document.documentElement.classList.remove('dark');
   }, []);
@@ -44,31 +44,35 @@ export default function LoginForm() {
     setIsLoading(true);
     setError('');
 
-    setTimeout(() => {
-      if (formData.email === 'admin@flexshoe.ao' && formData.password === 'admin123') {
+    try {
+      const response = await login({ email: formData.email, password: formData.password });
+      
+      if (response && response.data) {
+        // Criar cookie para o middleware
+        document.cookie = `token=${response.data.id}; path=/; max-age=86400; SameSite=Lax`;
+        
         if (formData.remember) {
           localStorage.setItem('flexshoe-admin-auth', 'true');
         } else {
           sessionStorage.setItem('flexshoe-admin-auth', 'true');
         }
-        toast.success('Login realizado com sucesso!', {
-          duration: 3000,
-          icon: '🎉',
-        });
+        
+        toast.success('Login realizado com sucesso!');
         router.push('/admin');
       } else {
         setError('E-mail ou senha inválidos');
-        toast.error('Credenciais inválidas', {
-          duration: 3000,
-        });
+        toast.error('Credenciais inválidas');
       }
+    } catch (error) {
+      setError('Erro ao fazer login. Tente novamente.');
+      toast.error('Erro ao fazer login');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* Brand Panel - Lado esquerdo */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20 z-0" />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
@@ -103,7 +107,6 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Form Panel - Lado direito */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <motion.div
           initial={{ opacity: 0, x: 20 }}
@@ -111,7 +114,6 @@ export default function LoginForm() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
-          {/* Logo mobile */}
           <div className="lg:hidden text-center mb-8">
             <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mx-auto mb-3 shadow-md">
               <span className="text-white font-bold text-lg">F</span>
@@ -120,20 +122,17 @@ export default function LoginForm() {
             <p className="text-gray-500 text-sm mt-1">{LOGIN_CONFIG.subtitle}</p>
           </div>
 
-          {/* Título desktop */}
           <div className="hidden lg:block mb-8">
             <h1 className="text-2xl font-bold text-gray-800">{LOGIN_CONFIG.title}</h1>
             <p className="text-gray-500 text-sm mt-1">{LOGIN_CONFIG.subtitle}</p>
           </div>
 
-          {/* Error */}
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-600 text-sm text-center">{error}</p>
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -214,7 +213,6 @@ export default function LoginForm() {
             </button>
           </form>
 
-          {/* Footer mobile */}
           <div className="lg:hidden mt-8 text-center text-xs text-gray-400">
             {LOGIN_CONFIG.copyright}
           </div>

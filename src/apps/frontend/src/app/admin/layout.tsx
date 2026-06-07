@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Sidebar } from './_layouts/Sidebar';
 import { TopBar } from './_layouts/TopBar';
+import { useAuth } from '@/lib/hooks/useAuth';
 import './admin.css';
 
 export default function AdminLayout({
@@ -10,6 +11,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { user, loading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -18,18 +20,30 @@ export default function AdminLayout({
     localStorage.setItem('flexshoe-sidebar-collapsed', JSON.stringify(!sidebarCollapsed));
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar 
         mobileOpen={mobileMenuOpen} 
         setMobileOpen={setMobileMenuOpen}
         collapsed={sidebarCollapsed}
+        userName={user?.name}
+        userRole={user?.role}
       />
       
       <div className="flex flex-1 flex-col overflow-hidden">
         <TopBar 
           onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-          onSidebarToggle={toggleSidebar} 
+          onSidebarToggle={toggleSidebar}
+          userName={user?.name}
+          userRole={user?.role}
         />
         <main className="main flex-1 overflow-y-auto p-6">
           {children}

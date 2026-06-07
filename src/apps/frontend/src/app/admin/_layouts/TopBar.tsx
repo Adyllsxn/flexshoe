@@ -3,19 +3,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, ChevronDown, Menu, X, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
-import { 
-  FiUser,
-  FiLogOut,
-  FiGrid
-} from 'react-icons/fi';
+import { FiUser, FiLogOut, FiGrid } from 'react-icons/fi';
 import { QUICK_ACCESS_ITEMS } from './topbar.constants';
+import { logout as apiLogout } from '@/lib/modules/auth';
 
 interface TopBarProps {
   onMenuClick: () => void;
   onSidebarToggle: () => void;
+  userName?: string;
+  userRole?: string;
 }
 
-export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
+export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: TopBarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
@@ -52,10 +51,17 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
     }
   }, []);
 
+  const handleLogout = async () => {
+    await apiLogout();
+    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+    localStorage.removeItem('flexshoe-admin-auth');
+    sessionStorage.removeItem('flexshoe-admin-auth');
+    window.location.href = '/auth/login';
+  };
+
   return (
     <header className="header bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="flex items-center justify-between px-4 h-16">
-        {/* Header Left */}
         <div className="header-left flex items-center gap-4">
           <button 
             onClick={onSidebarToggle}
@@ -73,7 +79,6 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
           </button>
         </div>
 
-        {/* Header Center - Search */}
         <div className="header-search hidden md:block flex-1 max-w-md mx-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -88,11 +93,8 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
           </div>
         </div>
 
-        {/* Header Right */}
         <div className="header-right flex items-center gap-2">
-          {/* Desktop Actions */}
           <div className="header-actions-desktop hidden lg:flex items-center gap-1">
-            {/* Quick Access */}
             <div className="relative" ref={quickRef}>
               <button 
                 onClick={() => setQuickOpen(!quickOpen)}
@@ -126,7 +128,6 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
               )}
             </div>
 
-            {/* Dark/Light Toggle */}
             <button 
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
@@ -135,21 +136,19 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
               {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
             </button>
 
-            {/* Divider */}
             <span className="w-px h-6 bg-gray-200 mx-1"></span>
 
-            {/* User Dropdown */}
             <div className="relative" ref={userRef}>
               <button 
                 onClick={() => setUserOpen(!userOpen)}
                 className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-all cursor-pointer"
               >
                 <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-sm font-medium">
-                  AD
+                  {userName ? userName.charAt(0).toUpperCase() : 'AD'}
                 </div>
                 <div className="hidden xl:block text-left">
-                  <span className="block text-sm font-medium text-gray-800">Administrador</span>
-                  <span className="block text-xs text-gray-400">Admin</span>
+                  <span className="block text-sm font-medium text-gray-800">{userName || 'Administrador'}</span>
+                  <span className="block text-xs text-gray-400">{userRole || 'Admin'}</span>
                 </div>
                 <ChevronDown size={14} className="text-gray-400" />
               </button>
@@ -158,10 +157,10 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
                   <div className="px-4 py-3 border-b border-gray-100">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white font-medium">
-                        AD
+                        {userName ? userName.charAt(0).toUpperCase() : 'AD'}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">Administrador</p>
+                        <p className="text-sm font-semibold text-gray-800">{userName || 'Administrador'}</p>
                         <p className="text-xs text-gray-400">admin@flexshoe.ao</p>
                       </div>
                     </div>
@@ -173,17 +172,16 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
                     </Link>
                   </div>
                   <div className="border-t border-gray-100 pt-2">
-                    <Link href="/auth/logout" className="flex items-center gap-3 px-4 py-2 hover:bg-red-50 transition-all text-red-600">
+                    <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 hover:bg-red-50 transition-all text-red-600 w-full">
                       <FiLogOut size={18} />
                       <span className="text-sm">Sair</span>
-                    </Link>
+                    </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Mobile Actions */}
           <div className="flex lg:hidden items-center gap-1">
             <button 
               onClick={() => setSearchOpen(true)}
@@ -203,7 +201,6 @@ export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
         </div>
       </div>
 
-      {/* Mobile Search Modal */}
       {searchOpen && (
         <div className="fixed inset-0 z-50 bg-white lg:hidden">
           <div className="p-4">
