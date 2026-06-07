@@ -5,15 +5,16 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { 
-  FiLogOut
-} from 'react-icons/fi';
+import { FiLogOut } from 'react-icons/fi';
 import { NAVIGATION, type NavItem } from './sidebar.constants';
+import { logout as apiLogout } from '@/lib/modules/auth';
 
 interface SidebarProps {
   mobileOpen: boolean;
   setMobileOpen: (open: boolean) => void;
   collapsed?: boolean;
+  userName?: string;
+  userRole?: string;
 }
 
 function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item: NavItem; depth?: number; collapsed?: boolean; onClose?: () => void }) {
@@ -62,7 +63,6 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
     );
   }
 
-  // Se tem submenu e NÃO está colapsado -> renderiza como button (expansível)
   if (hasSubmenu && !collapsed) {
     return (
       <li className={`${isOpen ? 'open' : ''}`}>
@@ -95,7 +95,6 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
     );
   }
 
-  // Se tem submenu e está colapsado -> renderiza com dropdown lateral
   if (hasSubmenu && collapsed) {
     return (
       <li className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -153,7 +152,6 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
     );
   }
 
-  // Sem submenu (item normal)
   if (!item.href || item.href === '#') return null;
 
   if (collapsed) {
@@ -192,8 +190,17 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
   );
 }
 
-export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: SidebarProps) {
+export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName, userRole }: SidebarProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const router = usePathname();
+
+  const handleLogout = async () => {
+    await apiLogout();
+    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+    localStorage.removeItem('flexshoe-admin-auth');
+    sessionStorage.removeItem('flexshoe-admin-auth');
+    window.location.href = '/auth/login';
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
@@ -232,29 +239,33 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: Sideba
       {!collapsed ? (
         <div className="p-3 border-t border-gray-200 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <a href="/admin/profile" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
-                <span className="text-sm font-medium text-gray-700">AD</span>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-sm">
+                <span className="text-sm font-medium text-gray-700">
+                  {userName ? userName.charAt(0).toUpperCase() : 'AD'}
+                </span>
               </div>
               <div className="hidden sm:block">
-                <div className="text-sm font-medium text-gray-800">Administrador</div>
-                <div className="text-xs text-gray-400">Admin</div>
+                <div className="text-sm font-medium text-gray-800">{userName || 'Administrador'}</div>
+                <div className="text-xs text-gray-400">{userRole || 'Admin'}</div>
               </div>
-            </a>
-            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all group">
+            </div>
+            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-red-50 transition-all group">
               <FiLogOut size={18} className="text-gray-400 group-hover:text-red-500 transition-colors" />
-            </a>
+            </button>
           </div>
         </div>
       ) : (
         <div className="p-3 border-t border-gray-200 flex-shrink-0">
           <div className="flex flex-col items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-sm">
-              <span className="text-sm font-medium text-gray-700">AD</span>
+              <span className="text-sm font-medium text-gray-700">
+                {userName ? userName.charAt(0).toUpperCase() : 'AD'}
+              </span>
             </div>
-            <a href="/auth/logout" className="p-2 rounded-lg hover:bg-red-50 transition-all group">
+            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-red-50 transition-all group">
               <FiLogOut size={18} className="text-gray-400 group-hover:text-red-500 transition-colors" />
-            </a>
+            </button>
           </div>
         </div>
       )}
