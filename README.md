@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./docs/assets/logo.svg" alt="FlexShoe Logo" width="30%" /> 
+  <img src="./docs/assets/logo.svg" alt="FlexShoe Logo" width="40%" /> 
   </br> </br>
   
   [![GitHub](https://img.shields.io/badge/github-flexshoe-181717?style=for-the-badge&logo=github)](https://github.com/Adyllsxn/flexshoe)
