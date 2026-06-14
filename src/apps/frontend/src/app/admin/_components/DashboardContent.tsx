@@ -1,39 +1,30 @@
 'use client';
 
 import { StatsCards } from './StatsCards';
-import { RevenueChart } from './RevenueChart';
-import { TopGender } from './TopGender';
 import { TopProducts } from './TopProducts';
 import { RecentOrders } from './RecentOrders';
+import { TopProductsChart } from './TopProductsChart';
+import { RevenueStats } from './RevenueStats';
 
 export function DashboardContent() {
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Dashboard</h1>
-          <nav className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            <span className="text-gray-400 dark:text-gray-500">Home</span> /{' '}
-            <span className="text-gray-800 dark:text-gray-200 font-medium">Dashboard</span>
-          </nav>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Visão geral da sua loja</p>
       </div>
 
-      {/* Stats Cards */}
       <StatsCards />
 
-      {/* Gráfico de Receita + Gênero Mais Vendido */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <RevenueChart />
+          <TopProductsChart />
         </div>
         <div>
-          <TopGender />
+          <RevenueStats />
         </div>
       </div>
 
-      {/* Top Products + Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TopProducts />
         <RecentOrders />

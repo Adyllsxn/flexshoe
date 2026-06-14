@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { FiLogOut } from 'react-icons/fi';
-import { NAVIGATION, type NavItem } from './sidebar.constants';
+import { USER_LOGOUT, NAVIGATION, type NavItem } from './sidebar.constants';
 import { logout as apiLogout } from '@/lib/modules/auth';
 
 interface SidebarProps {
@@ -199,7 +199,7 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
     localStorage.removeItem('flexshoe-admin-auth');
     sessionStorage.removeItem('flexshoe-admin-auth');
-    window.location.href = '/auth/login';
+    window.location.href = USER_LOGOUT.logout;
   };
 
   useEffect(() => {

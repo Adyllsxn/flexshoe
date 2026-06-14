@@ -35,3 +35,7 @@ export const NAVIGATION: NavItem[] = [
   { name: 'Configurações', href: '#', icon: FiSettings, isHeading: true },
   { name: 'Store', href: '/admin/store', icon: FiShoppingBag },
 ];
+
+export const USER_LOGOUT = {
+  logout: '/auth/logout'
+};
