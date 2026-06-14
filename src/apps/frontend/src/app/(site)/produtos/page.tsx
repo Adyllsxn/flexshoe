@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProdutosHeader from './_components/ProdutosHeader';
 import ProdutosSidebar from './_components/ProdutosSidebar';
@@ -9,7 +9,7 @@ import ProdutosGrid from './_components/ProdutosGrid';
 import ProdutosPagination from './_components/ProdutosPagination';
 import { useProdutos } from './_hooks/useProdutos';
 
-export default function ProdutosPage() {
+function ProdutosContent() {
   const searchParams = useSearchParams();
   const busca = searchParams.get('busca') || '';
 
@@ -115,5 +115,22 @@ export default function ProdutosPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ProdutosPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-white">
+        <ProdutosHeader />
+        <div className="container mx-auto px-4 py-20">
+          <div className="flex justify-center items-center h-96">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+          </div>
+        </div>
+      </main>
+    }>
+      <ProdutosContent />
+    </Suspense>
   );
 }
