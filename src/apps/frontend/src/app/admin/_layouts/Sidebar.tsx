@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { FiLogOut } from 'react-icons/fi';
+import { FiLogOut, FiUser } from 'react-icons/fi';
 import { USER_LOGOUT, NAVIGATION, type NavItem } from './sidebar.constants';
 import { logout as apiLogout } from '@/lib/modules/auth';
 
@@ -192,7 +192,7 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
 
 export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName, userRole }: SidebarProps) {
   const [isMobile, setIsMobile] = useState(false);
-  const router = usePathname();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     await apiLogout();
@@ -209,22 +209,37 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Pega apenas o primeiro nome
+  const getFirstName = (name: string) => {
+    if (!name) return 'Admin';
+    return name.split(' ')[0];
+  };
+
+  // Pega a inicial para o avatar
+  const getInitial = (name: string) => {
+    if (!name) return 'A';
+    return name.charAt(0).toUpperCase();
+  };
+
+  const displayName = getFirstName(userName || '');
+  const initial = getInitial(userName || 'Administrador');
+
   const SidebarContent = () => (
     <>
-      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 flex-shrink-0">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
         {!collapsed ? (
-          <a href="/admin" className="flex items-center gap-2">
+          <Link href="/admin" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-gray-900 to-black rounded-xl flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-sm">F</span>
             </div>
-            <span className="font-semibold text-gray-800">FlexShoe</span>
-          </a>
+            <span className="font-semibold text-gray-800 dark:text-white">FlexShoe</span>
+          </Link>
         ) : (
-          <a href="/admin" className="flex justify-center w-full">
+          <Link href="/admin" className="flex justify-center w-full">
             <div className="w-8 h-8 bg-gradient-to-br from-gray-900 to-black rounded-xl flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-sm">F</span>
             </div>
-          </a>
+          </Link>
         )}
       </div>
 
@@ -237,34 +252,36 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
       </nav>
 
       {!collapsed ? (
-        <div className="p-3 border-t border-gray-200 flex-shrink-0">
+        <div className="p-3 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-sm">
-                <span className="text-sm font-medium text-gray-700">
-                  {userName ? userName.charAt(0).toUpperCase() : 'AD'}
+            <Link href="/admin/profile" className="flex items-center gap-3 group cursor-pointer">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  {initial}
                 </span>
               </div>
               <div className="hidden sm:block">
-                <div className="text-sm font-medium text-gray-800">{userName || 'Administrador'}</div>
-                <div className="text-xs text-gray-400">{userRole || 'Admin'}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">{displayName}</div>
+                <div className="text-xs text-gray-400 dark:text-gray-500 capitalize">{userRole || 'Admin'}</div>
               </div>
-            </div>
-            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-red-50 transition-all group">
-              <FiLogOut size={18} className="text-gray-400 group-hover:text-red-500 transition-colors" />
+            </Link>
+            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-all group">
+              <FiLogOut size={18} className="text-gray-400 dark:text-gray-500 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors" />
             </button>
           </div>
         </div>
       ) : (
-        <div className="p-3 border-t border-gray-200 flex-shrink-0">
+        <div className="p-3 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
           <div className="flex flex-col items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center shadow-sm">
-              <span className="text-sm font-medium text-gray-700">
-                {userName ? userName.charAt(0).toUpperCase() : 'AD'}
-              </span>
-            </div>
-            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-red-50 transition-all group">
-              <FiLogOut size={18} className="text-gray-400 group-hover:text-red-500 transition-colors" />
+            <Link href="/admin/profile" className="group cursor-pointer">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  {initial}
+                </span>
+              </div>
+            </Link>
+            <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-all group">
+              <FiLogOut size={18} className="text-gray-400 dark:text-gray-500 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors" />
             </button>
           </div>
         </div>
@@ -288,7 +305,7 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
               initial={{ x: -280 }}
               animate={{ x: 0 }}
               exit={{ x: -280 }}
-              className="fixed top-0 left-0 z-50 w-72 h-screen bg-white shadow-2xl flex flex-col"
+              className="fixed top-0 left-0 z-50 w-72 h-screen bg-white dark:bg-gray-900 shadow-2xl flex flex-col"
             >
               <SidebarContent />
             </motion.aside>
@@ -300,7 +317,7 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
 
   return (
     <aside
-      className={`h-screen bg-white border-r border-gray-200 flex flex-col flex-shrink-0 transition-all duration-300 overflow-x-visible ${
+      className={`h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col flex-shrink-0 transition-all duration-300 overflow-x-visible ${
         collapsed ? 'w-16' : 'w-64'
       }`}
     >
