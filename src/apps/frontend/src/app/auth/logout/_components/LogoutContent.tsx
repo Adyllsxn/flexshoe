@@ -31,14 +31,12 @@ export default function LogoutContent() {
       
       toast.success('Logout realizado com sucesso!');
       
-      // Redirecionar após 2 segundos
-      setTimeout(() => {
-        router.push('/auth/login');
-      }, 2000);
+      // NÃO USAR router.push aqui!
+      // O middleware já vai redirecionar porque o token foi removido
     };
     
     performLogout();
-  }, [router]);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">

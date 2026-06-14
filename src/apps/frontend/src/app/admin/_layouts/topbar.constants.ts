@@ -23,6 +23,10 @@ export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
 ];
 
 export const USER_DROPDOWN_ITEMS = {
-  profile: { icon: FiUser, label: 'Meu Perfil', href: '/admin/perfil' },
+  profile: { icon: FiUser, label: 'Meu Perfil', href: '/admin/profile' },
   logout: { icon: FiLogOut, label: 'Sair', href: '/auth/logout' }
+};
+
+export const USER_LOGOUT = {
+  logout: '/auth/logout'
 };

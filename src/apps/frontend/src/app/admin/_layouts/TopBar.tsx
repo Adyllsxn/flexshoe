@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, ChevronDown, Menu, X, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { FiUser, FiLogOut, FiGrid } from 'react-icons/fi';
-import { QUICK_ACCESS_ITEMS } from './topbar.constants';
+import { QUICK_ACCESS_ITEMS, USER_LOGOUT } from './topbar.constants';
 import { logout as apiLogout } from '@/lib/modules/auth';
 
 interface TopBarProps {
@@ -56,7 +56,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
     localStorage.removeItem('flexshoe-admin-auth');
     sessionStorage.removeItem('flexshoe-admin-auth');
-    window.location.href = '/auth/login';
+    window.location.href = USER_LOGOUT.logout;
   };
 
   return (
@@ -166,7 +166,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
                     </div>
                   </div>
                   <div className="py-2">
-                    <Link href="/admin/perfil" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-all">
+                    <Link href="/admin/profile" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-all">
                       <FiUser size={18} className="text-gray-600" />
                       <span className="text-sm text-gray-700">Meu Perfil</span>
                     </Link>
