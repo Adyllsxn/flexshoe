@@ -1,75 +1,68 @@
 'use client';
 
-import { useState } from 'react';
-import { 
-  FiUser,
-  FiMail,
-  FiPhone,
-  FiMapPin,
-  FiEdit2,
-  FiSave,
-  FiLock,
-  FiEye,
-  FiEyeOff
-} from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiEdit2 } from 'react-icons/fi';
 import { toast } from 'sonner';
-import { PROFILE_CONFIG, USER_DATA, SIDEBAR_INFO } from './_constants/perfil';
+import { getMe, updateUser, changePassword, type User } from '@/lib/modules/user';
+import { PROFILE_CONFIG, SIDEBAR_INFO } from './_constants/profile';
+import ProfileOverview from './_components/ProfileOverview';
+import ProfileEdit from './_components/ProfileEdit';
+import ProfilePassword from './_components/ProfilePassword';
 
-export default function PerfilPage() {
-  const [activeTab, setActiveTab] = useState('overview');
+export default function ProfilePage() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | 'edit' | 'password'>('overview');
   const [isEditing, setIsEditing] = useState(false);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    name: USER_DATA.fullName,
-    email: USER_DATA.email,
-    phone: USER_DATA.phone,
-    location: USER_DATA.location,
-    about: USER_DATA.about
-  });
-  const [passwordData, setPasswordData] = useState({
-    current: '',
-    new: '',
-    confirm: ''
-  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await getMe();
+      setUser(data);
+      setLoading(false);
+    };
+    fetchUser();
+  }, []);
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSaveProfile = () => {
-    toast.success('Perfil atualizado com sucesso!', {
-      duration: 3000,
-      icon: '✅'
-    });
-    setIsEditing(false);
-  };
-
-  const handleSavePassword = () => {
-    if (!passwordData.current || !passwordData.new || !passwordData.confirm) {
-      toast.error('Preencha todos os campos', { duration: 3000 });
-      return;
+  const handleUpdateProfile = async (data: { name: string; email: string }) => {
+    if (!user) return;
+    
+    const result = await updateUser(user.id, data);
+    if (result) {
+      setUser(result);
+      toast.success('Perfil atualizado com sucesso!');
+      setActiveTab('overview');
+      setIsEditing(false);
+    } else {
+      toast.error('Erro ao atualizar perfil');
     }
-    if (passwordData.new !== passwordData.confirm) {
-      toast.error('As senhas não coincidem', { duration: 3000 });
-      return;
-    }
-    if (passwordData.new.length < 6) {
-      toast.error('A nova senha deve ter pelo menos 6 caracteres', { duration: 3000 });
-      return;
-    }
-    toast.success('Senha alterada com sucesso!', { duration: 3000 });
-    setPasswordData({ current: '', new: '', confirm: '' });
   };
+
+  const handleChangePassword = async (data: { currentPassword: string; newPassword: string; confirmNewPassword: string }) => {
+    const result = await changePassword(data);
+    if (result) {
+      toast.success('Senha alterada com sucesso!');
+      setActiveTab('overview');
+    } else {
+      toast.error('Erro ao alterar senha');
+    }
+  };
+
+  const getInitials = () => {
+    if (!user?.name) return 'AD';
+    return user.name.charAt(0).toUpperCase();
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black dark:border-white mx-auto"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{PROFILE_CONFIG.title}</h1>
@@ -87,19 +80,22 @@ export default function PerfilPage() {
           <div className="flex flex-col md:flex-row items-start md:items-end -mt-12 mb-4">
             <div className="relative">
               <div className="w-24 h-24 rounded-xl bg-gray-200 dark:bg-gray-700 flex items-center justify-center shadow-lg border-4 border-white dark:border-gray-800">
-                <span className="text-3xl font-bold text-gray-600 dark:text-gray-400">AD</span>
+                <span className="text-3xl font-bold text-gray-600 dark:text-gray-400">{getInitials()}</span>
               </div>
             </div>
             <div className="flex-1 mt-4 md:mt-0 md:ml-4">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">{USER_DATA.fullName}</h2>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">{USER_DATA.role}</p>
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white">{user?.name}</h2>
+              <p className="text-gray-500 dark:text-gray-400 text-sm capitalize">{user?.role === 'admin' ? 'Administrador' : user?.role}</p>
             </div>
             <button
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => {
+                setActiveTab('edit');
+                setIsEditing(true);
+              }}
               className="mt-4 md:mt-0 px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center gap-2"
             >
               <FiEdit2 size={14} />
-              {isEditing ? 'Cancelar' : 'Editar Perfil'}
+              Editar Perfil
             </button>
           </div>
         </div>
@@ -119,7 +115,9 @@ export default function PerfilPage() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-400">{item.label}</p>
-                    <p className="text-sm font-medium text-gray-800 dark:text-white">{item.value}</p>
+                    <p className="text-sm font-medium text-gray-800 dark:text-white">
+                      {user?.role === 'admin' ? 'Administrador' : user?.role || 'Usuário'}
+                    </p>
                   </div>
                 </div>
               );
@@ -176,193 +174,9 @@ export default function PerfilPage() {
             </div>
 
             <div className="p-6">
-              {/* Overview Tab */}
-              {activeTab === 'overview' && (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-3">Sobre</h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                      {isEditing ? formData.about : USER_DATA.about}
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-3">Informações Pessoais</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="flex items-center gap-3">
-                        <FiUser className="text-gray-400" size={16} />
-                        <div>
-                          <p className="text-xs text-gray-400">Nome</p>
-                          <p className="text-sm text-gray-800 dark:text-white">{USER_DATA.fullName}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <FiMail className="text-gray-400" size={16} />
-                        <div>
-                          <p className="text-xs text-gray-400">Email</p>
-                          <p className="text-sm text-gray-800 dark:text-white">{USER_DATA.email}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <FiPhone className="text-gray-400" size={16} />
-                        <div>
-                          <p className="text-xs text-gray-400">Telefone</p>
-                          <p className="text-sm text-gray-800 dark:text-white">{USER_DATA.phone}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <FiMapPin className="text-gray-400" size={16} />
-                        <div>
-                          <p className="text-xs text-gray-400">Localização</p>
-                          <p className="text-sm text-gray-800 dark:text-white">{USER_DATA.location}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Edit Profile Tab */}
-              {activeTab === 'edit' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telefone</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Localização</label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sobre</label>
-                    <textarea
-                      name="about"
-                      rows={4}
-                      value={formData.about}
-                      onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white resize-none"
-                    />
-                  </div>
-                  <div className="flex justify-end">
-                    <button
-                      onClick={handleSaveProfile}
-                      className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center gap-2"
-                    >
-                      <FiSave size={14} />
-                      Salvar Alterações
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Change Password Tab */}
-              {activeTab === 'password' && (
-                <div className="space-y-4 max-w-md">
-                  {/* Senha Atual */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha Atual</label>
-                    <div className="relative">
-                      <input
-                        type={showCurrentPassword ? 'text' : 'password'}
-                        name="current"
-                        value={passwordData.current}
-                        onChange={handlePasswordChange}
-                        className="w-full px-3 py-2 pr-10 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                      >
-                        {showCurrentPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Nova Senha */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nova Senha</label>
-                    <div className="relative">
-                      <input
-                        type={showNewPassword ? 'text' : 'password'}
-                        name="new"
-                        value={passwordData.new}
-                        onChange={handlePasswordChange}
-                        className="w-full px-3 py-2 pr-10 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                      >
-                        {showNewPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Confirmar Nova Senha */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirmar Nova Senha</label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        name="confirm"
-                        value={passwordData.confirm}
-                        onChange={handlePasswordChange}
-                        className="w-full px-3 py-2 pr-10 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                      >
-                        {showConfirmPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                    <button
-                      onClick={handleSavePassword}
-                      className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center gap-2"
-                    >
-                      <FiLock size={14} />
-                      Alterar Senha
-                    </button>
-                  </div>
-                </div>
-              )}
+              {activeTab === 'overview' && <ProfileOverview user={user} />}
+              {activeTab === 'edit' && <ProfileEdit user={user} onUpdate={handleUpdateProfile} />}
+              {activeTab === 'password' && <ProfilePassword onChangePassword={handleChangePassword} />}
             </div>
           </div>
         </div>
