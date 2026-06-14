@@ -24,7 +24,7 @@ export default function ProdutosPage() {
     setSortBy,
     loading,
     totalProducts,
-    filteredCount,
+    filteredCount, 
     products,
     totalPages,
     genders,
@@ -84,8 +84,6 @@ export default function ProdutosPage() {
             <ProdutosTopBar
               viewMode={viewMode}
               onViewModeChange={setViewMode}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
               totalProducts={totalProducts}
               filteredCount={filteredCount}
             />
