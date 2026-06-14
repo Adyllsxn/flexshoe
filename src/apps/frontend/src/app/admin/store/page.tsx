@@ -11,6 +11,7 @@ import {
   FiFlag
 } from 'react-icons/fi';
 import { toast } from 'sonner';
+import { getStore, updateStore } from '@/lib/modules/store';
 import { STORE_CONFIG, COLOR_PRESETS } from './_constants/store';
 
 interface StoreData {
@@ -41,27 +42,22 @@ export default function StorePage() {
   });
   const [selectedColor, setSelectedColor] = useState('#000000');
 
-  // Simular GET
+  // Buscar dados da API
   useEffect(() => {
     const fetchStoreData = async () => {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockData = {
-        id: '693a2446-a439-4fb7-afcb-845431153561',
-        name: 'FlexShoe',
-        whatsapp: '244900000000',
-        email: 'contato@flexshoe.ao',
-        address: 'Luanda, Angola',
-        logo: null,
-        primaryColor: '#000000',
-        createdAt: '2026-05-28T15:33:24.977Z',
-        updatedAt: new Date().toISOString()
-      };
-      
-      setFormData(mockData);
-      setSelectedColor(mockData.primaryColor);
-      setLoading(false);
+      try {
+        const data = await getStore();
+        if (data) {
+          setFormData(data);
+          setSelectedColor(data.primaryColor || '#000000');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados da loja:', error);
+        toast.error('Erro ao carregar dados da loja');
+      } finally {
+        setLoading(false);
+      }
     };
     
     fetchStoreData();
@@ -80,27 +76,41 @@ export default function StorePage() {
     e.preventDefault();
     setSaving(true);
     
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast.success('Configurações da loja salvas com sucesso!', {
-      duration: 3000,
-      icon: '✅'
-    });
-    
-    setSaving(false);
+    try {
+      const result = await updateStore({
+        name: formData.name,
+        whatsapp: formData.whatsapp,
+        email: formData.email,
+        address: formData.address,
+        primaryColor: formData.primaryColor,
+      });
+      
+      if (result) {
+        setFormData(result);
+        setSelectedColor(result.primaryColor || '#000000');
+        toast.success('Configurações da loja salvas com sucesso!');
+      } else {
+        toast.error('Erro ao salvar configurações');
+      }
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      toast.error('Erro ao salvar configurações');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleReset = () => {
-    setFormData(prev => ({
-      ...prev,
-      name: 'FlexShoe',
-      whatsapp: '244900000000',
-      email: 'contato@flexshoe.ao',
-      address: 'Luanda, Angola',
-      primaryColor: '#000000'
-    }));
-    setSelectedColor('#000000');
-    toast.info('Formulário resetado', { duration: 2000 });
+  const handleReset = async () => {
+    try {
+      const data = await getStore();
+      if (data) {
+        setFormData(data);
+        setSelectedColor(data.primaryColor || '#000000');
+        toast.info('Dados resetados com sucesso');
+      }
+    } catch (error) {
+      toast.error('Erro ao resetar dados');
+    }
   };
 
   if (loading) {
@@ -116,16 +126,16 @@ export default function StorePage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header - sem ícone */}
+      {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{STORE_CONFIG.title}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{STORE_CONFIG.title}</h1>
           <nav className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             <Link href="/admin" className="hover:text-black dark:hover:text-white transition">
               Home
             </Link>
             <span className="mx-2">/</span>
-            <span className="text-gray-800 dark:text-gray-200 font-medium">Loja</span>
+            <span className="text-gray-900 dark:text-white font-medium">Loja</span>
           </nav>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{STORE_CONFIG.subtitle}</p>
         </div>
@@ -157,7 +167,7 @@ export default function StorePage() {
             </div>
             <div>
               <p className="text-xs text-gray-400">Nome da Loja</p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white">{formData.name}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">{formData.name}</p>
             </div>
           </div>
         </div>
@@ -168,7 +178,7 @@ export default function StorePage() {
             </div>
             <div>
               <p className="text-xs text-gray-400">WhatsApp</p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white">{formData.whatsapp}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">{formData.whatsapp}</p>
             </div>
           </div>
         </div>
@@ -179,7 +189,7 @@ export default function StorePage() {
             </div>
             <div>
               <p className="text-xs text-gray-400">Email</p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white">{formData.email}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">{formData.email}</p>
             </div>
           </div>
         </div>
@@ -190,7 +200,7 @@ export default function StorePage() {
             </div>
             <div>
               <p className="text-xs text-gray-400">Endereço</p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white truncate">{formData.address}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{formData.address}</p>
             </div>
           </div>
         </div>
@@ -201,7 +211,7 @@ export default function StorePage() {
         {/* Informações da Loja */}
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-gray-100 dark:border-gray-700">
-            <h3 className="text-base font-semibold text-gray-800 dark:text-white">Informações da Loja</h3>
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white">Informações da Loja</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Dados básicos da sua loja</p>
           </div>
           <div className="p-5 space-y-4">
@@ -212,7 +222,7 @@ export default function StorePage() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
             </div>
             <div>
@@ -223,8 +233,9 @@ export default function StorePage() {
                 value={formData.whatsapp}
                 onChange={handleChange}
                 placeholder="244900000000"
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
+              <p className="text-xs text-gray-400 mt-1">Exemplo: 244900000000</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
@@ -233,7 +244,7 @@ export default function StorePage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
             </div>
             <div>
@@ -243,7 +254,7 @@ export default function StorePage() {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
             </div>
           </div>
@@ -254,7 +265,7 @@ export default function StorePage() {
           {/* Cores */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-gray-100 dark:border-gray-700">
-              <h3 className="text-base font-semibold text-gray-800 dark:text-white">Aparência</h3>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">Aparência</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Personalize as cores da sua loja</p>
             </div>
             <div className="p-5">
@@ -295,7 +306,7 @@ export default function StorePage() {
           {/* Preview */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-gray-100 dark:border-gray-700">
-              <h3 className="text-base font-semibold text-gray-800 dark:text-white">Preview</h3>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">Preview</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Visualize como ficará sua loja</p>
             </div>
             <div className="p-5">
@@ -305,7 +316,7 @@ export default function StorePage() {
                     <span className="text-white font-bold text-sm">F</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 dark:text-white">{formData.name}</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{formData.name}</h4>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{formData.email}</p>
                   </div>
                 </div>
