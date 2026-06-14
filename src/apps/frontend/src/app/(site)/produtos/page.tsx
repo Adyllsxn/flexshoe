@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ProdutosHeader from './_components/ProdutosHeader';
 import ProdutosSidebar from './_components/ProdutosSidebar';
 import ProdutosTopBar from './_components/ProdutosTopBar';
@@ -9,6 +10,9 @@ import ProdutosPagination from './_components/ProdutosPagination';
 import { useProdutos } from './_hooks/useProdutos';
 
 export default function ProdutosPage() {
+  const searchParams = useSearchParams();
+  const busca = searchParams.get('busca') || '';
+
   const {
     viewMode,
     setViewMode,
@@ -20,11 +24,12 @@ export default function ProdutosPage() {
     minPrice,
     maxPrice,
     searchTerm,
+    setSearchTerm,
     sortBy,
     setSortBy,
     loading,
     totalProducts,
-    filteredCount, 
+    filteredCount,
     products,
     totalPages,
     genders,
@@ -36,9 +41,15 @@ export default function ProdutosPage() {
     handleColorChange,
     setMinPrice,
     setMaxPrice,
-    setSearchTerm,
     clearFilters,
   } = useProdutos();
+
+  // Sincronizar busca da URL
+  useEffect(() => {
+    if (busca) {
+      setSearchTerm(busca);
+    }
+  }, [busca, setSearchTerm]);
 
   if (loading) {
     return (

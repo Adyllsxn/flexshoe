@@ -7,11 +7,19 @@ import { SITE_NAME } from '../_constants/site';
 import { HEADER_SEARCH } from '../_constants/search';
 import { NAVIGATION_LINKS } from '../_constants/navigation';
 import { useCart } from '@/lib/contexts/CartContext';
+import { useHeaderSearch } from '../_hooks/useHeaderSearch';
 
 export function MainHeader() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems, loading } = useCart();
+  const {
+    searchTerm,
+    setSearchTerm,
+    isSearchOpen,
+    setIsSearchOpen,
+    handleSearch,
+    handleMobileSearch,
+  } = useHeaderSearch();
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -32,10 +40,13 @@ export function MainHeader() {
             {SITE_NAME}
           </Link>
 
-          <div className="hidden md:flex flex-1 max-w-md">
+          {/* Busca Desktop */}
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md">
             <div className="relative w-full">
               <input
                 type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={HEADER_SEARCH.placeholder}
                 className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md focus:outline-none focus:border-black transition"
               />
@@ -46,9 +57,10 @@ export function MainHeader() {
                 <Search className="h-4 w-4" />
               </button>
             </div>
-          </div>
+          </form>
 
           <div className="flex items-center gap-2">
+            {/* Busca Mobile - ícone */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="md:hidden p-2 hover:bg-gray-100 rounded-full transition cursor-pointer"
@@ -75,17 +87,20 @@ export function MainHeader() {
         </div>
       </div>
 
+      {/* Busca Mobile - input */}
       {isSearchOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white py-3 px-4">
           <div className="relative w-full">
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={HEADER_SEARCH.placeholder}
               className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md focus:outline-none focus:border-black transition"
               autoFocus
             />
             <button 
-              type="submit"
+              onClick={handleMobileSearch}
               className="absolute right-0 top-0 h-full px-4 bg-black text-white rounded-r-md hover:opacity-80 transition-opacity flex items-center justify-center cursor-pointer"
             >
               <Search className="h-4 w-4" />
@@ -100,6 +115,7 @@ export function MainHeader() {
         </div>
       )}
 
+      {/* Menu Mobile */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div 
