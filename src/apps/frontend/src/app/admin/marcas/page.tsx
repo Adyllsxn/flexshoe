@@ -4,8 +4,8 @@ import MarcasHeader from './_components/MarcasHeader';
 import MarcasStats from './_components/MarcasStats';
 import MarcasFilters from './_components/MarcasFilters';
 import MarcasTable from './_components/MarcasTable';
-import MarcasModal from './_components/MarcasModal';
-import MarcasConfirmModal from './_components/MarcasConfirmModal';
+import MarcasModal from './modals/MarcasModal';
+import MarcasConfirmModal from './modals/MarcasConfirmModal';
 import { useMarcas } from './_hooks/useMarcas';
 import { usePermissions } from '@/lib/hooks/usePermissions';
 
