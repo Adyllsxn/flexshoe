@@ -2,10 +2,9 @@ import {
   FiTag,
   FiPackage,
   FiShoppingBag,
-  FiSettings,
   FiDatabase,
   FiUser,
-  FiLogOut
+  FiLogOut,
 } from 'react-icons/fi';
 
 export interface QuickAccessItem {
@@ -17,9 +16,8 @@ export interface QuickAccessItem {
 export const QUICK_ACCESS_ITEMS: QuickAccessItem[] = [
   { icon: FiTag, label: 'Marcas', href: '/admin/marcas' },
   { icon: FiPackage, label: 'Produtos', href: '/admin/produtos' },
-  { icon: FiShoppingBag, label: 'Store', href: '/admin/store' },
-  { icon: FiSettings, label: 'Settings', href: '/admin/settings' },
   { icon: FiDatabase, label: 'Inventory', href: '/admin/inventory' },
+  { icon: FiShoppingBag, label: 'Pedidos', href: '/admin/orders' },
 ];
 
 export const USER_DROPDOWN_ITEMS = {
