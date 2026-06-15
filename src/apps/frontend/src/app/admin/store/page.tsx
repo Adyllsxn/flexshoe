@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   FiSave,
@@ -10,108 +9,21 @@ import {
   FiMail,
   FiFlag
 } from 'react-icons/fi';
-import { toast } from 'sonner';
-import { getStore, updateStore } from '@/lib/modules/store';
 import { STORE_CONFIG, COLOR_PRESETS } from './_constants/store';
-
-interface StoreData {
-  id: string;
-  name: string;
-  whatsapp: string;
-  email: string;
-  address: string;
-  logo: string | null;
-  primaryColor: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { useStore } from './_hooks/useStore';
 
 export default function StorePage() {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<StoreData>({
-    id: '',
-    name: '',
-    whatsapp: '',
-    email: '',
-    address: '',
-    logo: null,
-    primaryColor: '#000000',
-    createdAt: '',
-    updatedAt: ''
-  });
-  const [selectedColor, setSelectedColor] = useState('#000000');
-
-  // Buscar dados da API
-  useEffect(() => {
-    const fetchStoreData = async () => {
-      setLoading(true);
-      try {
-        const data = await getStore();
-        if (data) {
-          setFormData(data);
-          setSelectedColor(data.primaryColor || '#000000');
-        }
-      } catch (error) {
-        console.error('Erro ao buscar dados da loja:', error);
-        toast.error('Erro ao carregar dados da loja');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchStoreData();
-  }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color);
-    setFormData(prev => ({ ...prev, primaryColor: color }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    
-    try {
-      const result = await updateStore({
-        name: formData.name,
-        whatsapp: formData.whatsapp,
-        email: formData.email,
-        address: formData.address,
-        primaryColor: formData.primaryColor,
-      });
-      
-      if (result) {
-        setFormData(result);
-        setSelectedColor(result.primaryColor || '#000000');
-        toast.success('Configurações da loja salvas com sucesso!');
-      } else {
-        toast.error('Erro ao salvar configurações');
-      }
-    } catch (error) {
-      console.error('Erro ao salvar:', error);
-      toast.error('Erro ao salvar configurações');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleReset = async () => {
-    try {
-      const data = await getStore();
-      if (data) {
-        setFormData(data);
-        setSelectedColor(data.primaryColor || '#000000');
-        toast.info('Dados resetados com sucesso');
-      }
-    } catch (error) {
-      toast.error('Erro ao resetar dados');
-    }
-  };
+  const {
+    loading,
+    saving,
+    isAdmin,
+    formData,
+    selectedColor,
+    handleChange,
+    handleColorChange,
+    handleSubmit,
+    handleReset,
+  } = useStore();
 
   if (loading) {
     return (
@@ -124,9 +36,186 @@ export default function StorePage() {
     );
   }
 
+  // Se não for admin, mostrar apenas visualização
+  if (!isAdmin) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{STORE_CONFIG.title}</h1>
+            <nav className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <Link href="/admin" className="hover:text-black dark:hover:text-white transition">
+                Home
+              </Link>
+              <span className="mx-2">/</span>
+              <span className="text-gray-900 dark:text-white font-medium">Loja</span>
+            </nav>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{STORE_CONFIG.subtitle}</p>
+          </div>
+        </div>
+
+        {/* Cards de Informação - Apenas leitura */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center">
+                <FiFlag className="text-white dark:text-black" size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400">Nome da Loja</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{formData.name}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <FiPhone className="text-green-600 dark:text-green-400" size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400">WhatsApp</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{formData.whatsapp}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <FiMail className="text-blue-600 dark:text-blue-400" size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400">Email</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{formData.email}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <FiMapPin className="text-purple-600 dark:text-purple-400" size={18} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400">Endereço</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{formData.address}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Informações da Loja - Apenas leitura */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div className="p-5 border-b border-gray-100 dark:border-gray-700">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">Informações da Loja</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Visualização apenas</p>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome da Loja</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">WhatsApp</label>
+                <input
+                  type="tel"
+                  value={formData.whatsapp}
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Endereço</label>
+                <input
+                  type="text"
+                  value={formData.address}
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Aparência - Apenas visualização */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+              <div className="p-5 border-b border-gray-100 dark:border-gray-700">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white">Aparência</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Visualização apenas</p>
+              </div>
+              <div className="p-5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Cor Primária
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {COLOR_PRESETS.map((color) => (
+                    <div
+                      key={color.value}
+                      className={`w-10 h-10 rounded-full ${selectedColor === color.value ? 'ring-2 ring-offset-2 ring-black dark:ring-white' : ''}`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                    />
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full" style={{ backgroundColor: selectedColor }} />
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{selectedColor}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Preview */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+              <div className="p-5 border-b border-gray-100 dark:border-gray-700">
+                <h3 className="text-base font-semibold text-gray-900 dark:text-white">Preview</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Visualize como ficará sua loja</p>
+              </div>
+              <div className="p-5">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center shadow-sm" style={{ backgroundColor: selectedColor }}>
+                      <span className="text-white font-bold text-sm">F</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{formData.name}</h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{formData.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FiPhone size={14} className="text-gray-400" />
+                      <span className="text-gray-600 dark:text-gray-300">{formData.whatsapp}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FiMapPin size={14} className="text-gray-400" />
+                      <span className="text-gray-600 dark:text-gray-300">{formData.address}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Admin: exibir formulário editável
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{STORE_CONFIG.title}</h1>
@@ -208,7 +297,6 @@ export default function StorePage() {
 
       {/* Formulário Principal */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Informações da Loja */}
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-gray-100 dark:border-gray-700">
             <h3 className="text-base font-semibold text-gray-900 dark:text-white">Informações da Loja</h3>
@@ -260,9 +348,7 @@ export default function StorePage() {
           </div>
         </div>
 
-        {/* Aparência e Preview */}
         <div className="space-y-6">
-          {/* Cores */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-base font-semibold text-gray-900 dark:text-white">Aparência</h3>
@@ -303,7 +389,6 @@ export default function StorePage() {
             </div>
           </div>
 
-          {/* Preview */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-base font-semibold text-gray-900 dark:text-white">Preview</h3>
