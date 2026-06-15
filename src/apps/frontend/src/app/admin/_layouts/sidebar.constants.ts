@@ -20,6 +20,7 @@ export interface NavItem {
 
 export const NAVIGATION: NavItem[] = [
   { name: 'Dashboard', href: '/admin', icon: FiGrid },
+  { name: 'Pedidos', href: '/admin/orders', icon: FiShoppingBag },
   {
     name: 'Utilizadores',
     icon: FiUsers,
