@@ -12,6 +12,14 @@ export interface IAccountService {
     totalPages: number;
   }>;
 
+  findAllWithDeleted(paginationDto: PaginationDto): Promise<{
+    data: IAccount[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }>;
+
   findOne(id: string): Promise<IAccount>;
 
   findByName(

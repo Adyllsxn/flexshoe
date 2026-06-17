@@ -1,24 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { FiLogOut, FiUser } from 'react-icons/fi';
-import { USER_LOGOUT, NAVIGATION, type NavItem } from './sidebar.constants';
+import { FiLogOut } from 'react-icons/fi';
+import { USER_LOGOUT } from './sidebar.constants';
 import { logout as apiLogout } from '@/lib/modules/auth';
+import { useSidebar } from './sidebar.hooks';
 
 interface SidebarProps {
   mobileOpen: boolean;
   setMobileOpen: (open: boolean) => void;
   collapsed?: boolean;
-  userName?: string;
-  userRole?: string;
 }
 
-function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item: NavItem; depth?: number; collapsed?: boolean; onClose?: () => void }) {
-  const pathname = usePathname();
+function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item: any; depth?: number; collapsed?: boolean; onClose?: () => void }) {
+  const { pathname } = useSidebar();
   const [isOpen, setIsOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -28,7 +26,7 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
 
   useEffect(() => {
     if (hasSubmenu && !collapsed) {
-      const hasActiveChild = item.submenu?.some(sub => sub.href === pathname);
+      const hasActiveChild = item.submenu?.some((sub: any) => sub.href === pathname);
       if (hasActiveChild) setIsOpen(true);
     }
   }, [pathname, hasSubmenu, item.submenu, collapsed]);
@@ -85,7 +83,7 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
               transition={{ duration: 0.2 }}
               className="ml-6 mt-1 space-y-1 overflow-hidden"
             >
-              {item.submenu!.map((sub, idx) => (
+              {item.submenu!.map((sub: any, idx: number) => (
                 <SidebarNavItem key={idx} item={sub} depth={depth + 1} collapsed={collapsed} onClose={onClose} />
               ))}
             </motion.ul>
@@ -119,7 +117,7 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
                     <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{item.name}</span>
                   </div>
                   <div className="py-1">
-                    {item.submenu!.map((sub, idx) => {
+                    {item.submenu!.map((sub: any, idx: number) => {
                       const SubIcon = sub.icon;
                       const isSubActive = sub.href === pathname;
                       return (
@@ -190,9 +188,9 @@ function SidebarNavItem({ item, depth = 0, collapsed = false, onClose }: { item:
   );
 }
 
-export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName, userRole }: SidebarProps) {
+export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false }: SidebarProps) {
   const [isMobile, setIsMobile] = useState(false);
-  const pathname = usePathname();
+  const { loading, displayName, initial, filteredNavigation, isAdmin } = useSidebar();
 
   const handleLogout = async () => {
     await apiLogout();
@@ -209,20 +207,13 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Pega apenas o primeiro nome
-  const getFirstName = (name: string) => {
-    if (!name) return 'Admin';
-    return name.split(' ')[0];
-  };
-
-  // Pega a inicial para o avatar
-  const getInitial = (name: string) => {
-    if (!name) return 'A';
-    return name.charAt(0).toUpperCase();
-  };
-
-  const displayName = getFirstName(userName || '');
-  const initial = getInitial(userName || 'Administrador');
+  if (loading) {
+    return (
+      <aside className="h-screen w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black dark:border-white"></div>
+      </aside>
+    );
+  }
 
   const SidebarContent = () => (
     <>
@@ -245,7 +236,7 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
 
       <nav className="flex-1 overflow-y-auto overflow-x-visible py-4">
         <ul className={`space-y-1 ${collapsed ? 'px-2' : 'px-3'}`}>
-          {NAVIGATION.map((item, idx) => (
+          {filteredNavigation.map((item, idx) => (
             <SidebarNavItem key={idx} item={item} collapsed={collapsed} />
           ))}
         </ul>
@@ -262,7 +253,9 @@ export function Sidebar({ mobileOpen, setMobileOpen, collapsed = false, userName
               </div>
               <div className="hidden sm:block">
                 <div className="text-sm font-medium text-gray-800 dark:text-white">{displayName}</div>
-                <div className="text-xs text-gray-400 dark:text-gray-500 capitalize">{userRole || 'Admin'}</div>
+                <div className="text-xs text-gray-400 dark:text-gray-500 capitalize">
+                  {isAdmin ? 'Administrador' : 'Funcionário'}
+                </div>
               </div>
             </Link>
             <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-all group">

@@ -34,16 +34,12 @@ export default function AdminLayout({
         mobileOpen={mobileMenuOpen} 
         setMobileOpen={setMobileMenuOpen}
         collapsed={sidebarCollapsed}
-        userName={user?.name}
-        userRole={user?.role}
       />
       
       <div className="flex flex-1 flex-col overflow-hidden">
         <TopBar 
           onMenuClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
           onSidebarToggle={toggleSidebar}
-          userName={user?.name}
-          userRole={user?.role}
         />
         <main className="main flex-1 overflow-y-auto p-6">
           {children}

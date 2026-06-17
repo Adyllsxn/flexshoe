@@ -49,10 +49,18 @@ export class AccountController {
 
   @Get()
   @AdminOnly()
-  @ApiOperation({ summary: 'Listar todos os utilizadores (admin)' })
+  @ApiOperation({ summary: 'Listar utilizadores ativos (admin)' })
   @ApiResponse({ status: 200, description: 'Lista retornada com sucesso' })
   findAll(@Query() paginationDto: PaginationDto) {
     return this.accountService.findAll(paginationDto);
+  }
+
+  @Get('all')
+  @AdminOnly()
+  @ApiOperation({ summary: 'Listar TODOS os utilizadores incluindo deletados (admin)' })
+  @ApiResponse({ status: 200, description: 'Lista retornada com sucesso' })
+  findAllWithDeleted(@Query() paginationDto: PaginationDto) {
+    return this.accountService.findAllWithDeleted(paginationDto);
   }
 
   @Get('search')
