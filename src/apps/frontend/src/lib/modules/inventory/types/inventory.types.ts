@@ -1,3 +1,5 @@
+import type { Product } from '@/lib/modules/product';
+
 export type InventoryItem = {
   id: string;
   productId: string;
@@ -9,6 +11,7 @@ export type InventoryItem = {
   active: boolean;
   createdAt: string;
   updatedAt: string;
+  product?: Product;
 };
 
 export type InventoryColor = {
