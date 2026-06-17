@@ -4,8 +4,8 @@ import InventoryHeader from './_components/InventoryHeader';
 import InventoryStats from './_components/InventoryStats';
 import InventoryFilters from './_components/InventoryFilters';
 import InventoryTable from './_components/InventoryTable';
-import InventoryModal from './_components/InventoryModal';
-import InventoryConfirmModal from './_components/InventoryConfirmModal';
+import InventoryModal from './_modals/InventoryModal';
+import InventoryConfirmModal from './_modals/InventoryConfirmModal';
 import { useInventory } from './_hooks/useInventory';
 
 export default function InventoryPage() {
