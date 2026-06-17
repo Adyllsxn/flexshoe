@@ -20,3 +20,11 @@ export interface ChangePasswordData {
   newPassword: string;
   confirmNewPassword: string;
 }
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}

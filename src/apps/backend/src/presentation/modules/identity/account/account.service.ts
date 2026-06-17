@@ -58,6 +58,42 @@ export class AccountService implements IAccountService {
     return PaginationHelper.paginate(data, total, page, limit);
   }
 
+  async findAllWithDeleted(paginationDto: PaginationDto): Promise<{
+    data: IAccount[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    const { page = 1, limit = 10 } = paginationDto;
+    const skip = PaginationHelper.skip(page, limit);
+
+    const [data, total] = await Promise.all([
+      this.prismaService.user.findMany({
+        where: {}, // SEM filtro - retorna TODOS incluindo deletados
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          active: true,
+          lastLogin: true,
+          createdAt: true,
+          updatedAt: true,
+          deletedAt: true,
+        },
+      }),
+      this.prismaService.user.count({
+        where: {}, // SEM filtro - conta TODOS incluindo deletados
+      }),
+    ]);
+
+    return PaginationHelper.paginate(data, total, page, limit);
+  }
+
   async findOne(id: string): Promise<IAccount> {
     const user = await this.prismaService.user.findFirst({
       where: { id, deletedAt: null },

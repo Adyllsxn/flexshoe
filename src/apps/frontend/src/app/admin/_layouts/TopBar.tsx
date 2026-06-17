@@ -5,33 +5,30 @@ import { Search, ChevronDown, Menu, X, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { FiUser, FiLogOut, FiGrid } from 'react-icons/fi';
 import { QUICK_ACCESS_ITEMS, USER_LOGOUT } from './topbar.constants';
-import { logout as apiLogout } from '@/lib/modules/auth';
+import { useTopbar } from './topbar.hooks';
 
 interface TopBarProps {
   onMenuClick: () => void;
   onSidebarToggle: () => void;
-  userName?: string;
-  userRole?: string;
 }
 
-export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: TopBarProps) {
+export function TopBar({ onMenuClick, onSidebarToggle }: TopBarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isMobile, setIsMobile] = useState(false);
   
   const quickRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Pega apenas o primeiro nome
-  const getFirstName = (name: string) => {
-    if (!name) return 'Admin';
-    return name.split(' ')[0];
-  };
-
-  const displayName = getFirstName(userName || 'Administrador');
-  const initial = displayName.charAt(0).toUpperCase();
+  const { 
+    theme, 
+    displayName, 
+    initial, 
+    userRole,
+    toggleTheme, 
+    handleLogout 
+  } = useTopbar();
 
   // Detectar mobile
   useEffect(() => {
@@ -56,37 +53,24 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-    localStorage.setItem('admin-theme', newTheme);
-  };
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('admin-theme') as 'light' | 'dark';
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    }
-  }, []);
-
-  const handleLogout = async () => {
-    await apiLogout();
-    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-    localStorage.removeItem('flexshoe-admin-auth');
-    sessionStorage.removeItem('flexshoe-admin-auth');
-    window.location.href = USER_LOGOUT.logout;
-  };
-
-  // Mobile: clicar no avatar vai direto para o perfil
   const handleMobileAvatarClick = () => {
     window.location.href = '/admin/profile';
   };
 
+  const isAdmin = userRole === 'admin';
+
+  // Filtrar itens de acesso rápido baseado no role
+  const filteredQuickAccess = QUICK_ACCESS_ITEMS.filter(item => {
+    if (isAdmin) return true;
+    // Employee não vê Inventory
+    if (item.label === 'Inventory') return false;
+    return true;
+  });
+
   return (
     <header className="header bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
       <div className="flex items-center justify-between px-4 h-16">
+        {/* Header Left */}
         <div className="header-left flex items-center gap-4">
           <button 
             onClick={onSidebarToggle}
@@ -104,6 +88,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
           </button>
         </div>
 
+        {/* Header Center - Search */}
         <div className="header-search hidden md:block flex-1 max-w-md mx-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
@@ -118,8 +103,10 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
           </div>
         </div>
 
+        {/* Header Right */}
         <div className="header-right flex items-center gap-2">
           <div className="header-actions-desktop hidden lg:flex items-center gap-1">
+            {/* Quick Access */}
             <div className="relative" ref={quickRef}>
               <button 
                 onClick={() => setQuickOpen(!quickOpen)}
@@ -134,7 +121,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
                     <h3 className="text-sm font-semibold text-gray-800 dark:text-white">Acesso Rápido</h3>
                   </div>
                   <div className="grid grid-cols-2 gap-1 p-2">
-                    {QUICK_ACCESS_ITEMS.map((item, idx) => {
+                    {filteredQuickAccess.map((item, idx) => {
                       const Icon = item.icon;
                       return (
                         <Link
@@ -153,6 +140,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
               )}
             </div>
 
+            {/* Dark/Light Toggle */}
             <button 
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all cursor-pointer"
@@ -163,7 +151,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
 
             <span className="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1"></span>
 
-            {/* Desktop: Dropdown */}
+            {/* User Dropdown - Desktop */}
             <div className="relative" ref={userRef}>
               <button 
                 onClick={() => setUserOpen(!userOpen)}
@@ -208,7 +196,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
             </div>
           </div>
 
-          {/* Mobile: Apenas botões de busca, tema e avatar sem dropdown */}
+          {/* Mobile Actions */}
           <div className="flex lg:hidden items-center gap-1">
             <button 
               onClick={() => setSearchOpen(true)}
@@ -224,7 +212,6 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
             >
               {theme === 'light' ? <Moon size={18} className="text-gray-600 dark:text-gray-400" /> : <Sun size={18} className="text-gray-600 dark:text-gray-400" />}
             </button>
-            {/* Mobile: Avatar clicável que vai direto para o perfil */}
             <button 
               onClick={handleMobileAvatarClick}
               className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all cursor-pointer"
@@ -238,6 +225,7 @@ export function TopBar({ onMenuClick, onSidebarToggle, userName, userRole }: Top
         </div>
       </div>
 
+      {/* Mobile Search Modal */}
       {searchOpen && (
         <div className="fixed inset-0 z-50 bg-white dark:bg-gray-900 lg:hidden">
           <div className="p-4">
