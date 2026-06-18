@@ -164,7 +164,6 @@ export function useCarrinho() {
       
       if (order && order.id) {
         if (formData.paymentMethod === 'whatsapp') {
-          // Usar o WhatsApp da loja configurado
           const message = generateWhatsAppMessage(order.orderNumber || order.id);
           const whatsappUrl = `https://wa.me/${storeWhatsapp}?text=${message}`;
           window.open(whatsappUrl, '_blank');
@@ -207,6 +206,7 @@ export function useCarrinho() {
     cartItems,
     currentStep,
     formData,
+    setFormData,
     promoCode,
     orderPlaced,
     subtotal,
