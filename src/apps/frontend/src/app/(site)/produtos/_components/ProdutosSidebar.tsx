@@ -60,7 +60,7 @@ export default function ProdutosSidebar({
           </div>
         </div>
 
-        {/* Gênero - Vindo da API */}
+        {/* Gênero */}
         <div className="border border-gray-100 rounded-xl p-4">
           <h3 className="font-bold text-black mb-3">Gênero</h3>
           <div className="space-y-2">
@@ -79,9 +79,50 @@ export default function ProdutosSidebar({
               </label>
             ))}
           </div>
-        </div> 
+        </div>
 
-        {/* Cores - Estáticas por enquanto */}
+        {/* Preço */}
+        <div className="border border-gray-100 rounded-xl p-4">
+          <h3 className="font-bold text-black mb-3">Preço (Kz)</h3>
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <label className="text-xs text-gray-400">Mínimo</label>
+                <div className="flex items-center border border-gray-200 rounded-lg px-2 py-1">
+                  <span className="text-gray-500 text-sm">Kz</span>
+                  <input 
+                    type="number" 
+                    value={minPrice}
+                    onChange={(e) => onMinPriceChange(e.target.value)}
+                    className="w-full outline-none text-sm" 
+                    placeholder="0" 
+                  />
+                </div>
+              </div>
+              <div className="flex-1">
+                <label className="text-xs text-gray-400">Máximo</label>
+                <div className="flex items-center border border-gray-200 rounded-lg px-2 py-1">
+                  <span className="text-gray-500 text-sm">Kz</span>
+                  <input 
+                    type="number" 
+                    value={maxPrice}
+                    onChange={(e) => onMaxPriceChange(e.target.value)}
+                    className="w-full outline-none text-sm" 
+                    placeholder="500000" 
+                  />
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={onApplyPrice}
+              className="w-full bg-black text-white rounded-lg py-2 text-sm font-medium hover:bg-gray-800 transition"
+            >
+              Aplicar Filtro
+            </button>
+          </div>
+        </div>
+
+        {/* Cores */}
         <div className="border border-gray-100 rounded-xl p-4">
           <h3 className="font-bold text-black mb-3">Cores</h3>
           <div className="flex flex-wrap gap-2">
@@ -103,7 +144,7 @@ export default function ProdutosSidebar({
           </div>
         </div>
 
-        {/* Marcas - Vindo da API */}
+        {/* Marcas */}
         <div className="border border-gray-100 rounded-xl p-4">
           <h3 className="font-bold text-black mb-3">Marcas</h3>
           <div className="space-y-2">

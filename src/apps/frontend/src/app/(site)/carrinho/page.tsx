@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 import { 
   FiHome, 
   FiTrash2,
@@ -12,12 +13,14 @@ import {
 } from 'react-icons/fi';
 import { useCarrinho } from './_hooks/useCarrinho';
 import { carrinhoData } from './_constants/carrinho';
+import { PROVINCIAS, getMunicipios } from '@/lib/utils/angola';
 
 export default function CarrinhoPage() {
   const {
     cartItems,
     currentStep,
     formData,
+    setFormData,
     promoCode,
     orderPlaced,
     subtotal,
@@ -39,6 +42,11 @@ export default function CarrinhoPage() {
     STEPS,
     PAYMENT_METHODS,
   } = useCarrinho();
+
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value, city: '' }));
+  };
 
   if (loading) {
     return (
@@ -237,30 +245,46 @@ export default function CarrinhoPage() {
                       placeholder="Rua, número, bairro"
                     />
                   </div>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-black mb-1">Cidade</label>
-                      <input
-                        type="text"
+                      <label className="block text-sm font-medium text-black mb-1">Província</label>
+                      <select
+                        name="province"
+                        value={formData.province}
+                        onChange={handleProvinceChange}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black bg-white"
+                      >
+                        <option value="">Selecione a província</option>
+                        {PROVINCIAS.map((prov) => (
+                          <option key={prov.id} value={prov.nome}>{prov.nome}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-1">Cidade/Município</label>
+                      <select
                         name="city"
                         value={formData.city}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
-                        placeholder="Luanda"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-black mb-1">Província</label>
-                      <input
-                        type="text"
-                        name="province"
-                        value={formData.province}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black"
-                        placeholder="Luanda"
-                      />
+                        className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black bg-white"
+                        disabled={!formData.province}
+                      >
+                        <option value="">Selecione a cidade</option>
+                        {formData.province && getMunicipios(
+                          PROVINCIAS.find(p => p.nome === formData.province)?.id || ''
+                        ).map((mun) => (
+                          <option key={mun} value={mun}>{mun}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
+                  
+                  {formData.province && formData.city && (
+                    <div className="text-xs text-gray-400">
+                      📍 {formData.city}, {formData.province}
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex gap-3 mt-6">
