@@ -13,7 +13,7 @@
 
 ## **📖 SOBRE O PROJETO**
 
-> O **FlexShoe** é um e-commerce moderno de tênis desenvolvido para oferecer uma experiência de compra rápida e intuitiva, com finalização de pedidos integrada ao WhatsApp. Ideal para pequenos e médios vendedores que desejam digitalizar suas vendas sem complicações.
+> O **FlexShoe** é um e-commerce moderno de tênis desenvolvido para oferecer uma experiência de compra rápida e intuitiva, com finalização de pedidos integrada ao WhatsApp. Ideal para pequenos e médios vendedores que desejam digitalizar suas vendas sem complicações
 
 ### **✨ Funcionalidades:**
 ```markdown
